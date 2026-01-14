@@ -1,20 +1,35 @@
 import type { ReactNode } from "react";
+
 import { Link, NavLink } from "react-router-dom";
+
 import { useCartStore } from "../store/useCartStore";
 import { useAuthStore } from "../store/useAuthStore";
 import { useTranslation } from "../hooks/useTranslation";
-import { LanguageSwitcher } from "../components/LanguageSwitcher";
+
+import LanguageSwitcher from "../components/LanguageSwitcher";
 
 type RootLayoutProps = {
   children: ReactNode;
 };
 
-export function RootLayout({ children }: RootLayoutProps) {
+const RootLayout = ({ children }: RootLayoutProps) => {
   const itemCount = useCartStore((state) =>
     state.items.reduce((sum, item) => sum + item.quantity, 0)
   );
   const user = useAuthStore((state) => state.user);
-  const signOut = useAuthStore((state) => state.signOut);
+
+  const getInitials = (name: string | undefined, email: string): string => {
+    if (name) {
+      return name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2);
+    }
+    return email[0].toUpperCase();
+  };
+
   const { t } = useTranslation();
 
   return (
@@ -64,18 +79,17 @@ export function RootLayout({ children }: RootLayoutProps) {
           <div className="flex items-center gap-4">
             <LanguageSwitcher />
             {user ? (
-              <div className="hidden items-center gap-3 text-xs text-slate-700 md:flex">
-                <span className="max-w-[120px] truncate">
+              <Link
+                to="/profile"
+                className="flex items-center gap-3 rounded-full border border-slate-200 px-3 py-1.5 shadow-sm hover:border-primary-500 transition-colors group"
+              >
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-primary-500 to-primary-600 text-xs font-semibold text-white group-hover:shadow-md transition-shadow">
+                  {getInitials(user.displayName, user.email)}
+                </div>
+                <span className="hidden text-xs font-medium text-slate-700 group-hover:text-primary-600 md:inline max-w-[120px] truncate">
                   {user.displayName || user.email}
                 </span>
-                <button
-                  type="button"
-                  onClick={signOut}
-                  className="rounded-full border border-slate-200 px-3 py-1 text-xs font-medium text-slate-600 shadow-sm hover:border-primary-500 hover:text-primary-600"
-                >
-                  {t("nav.signOut")}
-                </button>
-              </div>
+              </Link>
             ) : (
               <Link
                 to="/auth"
@@ -121,4 +135,6 @@ export function RootLayout({ children }: RootLayoutProps) {
       </footer>
     </div>
   );
-}
+};
+
+export default RootLayout;

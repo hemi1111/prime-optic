@@ -1,45 +1,45 @@
-import { useState } from 'react'
-import { useProducts } from '../hooks/useProducts'
-import type { ProductType } from '../types/product'
-import { ProductCard } from '../components/ProductCard'
-import { useTranslation } from '../hooks/useTranslation'
+import { useState } from "react";
+import { useProducts } from "../hooks/useProducts";
+import type { ProductType } from "../types/product";
+import ProductCard from "../components/ProductCard";
+import { useTranslation } from "../hooks/useTranslation";
 
 type CatalogPageProps = {
-  type: ProductType
-}
+  type: ProductType;
+};
 
-type SortOption = 'price-low' | 'price-high' | 'newest' | 'popular'
+type SortOption = "price-low" | "price-high" | "newest" | "popular";
 
-export function CatalogPage({ type }: CatalogPageProps) {
-  const { t } = useTranslation()
-  const { products, isLoading, error } = useProducts(type)
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([])
-  const [sortBy, setSortBy] = useState<SortOption>('newest')
-  const [isFiltersOpen, setIsFiltersOpen] = useState(false)
+const CatalogPage = ({ type }: CatalogPageProps) => {
+  const { t } = useTranslation();
+  const { products, isLoading, error } = useProducts(type);
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [sortBy, setSortBy] = useState<SortOption>("newest");
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
   const title =
-    type === 'glasses' ? 'Prescription glasses' : 'Sunglasses collection'
+    type === "glasses" ? "Prescription glasses" : "Sunglasses collection";
 
-  const hasResults = products.length > 0
+  const hasResults = products.length > 0;
 
   const filterOptions = [
-    { id: 'men', label: 'Men' },
-    { id: 'women', label: 'Women' },
-    { id: 'kids', label: 'Kids' },
-    { id: 'round', label: 'Round' },
-    { id: 'square', label: 'Square' },
-    { id: 'cat-eye', label: 'Cat-eye' },
-    { id: 'metal', label: 'Metal' },
-    { id: 'plastic', label: 'Plastic' },
-  ]
+    { id: "men", label: "Men" },
+    { id: "women", label: "Women" },
+    { id: "kids", label: "Kids" },
+    { id: "round", label: "Round" },
+    { id: "square", label: "Square" },
+    { id: "cat-eye", label: "Cat-eye" },
+    { id: "metal", label: "Metal" },
+    { id: "plastic", label: "Plastic" },
+  ];
 
   const toggleFilter = (filterId: string) => {
     setSelectedFilters((prev) =>
       prev.includes(filterId)
         ? prev.filter((id) => id !== filterId)
-        : [...prev, filterId],
-    )
-  }
+        : [...prev, filterId]
+    );
+  };
 
   return (
     <div className="space-y-8 pb-8">
@@ -59,7 +59,7 @@ export function CatalogPage({ type }: CatalogPageProps) {
           <div className="sticky top-24 space-y-6 rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900">
-                {t('catalog.filters')}
+                {t("catalog.filters")}
               </h2>
               {selectedFilters.length > 0 && (
                 <button
@@ -79,7 +79,7 @@ export function CatalogPage({ type }: CatalogPageProps) {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {filterOptions
-                    .filter((f) => ['men', 'women', 'kids'].includes(f.id))
+                    .filter((f) => ["men", "women", "kids"].includes(f.id))
                     .map((filter) => (
                       <button
                         key={filter.id}
@@ -87,8 +87,8 @@ export function CatalogPage({ type }: CatalogPageProps) {
                         onClick={() => toggleFilter(filter.id)}
                         className={`rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-200 ${
                           selectedFilters.includes(filter.id)
-                            ? 'bg-primary-500 text-white shadow-sm'
-                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                            ? "bg-primary-500 text-white shadow-sm"
+                            : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                         }`}
                       >
                         {filter.label}
@@ -103,7 +103,9 @@ export function CatalogPage({ type }: CatalogPageProps) {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {filterOptions
-                    .filter((f) => ['round', 'square', 'cat-eye'].includes(f.id))
+                    .filter((f) =>
+                      ["round", "square", "cat-eye"].includes(f.id)
+                    )
                     .map((filter) => (
                       <button
                         key={filter.id}
@@ -111,8 +113,8 @@ export function CatalogPage({ type }: CatalogPageProps) {
                         onClick={() => toggleFilter(filter.id)}
                         className={`rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-200 ${
                           selectedFilters.includes(filter.id)
-                            ? 'bg-primary-500 text-white shadow-sm'
-                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                            ? "bg-primary-500 text-white shadow-sm"
+                            : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                         }`}
                       >
                         {filter.label}
@@ -127,7 +129,7 @@ export function CatalogPage({ type }: CatalogPageProps) {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {filterOptions
-                    .filter((f) => ['metal', 'plastic'].includes(f.id))
+                    .filter((f) => ["metal", "plastic"].includes(f.id))
                     .map((filter) => (
                       <button
                         key={filter.id}
@@ -135,8 +137,8 @@ export function CatalogPage({ type }: CatalogPageProps) {
                         onClick={() => toggleFilter(filter.id)}
                         className={`rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-200 ${
                           selectedFilters.includes(filter.id)
-                            ? 'bg-primary-500 text-white shadow-sm'
-                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                            ? "bg-primary-500 text-white shadow-sm"
+                            : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                         }`}
                       >
                         {filter.label}
@@ -168,8 +170,10 @@ export function CatalogPage({ type }: CatalogPageProps) {
               </button>
               <span className="text-sm font-medium text-slate-600">
                 {hasResults
-                  ? `${products.length} ${products.length === 1 ? 'product' : 'products'} found`
-                  : 'No products match the current selection yet.'}
+                  ? `${products.length} ${
+                      products.length === 1 ? "product" : "products"
+                    } found`
+                  : "No products match the current selection yet."}
               </span>
             </div>
             <div className="flex items-center gap-3">
@@ -215,8 +219,8 @@ export function CatalogPage({ type }: CatalogPageProps) {
                       onClick={() => toggleFilter(filter.id)}
                       className={`rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-200 ${
                         selectedFilters.includes(filter.id)
-                          ? 'bg-primary-500 text-white shadow-sm'
-                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                          ? "bg-primary-500 text-white shadow-sm"
+                          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                       }`}
                     >
                       {filter.label}
@@ -257,7 +261,7 @@ export function CatalogPage({ type }: CatalogPageProps) {
             <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 p-12 text-center">
               <div className="text-4xl">🔍</div>
               <div className="text-lg font-bold text-slate-900">
-                {t('catalog.noResults')}
+                {t("catalog.noResults")}
               </div>
               <p className="max-w-md text-sm text-slate-600">
                 We couldn&apos;t find any {type} matching your current filters.
@@ -277,5 +281,7 @@ export function CatalogPage({ type }: CatalogPageProps) {
         </section>
       </div>
     </div>
-  )
-}
+  );
+};
+
+export default CatalogPage;

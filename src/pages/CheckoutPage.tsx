@@ -1,16 +1,16 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useCartStore } from '../store/useCartStore'
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCartStore } from "../store/useCartStore";
 
-type Step = 1 | 2 | 3
+type Step = 1 | 2 | 3;
 
-export function CheckoutPage() {
-  const items = useCartStore((state) => state.items)
+const CheckoutPage = () => {
+  const items = useCartStore((state) => state.items);
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
-    0,
-  )
-  const [step, setStep] = useState<Step>(1)
+    0
+  );
+  const [step, setStep] = useState<Step>(1);
 
   if (!items.length) {
     return (
@@ -23,7 +23,7 @@ export function CheckoutPage() {
           your order.
         </p>
       </div>
-    )
+    );
   }
 
   return (
@@ -33,8 +33,8 @@ export function CheckoutPage() {
           Checkout
         </h1>
         <p className="text-sm text-slate-500">
-          The UI mirrors a real-world checkout. Payment and order creation
-          will be connected to Firebase and a payment provider next.
+          The UI mirrors a real-world checkout. Payment and order creation will
+          be connected to Firebase and a payment provider next.
         </p>
       </header>
 
@@ -50,10 +50,7 @@ export function CheckoutPage() {
         <section className="space-y-4 rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
           {step === 1 && <ContactForm onNext={() => setStep(2)} />}
           {step === 2 && (
-            <DeliveryForm
-              onBack={() => setStep(1)}
-              onNext={() => setStep(3)}
-            />
+            <DeliveryForm onBack={() => setStep(1)} onNext={() => setStep(3)} />
           )}
           {step === 3 && <PaymentForm onBack={() => setStep(2)} />}
         </section>
@@ -98,45 +95,45 @@ export function CheckoutPage() {
         </aside>
       </div>
     </div>
-  )
-}
+  );
+};
 
 type StepPillProps = {
-  active: boolean
-  label: string
-}
+  active: boolean;
+  label: string;
+};
 
 function StepPill({ active, label }: StepPillProps) {
   return (
     <div
       className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 ${
         active
-          ? 'border-primary-500 bg-primary-50 text-primary-700'
-          : 'border-slate-200 bg-white'
+          ? "border-primary-500 bg-primary-50 text-primary-700"
+          : "border-slate-200 bg-white"
       }`}
     >
       <span
         className={`h-2 w-2 rounded-full ${
-          active ? 'bg-primary-500' : 'bg-slate-300'
+          active ? "bg-primary-500" : "bg-slate-300"
         }`}
       />
       <span>{label}</span>
     </div>
-  )
+  );
 }
 
 type StepFormProps = {
-  onNext?: () => void
-  onBack?: () => void
-}
+  onNext?: () => void;
+  onBack?: () => void;
+};
 
 function ContactForm({ onNext }: StepFormProps) {
   return (
     <form
       className="space-y-4 text-sm"
       onSubmit={(event) => {
-        event.preventDefault()
-        onNext?.()
+        event.preventDefault();
+        onNext?.();
       }}
     >
       <div className="grid gap-3 md:grid-cols-2">
@@ -149,12 +146,7 @@ function ContactForm({ onNext }: StepFormProps) {
         type="email"
         placeholder="you@example.com"
       />
-      <Field
-        label="Phone"
-        id="phone"
-        type="tel"
-        placeholder="+000 000 000"
-      />
+      <Field label="Phone" id="phone" type="tel" placeholder="+000 000 000" />
       <button
         type="submit"
         className="inline-flex items-center justify-center rounded-full bg-primary-500 px-6 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-primary-600"
@@ -162,7 +154,7 @@ function ContactForm({ onNext }: StepFormProps) {
         Continue to delivery
       </button>
     </form>
-  )
+  );
 }
 
 function DeliveryForm({ onBack, onNext }: StepFormProps) {
@@ -170,8 +162,8 @@ function DeliveryForm({ onBack, onNext }: StepFormProps) {
     <form
       className="space-y-4 text-sm"
       onSubmit={(event) => {
-        event.preventDefault()
-        onNext?.()
+        event.preventDefault();
+        onNext?.();
       }}
     >
       <Field label="Address" id="address" placeholder="Street and number" />
@@ -196,27 +188,26 @@ function DeliveryForm({ onBack, onNext }: StepFormProps) {
         </button>
       </div>
     </form>
-  )
+  );
 }
 
 function PaymentForm({ onBack }: StepFormProps) {
-  const navigate = useNavigate()
-  const clearCart = useCartStore((state) => state.clear)
+  const navigate = useNavigate();
+  const clearCart = useCartStore((state) => state.clear);
 
   const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault()
+    event.preventDefault();
     // Demo: Show success message, clear cart, and redirect
-    alert('Order placed successfully! (This is a demo - no real payment was processed)')
-    clearCart()
-    navigate('/')
+    alert(
+      "Order placed successfully! (This is a demo - no real payment was processed)"
+    );
+    clearCart();
+    navigate("/");
     // In production, this would create an order in Firestore and process payment
-  }
+  };
 
   return (
-    <form
-      className="space-y-4 text-sm"
-      onSubmit={handleSubmit}
-    >
+    <form className="space-y-4 text-sm" onSubmit={handleSubmit}>
       <Field
         label="Cardholder name"
         id="card-name"
@@ -248,23 +239,20 @@ function PaymentForm({ onBack }: StepFormProps) {
         </button>
       </div>
     </form>
-  )
+  );
 }
 
 type FieldProps = {
-  id: string
-  label: string
-  type?: string
-  placeholder?: string
-}
+  id: string;
+  label: string;
+  type?: string;
+  placeholder?: string;
+};
 
-function Field({ id, label, type = 'text', placeholder }: FieldProps) {
+function Field({ id, label, type = "text", placeholder }: FieldProps) {
   return (
     <div className="space-y-1">
-      <label
-        htmlFor={id}
-        className="block text-xs font-medium text-slate-700"
-      >
+      <label htmlFor={id} className="block text-xs font-medium text-slate-700">
         {label}
       </label>
       <input
@@ -274,7 +262,7 @@ function Field({ id, label, type = 'text', placeholder }: FieldProps) {
         className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none ring-primary-200 placeholder:text-slate-400 focus:ring-2"
       />
     </div>
-  )
+  );
 }
 
-
+export default CheckoutPage;

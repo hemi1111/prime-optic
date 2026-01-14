@@ -1,22 +1,23 @@
-import { Link } from 'react-router-dom'
-import { useState } from 'react'
-import type { Product } from '../types/product'
-import { useCartStore } from '../store/useCartStore'
-import { useTranslation } from '../hooks/useTranslation'
+import { useState } from "react";
+
+import { Link } from "react-router-dom";
+import { type Product } from "../types/product";
+import { useCartStore } from "../store/useCartStore";
+import { useTranslation } from "../hooks/useTranslation";
 
 type ProductCardProps = {
-  product: Product
-}
+  product: Product;
+};
 
-export function ProductCard({ product }: ProductCardProps) {
-  const addItem = useCartStore((state) => state.addItem)
-  const { t } = useTranslation()
-  const [isAdding, setIsAdding] = useState(false)
+const ProductCard = ({ product }: ProductCardProps) => {
+  const addItem = useCartStore((state) => state.addItem);
+  const { t } = useTranslation();
+  const [isAdding, setIsAdding] = useState(false);
 
   const handleAddToCart = async (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsAdding(true)
+    e.preventDefault();
+    e.stopPropagation();
+    setIsAdding(true);
     addItem(
       {
         id: product.id,
@@ -24,10 +25,10 @@ export function ProductCard({ product }: ProductCardProps) {
         price: product.price,
         imageUrl: product.imageUrl,
       },
-      1,
-    )
-    setTimeout(() => setIsAdding(false), 300)
-  }
+      1
+    );
+    setTimeout(() => setIsAdding(false), 300);
+  };
 
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-soft ring-1 ring-slate-100 transition-all duration-300 hover:scale-[1.02] hover:shadow-medium hover:ring-primary-200">
@@ -49,7 +50,7 @@ export function ProductCard({ product }: ProductCardProps) {
             <div className="absolute right-3 top-3 rounded-full bg-red-500 px-2.5 py-1 text-[10px] font-bold text-white shadow-sm">
               -
               {Math.round(
-                ((product.oldPrice - product.price) / product.oldPrice) * 100,
+                ((product.oldPrice - product.price) / product.oldPrice) * 100
               )}
               %
             </div>
@@ -86,10 +87,10 @@ export function ProductCard({ product }: ProductCardProps) {
         >
           <span
             className={`transition-transform duration-300 ${
-              isAdding ? 'scale-0 opacity-0' : 'scale-100 opacity-100'
+              isAdding ? "scale-0 opacity-0" : "scale-100 opacity-100"
             }`}
           >
-            {t('product.addToCart')}
+            {t("product.addToCart")}
           </span>
           {isAdding && (
             <span className="absolute inset-0 flex items-center justify-center">
@@ -118,5 +119,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </button>
       </div>
     </article>
-  )
-}
+  );
+};
+
+export default ProductCard;

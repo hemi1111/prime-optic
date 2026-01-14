@@ -1,7 +1,6 @@
 import { useLanguageStore, type Language } from "../store/useLanguageStore";
-import { useTranslation } from "../hooks/useTranslation";
 
-export function LanguageSwitcher() {
+const LanguageSwitcher = () => {
   const language = useLanguageStore((state) => state.language);
   const setLanguage = useLanguageStore((state) => state.setLanguage);
 
@@ -37,5 +36,6 @@ export function LanguageSwitcher() {
       </button>
     </div>
   );
-}
+};
 
+export default LanguageSwitcher;

@@ -1,4 +1,4 @@
-export function AdminDashboardPage() {
+const AdminDashboardPage = () => {
   return (
     <div className="space-y-6">
       <header className="space-y-2">
@@ -30,8 +30,8 @@ export function AdminDashboardPage() {
             Track customer orders, update statuses and view order details.
           </p>
           <div className="mt-2 rounded-xl border border-dashed border-slate-200 bg-slate-50 p-4 text-xs text-slate-500">
-            No orders yet. When checkout is wired to Firestore, new orders
-            will be listed here.
+            No orders yet. When checkout is wired to Firestore, new orders will
+            be listed here.
           </div>
         </section>
 
@@ -46,7 +46,7 @@ export function AdminDashboardPage() {
         </section>
       </div>
     </div>
-  )
-}
+  );
+};
 
-
+export default AdminDashboardPage;

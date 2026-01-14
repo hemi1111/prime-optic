@@ -1,16 +1,16 @@
-import { useParams } from 'react-router-dom'
-import { useProductBySlug } from '../hooks/useProducts'
-import { useCartStore } from '../store/useCartStore'
-import { useTranslation } from '../hooks/useTranslation'
+import { useParams } from "react-router-dom";
+import { useProductBySlug } from "../hooks/useProducts";
+import { useCartStore } from "../store/useCartStore";
+import { useTranslation } from "../hooks/useTranslation";
 
-export function ProductDetailPage() {
-  const { t } = useTranslation()
-  const { slug } = useParams<{ slug: string }>()
-  const { product, isLoading, error } = useProductBySlug(slug)
-  const addItem = useCartStore((state) => state.addItem)
+const ProductDetailPage = () => {
+  const { t } = useTranslation();
+  const { slug } = useParams<{ slug: string }>();
+  const { product, isLoading, error } = useProductBySlug(slug);
+  const addItem = useCartStore((state) => state.addItem);
 
   const handleAddToCart = () => {
-    if (!product) return
+    if (!product) return;
     addItem(
       {
         id: product.id,
@@ -18,9 +18,9 @@ export function ProductDetailPage() {
         price: product.price,
         imageUrl: product.imageUrl,
       },
-      1,
-    )
-  }
+      1
+    );
+  };
 
   if (isLoading) {
     return (
@@ -40,7 +40,7 @@ export function ProductDetailPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -48,31 +48,31 @@ export function ProductDetailPage() {
       <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-xs text-red-700">
         {error}
       </div>
-    )
+    );
   }
 
   if (!product) {
     return (
       <div className="flex flex-col items-center justify-center gap-3 py-24 text-center">
         <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          {t('product.notFound')}
+          {t("product.notFound")}
         </div>
         <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-          {t('product.notFound')}
+          {t("product.notFound")}
         </h1>
         <p className="max-w-md text-sm text-slate-500">
           It may have been removed or is not yet available in the online
           catalog. Please browse our other products or adjust your selection.
         </p>
       </div>
-    )
+    );
   }
 
   return (
     <div className="space-y-4">
       <header>
         <p className="text-xs uppercase tracking-wide text-slate-500">
-          {product.type === 'glasses' ? 'Glasses' : 'Sunglasses'}
+          {product.type === "glasses" ? "Glasses" : "Sunglasses"}
         </p>
         <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
           {product.name}
@@ -90,9 +90,7 @@ export function ProductDetailPage() {
                 className="h-56 w-auto object-contain"
               />
             ) : (
-              <span className="text-xs text-slate-400">
-                Product gallery
-              </span>
+              <span className="text-xs text-slate-400">Product gallery</span>
             )}
           </div>
         </div>
@@ -109,8 +107,8 @@ export function ProductDetailPage() {
               ) : null}
             </div>
             <p className="text-sm text-slate-600">
-              Detailed frame specifications, lens options and availability
-              will be shown here once product data is populated.
+              Detailed frame specifications, lens options and availability will
+              be shown here once product data is populated.
             </p>
           </div>
 
@@ -119,12 +117,12 @@ export function ProductDetailPage() {
             onClick={handleAddToCart}
             className="inline-flex w-full items-center justify-center rounded-full bg-primary-500 px-6 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-primary-600"
           >
-            {t('product.addToCart')}
+            {t("product.addToCart")}
           </button>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-
+export default ProductDetailPage;
