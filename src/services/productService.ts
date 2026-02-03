@@ -12,6 +12,7 @@ import {
   orderBy,
 } from "firebase/firestore";
 import { db } from "../config/firebase";
+import { getBrandNameBySlug } from "../config/brands";
 import type { Product, ProductType } from "../types/product";
 
 export async function fetchProductsByType(
@@ -23,6 +24,36 @@ export async function fetchProductsByType(
 
   const productsCol = collection(db, "products");
   const q = query(productsCol, where("type", "==", type), limit(24));
+  const snapshot = await getDocs(q);
+
+  return snapshot.docs.map(
+    (doc) =>
+      ({
+        id: doc.id,
+        ...doc.data(),
+      }) as Product,
+  );
+}
+
+export async function fetchProductsByBrand(
+  brandSlug: string,
+): Promise<Product[]> {
+  if (!db) {
+    return [];
+  }
+
+  const brandName = getBrandNameBySlug(brandSlug);
+  if (!brandName) {
+    return [];
+  }
+
+  const productsCol = collection(db, "products");
+  const q = query(
+    productsCol,
+    where("brand", "==", brandName),
+    where("type", "in", ["glasses", "sunglasses"]),
+    limit(48),
+  );
   const snapshot = await getDocs(q);
 
   return snapshot.docs.map(

@@ -2,8 +2,20 @@ import { useParams } from "react-router-dom";
 
 import { useProductBySlug } from "../hooks/useProducts";
 import { useTranslation } from "../hooks/useTranslation";
+import {
+  getGenderLabel,
+  getMaterialLabel,
+  getShapeLabel,
+  formatDimensions as formatDimensionsUtil,
+} from "../utils/productDetail";
 
 import { useCartStore } from "../store/useCartStore";
+
+import {
+  ProductDetailSkeleton,
+  ProductDetailError,
+  ProductDetailNotFound,
+} from "../components/product-detail-page";
 
 const ProductDetailPage = () => {
   const { t } = useTranslation();
@@ -27,112 +39,9 @@ const ProductDetailPage = () => {
     );
   };
 
-  const getGenderLabel = (gender?: string) => {
-    switch (gender) {
-      case "men":
-        return t("common.men");
-      case "women":
-        return t("common.women");
-      case "unisex":
-        return t("common.unisex");
-      case "kids":
-        return t("common.kids");
-      default:
-        return t("productDetail.notAvailable");
-    }
-  };
-
-  const getMaterialLabel = (material?: string) => {
-    switch (material) {
-      case "metal":
-        return t("productDetail.materials.metal");
-      case "plastic":
-        return t("productDetail.materials.plastic");
-      case "acetate":
-        return t("productDetail.materials.acetate");
-      case "titanium":
-        return t("productDetail.materials.titanium");
-      case "mixed":
-        return t("productDetail.materials.mixed");
-      default:
-        return t("productDetail.notAvailable");
-    }
-  };
-
-  const getShapeLabel = (shape?: string) => {
-    switch (shape) {
-      case "round":
-        return t("productDetail.shapes.round");
-      case "square":
-        return t("productDetail.shapes.square");
-      case "cat-eye":
-        return t("productDetail.shapes.catEye");
-      case "oval":
-        return t("productDetail.shapes.oval");
-      case "aviator":
-        return t("productDetail.shapes.aviator");
-      case "rectangular":
-        return t("productDetail.shapes.rectangular");
-      default:
-        return t("productDetail.notAvailable");
-    }
-  };
-
-  const formatDimensions = (
-    lensWidth?: number,
-    bridgeWidth?: number,
-    templeLength?: number,
-  ) => {
-    const dimensions = [lensWidth, bridgeWidth, templeLength].filter(Boolean);
-    return dimensions.length > 0
-      ? dimensions.join("-")
-      : t("productDetail.notAvailable");
-  };
-
-  if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          <div className="space-y-4">
-            <div className="h-96 lg:h-[500px] bg-gray-200 rounded-xl animate-pulse" />
-            <div className="h-24 bg-gray-100 rounded-lg animate-pulse" />
-          </div>
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <div className="h-6 w-32 bg-gray-200 rounded animate-pulse" />
-              <div className="h-8 w-64 bg-gray-200 rounded animate-pulse" />
-              <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
-            </div>
-            <div className="h-12 w-32 bg-gray-200 rounded animate-pulse" />
-            <div className="h-12 w-full bg-gray-200 rounded-lg animate-pulse" />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
-          {error}
-        </div>
-      </div>
-    );
-  }
-
-  if (!product) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            {t("catalog.productNotFound")}
-          </h1>
-          <p className="text-gray-600">{t("catalog.productNotFoundDesc")}</p>
-        </div>
-      </div>
-    );
-  }
+  if (isLoading) return <ProductDetailSkeleton />;
+  if (error) return <ProductDetailError error={error} />;
+  if (!product) return <ProductDetailNotFound />;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -178,7 +87,7 @@ const ProductDetailPage = () => {
                 <>
                   <span className="text-gray-300">•</span>
                   <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-                    {getGenderLabel(product.gender)}
+                    {getGenderLabel(t, product.gender)}
                   </span>
                 </>
               )}
@@ -272,7 +181,7 @@ const ProductDetailPage = () => {
                         {t("productDetail.frameMaterial")}:
                       </span>
                       <span className="font-medium">
-                        {getMaterialLabel(product.frameMaterial)}
+                        {getMaterialLabel(t, product.frameMaterial)}
                       </span>
                     </div>
                   )}
@@ -290,7 +199,7 @@ const ProductDetailPage = () => {
                         {t("productDetail.frameShape")}:
                       </span>
                       <span className="font-medium">
-                        {getShapeLabel(product.frameShape)}
+                        {getShapeLabel(t, product.frameShape)}
                       </span>
                     </div>
                   )}
@@ -356,7 +265,8 @@ const ProductDetailPage = () => {
                   <div className="flex justify-between font-medium text-gray-900">
                     <span>Total:</span>
                     <span>
-                      {formatDimensions(
+                      {formatDimensionsUtil(
+                        t,
                         product.lensWidth,
                         product.bridgeWidth,
                         product.templeLength,

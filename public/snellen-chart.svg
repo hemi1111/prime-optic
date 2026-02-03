@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 260" fill="none" stroke="#1e293b" stroke-width="1.5">
+  <rect width="200" height="260" fill="#f8fafc" rx="8"/>
+  <text x="100" y="32" text-anchor="middle" font-family="Georgia, serif" font-size="28" font-weight="bold" fill="#1e293b">E</text>
+  <text x="100" y="58" text-anchor="middle" font-family="Georgia, serif" font-size="22" fill="#334155">F P</text>
+  <text x="100" y="82" text-anchor="middle" font-family="Georgia, serif" font-size="18" fill="#475569">T O Z</text>
+  <text x="100" y="106" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#64748b">L P E D</text>
+  <text x="100" y="128" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#64748b">P E C F D</text>
+  <text x="100" y="148" text-anchor="middle" font-family="Georgia, serif" font-size="9" fill="#94a3b8">E D F C Z P</text>
+  <text x="100" y="166" text-anchor="middle" font-family="Georgia, serif" font-size="7" fill="#94a3b8">F E L O P Z D</text>
+  <text x="100" y="182" text-anchor="middle" font-family="Georgia, serif" font-size="6" fill="#cbd5e1">P E D F C T O Z</text>
+  <text x="100" y="198" text-anchor="middle" font-family="Georgia, serif" font-size="5" fill="#cbd5e1">L E F O D P C T E</text>
+  <text x="100" y="212" text-anchor="middle" font-family="Georgia, serif" font-size="4" fill="#e2e8f0">F D P E C T O Z L E</text>
+  <line x1="20" y1="220" x2="180" y2="220" stroke="#cbd5e1" stroke-width="0.5"/>
+  <text x="100" y="238" text-anchor="middle" font-family="sans-serif" font-size="6" fill="#94a3b8">20/20</text>
+</svg>

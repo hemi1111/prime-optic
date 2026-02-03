@@ -50,6 +50,19 @@ export const en: Record<string, string> = {
   "home.categories.eyeCare.description":
     "Get a comprehensive eye check-up with our certified optometrists.",
   "home.categories.eyeCare.cta": "Book an exam",
+  "home.brands.title": "Shop by brand",
+  "home.brands.description":
+    "Explore glasses and sunglasses from your favorite designers.",
+  "brand.title": "Glasses & Sunglasses by {{brand}}",
+  "brand.description":
+    "Browse our curated selection of {{brand}} frames for every style.",
+  "brand.notFound": "Brand not found",
+  "brand.notFoundDescription":
+    "The brand you're looking for doesn't exist or has been removed.",
+  "brand.noProducts": "No products for this brand yet",
+  "brand.noProductsDescription":
+    "We don't have any glasses or sunglasses from this brand in stock right now. Check back later or browse other brands.",
+  "brand.backToHome": "Back to home",
   "footer.shopName": "Prime Optic",
   "footer.tagline": "High-quality prescription glasses and sunglasses.",
   "footer.contact": "Contact: primeoptic@gmail.com",

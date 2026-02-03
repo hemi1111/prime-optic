@@ -4,6 +4,7 @@ import type { ProductType, Product } from "../types/product";
 
 import {
   fetchProductsByType,
+  fetchProductsByBrand,
   fetchProductBySlug,
 } from "../services/productService";
 
@@ -35,6 +36,45 @@ export function useProducts(type: ProductType) {
 
     loadProducts();
   }, [type]);
+
+  return { products, isLoading, error };
+}
+
+export function useProductsByBrand(brandSlug: string | undefined) {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(!!brandSlug);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!brandSlug) {
+      setProducts([]);
+      setError(null);
+      setIsLoading(false);
+      return;
+    }
+
+    const loadProducts = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const firestoreProducts = await fetchProductsByBrand(brandSlug);
+        setProducts(firestoreProducts);
+      } catch (err) {
+        console.error("Error loading products by brand:", err);
+        const errorMessage =
+          err instanceof Error
+            ? err.message
+            : "Failed to load products. Please try again later.";
+        setError(errorMessage);
+        setProducts([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, [brandSlug]);
 
   return { products, isLoading, error };
 }

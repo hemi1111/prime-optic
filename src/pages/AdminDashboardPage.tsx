@@ -266,50 +266,16 @@ const AdminDashboardPage = () => {
 
   return (
     <div className="space-y-6">
-      <header className="flex items-center justify-between">
-        <div className="space-y-2">
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-            {t("admin.title")}
-          </h1>
-          <p className="text-sm text-slate-500">{t("admin.description")}</p>
-        </div>
-        <div className="flex gap-2">
-          {user && user.role !== "admin" && (
-            <button
-              onClick={handleMakeAdmin}
-              disabled={isLoading}
-              className="rounded-lg bg-yellow-600 px-4 py-2 text-sm font-medium text-white hover:bg-yellow-700 disabled:opacity-50"
-            >
-              Make Admin
-            </button>
-          )}
-          <button
-            onClick={handlePopulateSampleProducts}
-            disabled={isLoading}
-            className="rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50"
-          >
-            Add Sample Data
-          </button>
-          <button
-            onClick={() => setShowAddForm(!showAddForm)}
-            className="rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700"
-          >
-            {showAddForm ? "Cancel" : "Add Product"}
-          </button>
-        </div>
-      </header>
+      <AdminHeader
+        onToggleAddForm={() => setShowAddForm(!showAddForm)}
+        showAddForm={showAddForm}
+        onPopulateSample={handlePopulateSampleProducts}
+        onMakeAdmin={user && user.role !== "admin" ? handleMakeAdmin : undefined}
+        isLoading={isLoading}
+        canMakeAdmin={!!user && user.role !== "admin"}
+      />
 
-      {message && (
-        <div
-          className={`rounded-lg p-4 ${
-            message.includes("Error")
-              ? "bg-red-50 text-red-800"
-              : "bg-green-50 text-green-800"
-          }`}
-        >
-          {message}
-        </div>
-      )}
+      <AdminMessage message={message} />
 
       {/* Product Form */}
       {showAddForm && (
@@ -611,110 +577,16 @@ const AdminDashboardPage = () => {
         </div>
       )}
 
-      {/* Products Management */}
-      <div className="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-slate-900">
-            Products ({filteredProducts.length})
-          </h2>
-          <div className="flex gap-4">
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
-            />
-            <select
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value as any)}
-              className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
-            >
-              <option value="all">All Types</option>
-              <option value="glasses">Glasses</option>
-              <option value="sunglasses">Sunglasses</option>
-            </select>
-          </div>
-        </div>
-
-        {isLoading ? (
-          <div className="text-center py-8">Loading products...</div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left py-3 px-2 font-medium text-slate-700">
-                    Image
-                  </th>
-                  <th className="text-left py-3 px-2 font-medium text-slate-700">
-                    Name
-                  </th>
-                  <th className="text-left py-3 px-2 font-medium text-slate-700">
-                    Brand
-                  </th>
-                  <th className="text-left py-3 px-2 font-medium text-slate-700">
-                    Type
-                  </th>
-                  <th className="text-left py-3 px-2 font-medium text-slate-700">
-                    Price
-                  </th>
-                  <th className="text-left py-3 px-2 font-medium text-slate-700">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredProducts.map((product) => (
-                  <tr key={product.id} className="border-b border-slate-100">
-                    <td className="py-3 px-2">
-                      {product.imageUrl && (
-                        <img
-                          src={product.imageUrl}
-                          alt={product.name}
-                          className="w-12 h-12 object-cover rounded-lg"
-                        />
-                      )}
-                    </td>
-                    <td className="py-3 px-2 font-medium">{product.name}</td>
-                    <td className="py-3 px-2">{product.brand}</td>
-                    <td className="py-3 px-2 capitalize">{product.type}</td>
-                    <td className="py-3 px-2">
-                      ${product.price}
-                      {product.oldPrice && (
-                        <span className="ml-2 text-slate-500 line-through">
-                          ${product.oldPrice}
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-3 px-2">
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleEdit(product)}
-                          className="rounded px-3 py-1 text-xs bg-blue-100 text-blue-700 hover:bg-blue-200"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDelete(product.id)}
-                          className="rounded px-3 py-1 text-xs bg-red-100 text-red-700 hover:bg-red-200"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {filteredProducts.length === 0 && (
-              <div className="text-center py-8 text-slate-500">
-                No products found
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+      <AdminProductTable
+        products={filteredProducts}
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        typeFilter={typeFilter}
+        onTypeFilterChange={setTypeFilter}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        isLoading={isLoading}
+      />
     </div>
   );
 };

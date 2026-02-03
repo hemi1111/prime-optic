@@ -6,6 +6,8 @@ import { type Product, type CartItem } from "../types/product";
 import { useCartStore } from "../store/useCartStore";
 import { useFavoritesStore } from "../store/useFavoritesStore";
 import { useTranslation } from "../hooks/useTranslation";
+import { Button } from "./ui/Button";
+import { Card } from "./ui/Card";
 
 type ProductCardProps = {
   product: Product;
@@ -103,7 +105,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const hasMultipleImages = product.images && product.images.length > 1;
 
   return (
-    <article className="group relative w-full md:max-w-sm mx-auto bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
+    <Card
+      as="article"
+      padding="none"
+      className="group relative w-full md:max-w-sm mx-auto shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
+    >
       <Link to={`/products/${product.slug}`}>
         <div className="relative h-64 bg-gray-50">
           {/* Badges */}
@@ -278,13 +284,16 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
         {/* Actions */}
         <div className="flex gap-2 pt-2">
-          <button
+          <Button
+            variant="icon"
+            size="icon"
             onClick={toggleWishlist}
-            className={`flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg border-2 transition-all ${
+            className={`flex-shrink-0 ${
               isWishlisted
                 ? "border-red-500 text-red-500 bg-red-50"
-                : "border-gray-300 text-gray-400 hover:border-gray-400 hover:text-gray-600"
+                : ""
             }`}
+            aria-label={isWishlisted ? "Remove from favorites" : "Add to favorites"}
           >
             <svg
               className="w-5 h-5"
@@ -299,39 +308,20 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
               />
             </svg>
-          </button>
+          </Button>
 
-          <button
+          <Button
+            variant="primary"
+            size="md"
             onClick={handleAddToCart}
             disabled={isAdding}
-            className="flex-1 bg-blue-600 text-white font-medium py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            loading={isAdding}
+            className="flex-1"
           >
-            {isAdding ? (
-              <span className="flex items-center justify-center gap-2">
-                <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24">
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    fill="none"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
-                Adding...
-              </span>
-            ) : showBlueLightOption ? (
-              t("common.confirmSelection")
-            ) : (
-              "Add to Cart"
-            )}
-          </button>
+            {showBlueLightOption
+              ? t("common.confirmSelection")
+              : "Add to Cart"}
+          </Button>
         </div>
 
         {/* Blue Light Filter Option */}
@@ -357,7 +347,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </div>
         )}
       </div>
-    </article>
+    </Card>
   );
 };
 

@@ -51,6 +51,19 @@ export const it: Record<string, string> = {
   "home.categories.eyeCare.description":
     "Ottieni un controllo completo degli occhi con i nostri optometristi certificati.",
   "home.categories.eyeCare.cta": "Prenota un esame",
+  "home.brands.title": "Acquista per marca",
+  "home.brands.description":
+    "Esplora occhiali e occhiali da sole dei tuoi marchi preferiti.",
+  "brand.title": "Occhiali e occhiali da sole {{brand}}",
+  "brand.description":
+    "Sfoglia la nostra selezione di montature {{brand}} per ogni stile.",
+  "brand.notFound": "Marca non trovata",
+  "brand.notFoundDescription":
+    "La marca che stai cercando non esiste o è stata rimossa.",
+  "brand.noProducts": "Nessun prodotto per questa marca",
+  "brand.noProductsDescription":
+    "Non abbiamo occhiali o occhiali da sole di questa marca in stock. Riprova più tardi o sfoglia altre marche.",
+  "brand.backToHome": "Torna alla home",
   "footer.shopName": "Prime Optic",
   "footer.tagline": "Occhiali da vista e da sole di alta qualità.",
   "footer.contact": "Contatto: primeoptic@gmail.com",

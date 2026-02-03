@@ -4,6 +4,7 @@ import RootLayout from "./layouts/RootLayout";
 
 import HomePage from "./pages/HomePage";
 import CatalogPage from "./pages/CatalogPage";
+import BrandCatalogPage from "./pages/BrandCatalogPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
@@ -23,6 +24,7 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/glasses" element={<CatalogPage type="glasses" />} />
         <Route path="/sunglasses" element={<CatalogPage type="sunglasses" />} />
+        <Route path="/brand/:brandSlug" element={<BrandCatalogPage />} />
         <Route path="/products/:slug" element={<ProductDetailPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/favorites" element={<FavoritesPage />} />

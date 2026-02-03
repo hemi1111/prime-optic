@@ -50,6 +50,19 @@ export const sq: Record<string, string> = {
   "home.categories.eyeCare.description":
     "Merrni një kontroll të plotë të syrit me optometristët tanë të certifikuar.",
   "home.categories.eyeCare.cta": "Rezervo një kontroll",
+  "home.brands.title": "Bli sipas markës",
+  "home.brands.description":
+    "Eksploroni syze dhe syze dielli nga dizajnerët tuaj të preferuar.",
+  "brand.title": "Syze dhe syze dielli nga {{brand}}",
+  "brand.description":
+    "Shfletoni përzgjedhjen tonë të kornizave {{brand}} për çdo stil.",
+  "brand.notFound": "Marka nuk u gjet",
+  "brand.notFoundDescription":
+    "Marka që po kërkoni nuk ekziston ose është hequr.",
+  "brand.noProducts": "Ende nuk ka produkte për këtë markë",
+  "brand.noProductsDescription":
+    "Nuk kemi syze ose syze dielli nga kjo markë në stok. Kontrolloni më vonë ose shfletoni marka të tjera.",
+  "brand.backToHome": "Kthehu në faqen kryesore",
   "footer.shopName": "Prime Optic",
   "footer.tagline": "Syze me recetë dhe syze dielli me cilësi të lartë.",
   "footer.contact": "Kontakt: primeoptic@gmail.com",
