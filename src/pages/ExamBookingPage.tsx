@@ -1,9 +1,12 @@
 import { useState } from "react";
+
 import { bookAppointment } from "../services/appointmentService";
 import { useTranslation } from "../hooks/useTranslation";
+import { useAuthStore } from "../store/useAuthStore";
 
 const ExamBookingPage = () => {
   const { t } = useTranslation();
+  const user = useAuthStore((state) => state.user);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -22,17 +25,20 @@ const ExamBookingPage = () => {
     setIsSubmitting(true);
 
     try {
-      await bookAppointment({
-        fullName,
-        email,
-        phone,
-        preferredStore,
-        preferredDate,
-        preferredTimeSlot,
-        notes,
-      });
+      await bookAppointment(
+        {
+          fullName,
+          email,
+          phone,
+          preferredStore,
+          preferredDate,
+          preferredTimeSlot,
+          notes,
+        },
+        user?.id,
+      );
       setSuccessMessage(
-        "Your eye exam request has been sent. We will contact you shortly to confirm the exact time."
+        "Your eye exam request has been sent. We will contact you shortly to confirm the exact time.",
       );
       setFullName("");
       setEmail("");
@@ -46,7 +52,7 @@ const ExamBookingPage = () => {
       setErrorMessage(
         error instanceof Error
           ? error.message
-          : "We could not submit your request right now. Please try again later."
+          : "We could not submit your request right now. Please try again later.",
       );
     } finally {
       setIsSubmitting(false);
@@ -54,20 +60,22 @@ const ExamBookingPage = () => {
   };
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <header className="space-y-2">
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+    <div className="mx-auto max-w-2xl space-y-8">
+      <header className="space-y-4 text-center">
+        <div className="inline-block rounded-full bg-gradient-to-r from-primary-500 to-primary-600 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-sm">
+          {t("common.eyeExamination")}
+        </div>
+        <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-slate-800 to-slate-900 bg-clip-text text-transparent">
           {t("exam.title")}
         </h1>
-        <p className="text-sm text-slate-500">
-          Choose your preferred date, time and store. Our team will confirm the
-          appointment by email or phone.
+        <p className="text-lg text-slate-600 leading-relaxed max-w-xl mx-auto">
+          {t("common.chooseDateTimeStore")}
         </p>
       </header>
 
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100"
+        className="space-y-6 rounded-3xl bg-white p-8 shadow-xl ring-1 ring-slate-200/50"
       >
         <div className="grid gap-4 md:grid-cols-2">
           <Field
@@ -153,16 +161,6 @@ const ExamBookingPage = () => {
           />
         </div>
 
-        <div className="flex items-start gap-2 text-xs text-slate-500">
-          <input
-            id="consent"
-            type="checkbox"
-            required
-            className="mt-0.5 h-3 w-3 rounded border-slate-300 text-primary-500"
-          />
-          <label htmlFor="consent">{t("exam.form.consent")}</label>
-        </div>
-
         {successMessage && (
           <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
             {t("exam.success")}
@@ -177,9 +175,64 @@ const ExamBookingPage = () => {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="inline-flex items-center justify-center rounded-full bg-primary-500 px-6 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-primary-600 disabled:opacity-60"
+          className="group relative inline-flex w-full items-center justify-center gap-3 overflow-hidden rounded-full bg-gradient-to-r from-primary-500 via-primary-600 to-primary-500 bg-size-200 bg-pos-0 px-8 py-4 text-base font-bold text-white shadow-xl transition-all duration-500 hover:scale-105 hover:bg-pos-100 hover:shadow-2xl hover:shadow-primary-500/30 active:scale-95 disabled:opacity-60 disabled:hover:scale-100 disabled:cursor-not-allowed"
+          style={{
+            backgroundSize: "200% 100%",
+            backgroundPosition: "0% 0%",
+          }}
+          onMouseEnter={(e) => {
+            if (!isSubmitting) {
+              e.currentTarget.style.backgroundPosition = "100% 0%";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isSubmitting) {
+              e.currentTarget.style.backgroundPosition = "0% 0%";
+            }
+          }}
         >
-          {isSubmitting ? "Sending request..." : t("exam.form.submit")}
+          {isSubmitting ? (
+            <>
+              <svg
+                className="w-5 h-5 animate-spin"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+              </svg>
+              {t("common.sendingRequest")}
+            </>
+          ) : (
+            <>
+              <svg
+                className="w-5 h-5 transition-transform duration-300 group-hover:scale-110"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              {t("exam.form.submit")}
+            </>
+          )}
         </button>
       </form>
     </div>
@@ -196,7 +249,7 @@ type FieldProps = {
   required?: boolean;
 };
 
-function Field({
+const Field = ({
   id,
   label,
   type = "text",
@@ -204,7 +257,7 @@ function Field({
   value,
   onChange,
   required,
-}: FieldProps) {
+}: FieldProps) => {
   return (
     <div className="space-y-1 text-sm">
       <label htmlFor={id} className="block text-xs font-medium text-slate-700">
@@ -221,6 +274,6 @@ function Field({
       />
     </div>
   );
-}
+};
 
 export default ExamBookingPage;

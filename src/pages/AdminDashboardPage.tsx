@@ -1,49 +1,719 @@
+import { useState, useEffect } from "react";
+import { useTranslation } from "../hooks/useTranslation";
+import {
+  fetchAllProducts,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} from "../services/productService";
+import { populateSampleProducts } from "../utils/populateProducts";
+import { makeUserAdmin } from "../utils/userUtils";
+import { useAuthStore } from "../store/useAuthStore";
+import type { Product, ProductType } from "../types/product";
+
+interface ProductFormData {
+  name: string;
+  brand: string;
+  type: ProductType;
+  price: string;
+  oldPrice: string;
+  gender: "men" | "women" | "unisex" | "kids";
+  imageUrl: string;
+  description: string;
+  slug: string;
+  frameMaterial: string;
+  frameColor: string;
+  frameShape: string;
+  lensColor: string;
+  isNew: boolean;
+  isBestSeller: boolean;
+  blueLightFilter: boolean;
+}
+
 const AdminDashboardPage = () => {
+  const { t } = useTranslation();
+  const { user } = useAuthStore();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [typeFilter, setTypeFilter] = useState<ProductType | "all">("all");
+
+  const [formData, setFormData] = useState<ProductFormData>({
+    name: "",
+    brand: "",
+    type: "glasses",
+    price: "",
+    oldPrice: "",
+    gender: "unisex",
+    imageUrl: "",
+    description: "",
+    slug: "",
+    frameMaterial: "",
+    frameColor: "",
+    frameShape: "",
+    lensColor: "",
+    isNew: false,
+    isBestSeller: false,
+    blueLightFilter: false,
+  });
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  const loadProducts = async () => {
+    setIsLoading(true);
+    try {
+      const allProducts = await fetchAllProducts();
+      setProducts(allProducts);
+      setMessage(`Loaded ${allProducts.length} products`);
+    } catch (error) {
+      setMessage(`Error loading products: ${error}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const validFrameMaterials = [
+        "metal",
+        "plastic",
+        "acetate",
+        "titanium",
+        "mixed",
+        "nylon",
+        "carbon fiber",
+        "TR90",
+        "recycled acetate",
+        "acetate/metal",
+      ];
+
+      const validFrameShapes = [
+        "round",
+        "square",
+        "cat-eye",
+        "oval",
+        "aviator",
+        "rectangular",
+        "oversized",
+        "pilot",
+        "rounded square",
+        "wrapped",
+        "sport",
+        "browline",
+      ];
+
+      const productData = {
+        ...formData,
+        price: parseFloat(formData.price),
+        oldPrice: formData.oldPrice ? parseFloat(formData.oldPrice) : undefined,
+        rating: 0,
+        reviewCount: 0,
+        frameMaterial:
+          formData.frameMaterial &&
+          validFrameMaterials.includes(formData.frameMaterial)
+            ? (formData.frameMaterial as any)
+            : undefined,
+        frameShape:
+          formData.frameShape && validFrameShapes.includes(formData.frameShape)
+            ? (formData.frameShape as any)
+            : undefined,
+      };
+
+      if (editingProduct) {
+        await updateProduct(editingProduct.id, productData);
+        setMessage("Product updated successfully");
+        setEditingProduct(null);
+      } else {
+        await createProduct(productData);
+        setMessage("Product created successfully");
+        setShowAddForm(false);
+      }
+
+      resetForm();
+      loadProducts();
+    } catch (error) {
+      setMessage(`Error: ${error}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleEdit = (product: Product) => {
+    setEditingProduct(product);
+    setFormData({
+      name: product.name,
+      brand: product.brand,
+      type: product.type,
+      price: product.price.toString(),
+      oldPrice: product.oldPrice?.toString() || "",
+      gender: product.gender || "unisex",
+      imageUrl: product.imageUrl || "",
+      description: product.description || "",
+      slug: product.slug,
+      frameMaterial: product.frameMaterial || "",
+      frameColor: product.frameColor || "",
+      frameShape: product.frameShape || "",
+      lensColor: product.lensColor || "",
+      isNew: product.isNew || false,
+      isBestSeller: product.isBestSeller || false,
+      blueLightFilter: product.blueLightFilter || false,
+    });
+    setShowAddForm(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this product?"))
+      return;
+
+    setIsLoading(true);
+    try {
+      await deleteProduct(id);
+      setMessage("Product deleted successfully");
+      loadProducts();
+    } catch (error) {
+      setMessage(`Error deleting product: ${error}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePopulateSampleProducts = async () => {
+    if (
+      !window.confirm(
+        "This will add 10 sample products from mockProducts.ts. Continue?"
+      )
+    )
+      return;
+
+    setIsLoading(true);
+    try {
+      await populateSampleProducts(10);
+      setMessage("Successfully populated 10 sample products");
+      loadProducts();
+    } catch (error) {
+      setMessage(`Error populating products: ${error}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleMakeAdmin = async () => {
+    if (!user) {
+      setMessage("No user logged in");
+      return;
+    }
+
+    if (
+      !window.confirm(
+        `Make user ${user.email} an admin? This is a one-time setup action.`
+      )
+    )
+      return;
+
+    setIsLoading(true);
+    try {
+      await makeUserAdmin(user.id);
+      setMessage("User promoted to admin! Please refresh the page.");
+    } catch (error) {
+      setMessage(`Error making user admin: ${error}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      brand: "",
+      type: "glasses",
+      price: "",
+      oldPrice: "",
+      gender: "unisex",
+      imageUrl: "",
+      description: "",
+      slug: "",
+      frameMaterial: "",
+      frameColor: "",
+      frameShape: "",
+      lensColor: "",
+      isNew: false,
+      isBestSeller: false,
+      blueLightFilter: false,
+    });
+  };
+
+  const handleCancel = () => {
+    setShowAddForm(false);
+    setEditingProduct(null);
+    resetForm();
+  };
+
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.brand.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = typeFilter === "all" || product.type === typeFilter;
+    return matchesSearch && matchesType;
+  });
+
   return (
     <div className="space-y-6">
-      <header className="space-y-2">
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-          Admin dashboard
-        </h1>
-        <p className="text-sm text-slate-500">
-          This interface will be connected to Firebase Auth roles and Firestore
-          collections (`products`, `orders`, `pages`) for real management
-          capabilities.
-        </p>
+      <header className="flex items-center justify-between">
+        <div className="space-y-2">
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+            {t("admin.title")}
+          </h1>
+          <p className="text-sm text-slate-500">{t("admin.description")}</p>
+        </div>
+        <div className="flex gap-2">
+          {user && user.role !== "admin" && (
+            <button
+              onClick={handleMakeAdmin}
+              disabled={isLoading}
+              className="rounded-lg bg-yellow-600 px-4 py-2 text-sm font-medium text-white hover:bg-yellow-700 disabled:opacity-50"
+            >
+              Make Admin
+            </button>
+          )}
+          <button
+            onClick={handlePopulateSampleProducts}
+            disabled={isLoading}
+            className="rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50"
+          >
+            Add Sample Data
+          </button>
+          <button
+            onClick={() => setShowAddForm(!showAddForm)}
+            className="rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700"
+          >
+            {showAddForm ? "Cancel" : "Add Product"}
+          </button>
+        </div>
       </header>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <section className="space-y-2 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-slate-100">
-          <h2 className="text-sm font-semibold text-slate-900">Products</h2>
-          <p className="text-xs text-slate-500">
-            Add and edit glasses and sunglasses, manage stock and pricing.
-          </p>
-          <div className="mt-2 rounded-xl border border-dashed border-slate-200 bg-slate-50 p-4 text-xs text-slate-500">
-            No products to manage yet. Once connected to Firestore, products
-            will appear here in a table with filters.
-          </div>
-        </section>
+      {message && (
+        <div
+          className={`rounded-lg p-4 ${
+            message.includes("Error")
+              ? "bg-red-50 text-red-800"
+              : "bg-green-50 text-green-800"
+          }`}
+        >
+          {message}
+        </div>
+      )}
 
-        <section className="space-y-2 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-slate-100">
-          <h2 className="text-sm font-semibold text-slate-900">Orders</h2>
-          <p className="text-xs text-slate-500">
-            Track customer orders, update statuses and view order details.
-          </p>
-          <div className="mt-2 rounded-xl border border-dashed border-slate-200 bg-slate-50 p-4 text-xs text-slate-500">
-            No orders yet. When checkout is wired to Firestore, new orders will
-            be listed here.
-          </div>
-        </section>
+      {/* Product Form */}
+      {showAddForm && (
+        <div className="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
+          <h2 className="mb-4 text-lg font-semibold text-slate-900">
+            {editingProduct ? "Edit Product" : "Add New Product"}
+          </h2>
+          <form onSubmit={handleSubmit} className="grid gap-4 md:grid-cols-2">
+            {/* Basic Information */}
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
+                Name *
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                required
+              />
+            </div>
 
-        <section className="space-y-2 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-slate-100">
-          <h2 className="text-sm font-semibold text-slate-900">Content</h2>
-          <p className="text-xs text-slate-500">
-            Manage home page banners, services pages and blog articles.
-          </p>
-          <div className="mt-2 rounded-xl border border-dashed border-slate-200 bg-slate-50 p-4 text-xs text-slate-500">
-            CMS pages and blog posts will be editable here through Firestore.
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
+                Brand *
+              </label>
+              <input
+                type="text"
+                value={formData.brand}
+                onChange={(e) =>
+                  setFormData({ ...formData, brand: e.target.value })
+                }
+                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                required
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
+                Type *
+              </label>
+              <select
+                value={formData.type}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    type: e.target.value as ProductType,
+                  })
+                }
+                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+              >
+                <option value="glasses">Glasses</option>
+                <option value="sunglasses">Sunglasses</option>
+              </select>
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
+                Gender
+              </label>
+              <select
+                value={formData.gender}
+                onChange={(e) =>
+                  setFormData({ ...formData, gender: e.target.value as any })
+                }
+                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+              >
+                <option value="men">Men</option>
+                <option value="women">Women</option>
+                <option value="unisex">Unisex</option>
+                <option value="kids">Kids</option>
+              </select>
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
+                Price * ($)
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                value={formData.price}
+                onChange={(e) =>
+                  setFormData({ ...formData, price: e.target.value })
+                }
+                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                required
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
+                Old Price ($)
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                value={formData.oldPrice}
+                onChange={(e) =>
+                  setFormData({ ...formData, oldPrice: e.target.value })
+                }
+                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
+                Slug *
+              </label>
+              <input
+                type="text"
+                value={formData.slug}
+                onChange={(e) =>
+                  setFormData({ ...formData, slug: e.target.value })
+                }
+                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                required
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
+                Image URL
+              </label>
+              <input
+                type="url"
+                value={formData.imageUrl}
+                onChange={(e) =>
+                  setFormData({ ...formData, imageUrl: e.target.value })
+                }
+                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+              />
+            </div>
+
+            {/* Specifications */}
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
+                Frame Material
+              </label>
+              <select
+                value={formData.frameMaterial}
+                onChange={(e) =>
+                  setFormData({ ...formData, frameMaterial: e.target.value })
+                }
+                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+              >
+                <option value="">Select material</option>
+                <option value="metal">Metal</option>
+                <option value="plastic">Plastic</option>
+                <option value="acetate">Acetate</option>
+                <option value="titanium">Titanium</option>
+                <option value="mixed">Mixed</option>
+                <option value="nylon">Nylon</option>
+                <option value="carbon fiber">Carbon Fiber</option>
+                <option value="TR90">TR90</option>
+                <option value="recycled acetate">Recycled Acetate</option>
+                <option value="acetate/metal">Acetate/Metal</option>
+              </select>
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
+                Frame Color
+              </label>
+              <input
+                type="text"
+                value={formData.frameColor}
+                onChange={(e) =>
+                  setFormData({ ...formData, frameColor: e.target.value })
+                }
+                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
+                Frame Shape
+              </label>
+              <select
+                value={formData.frameShape}
+                onChange={(e) =>
+                  setFormData({ ...formData, frameShape: e.target.value })
+                }
+                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+              >
+                <option value="">Select shape</option>
+                <option value="round">Round</option>
+                <option value="square">Square</option>
+                <option value="cat-eye">Cat-eye</option>
+                <option value="oval">Oval</option>
+                <option value="aviator">Aviator</option>
+                <option value="rectangular">Rectangular</option>
+                <option value="oversized">Oversized</option>
+                <option value="pilot">Pilot</option>
+                <option value="rounded square">Rounded Square</option>
+                <option value="wrapped">Wrapped</option>
+                <option value="sport">Sport</option>
+                <option value="browline">Browline</option>
+              </select>
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
+                Lens Color
+              </label>
+              <input
+                type="text"
+                value={formData.lensColor}
+                onChange={(e) =>
+                  setFormData({ ...formData, lensColor: e.target.value })
+                }
+                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+              />
+            </div>
+
+            {/* Description - Full Width */}
+            <div className="md:col-span-2 space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
+                Description
+              </label>
+              <textarea
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
+                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                rows={3}
+              />
+            </div>
+
+            {/* Checkboxes */}
+            <div className="md:col-span-2 flex gap-4">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={formData.isNew}
+                  onChange={(e) =>
+                    setFormData({ ...formData, isNew: e.target.checked })
+                  }
+                  className="rounded border-slate-300"
+                />
+                <span className="text-sm text-slate-700">New Product</span>
+              </label>
+
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={formData.isBestSeller}
+                  onChange={(e) =>
+                    setFormData({ ...formData, isBestSeller: e.target.checked })
+                  }
+                  className="rounded border-slate-300"
+                />
+                <span className="text-sm text-slate-700">Best Seller</span>
+              </label>
+
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={formData.blueLightFilter}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      blueLightFilter: e.target.checked,
+                    })
+                  }
+                  className="rounded border-slate-300"
+                />
+                <span className="text-sm text-slate-700">
+                  Blue Light Filter
+                </span>
+              </label>
+            </div>
+
+            {/* Form Actions */}
+            <div className="md:col-span-2 flex gap-2">
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700 disabled:opacity-50"
+              >
+                {isLoading
+                  ? "Saving..."
+                  : editingProduct
+                  ? "Update Product"
+                  : "Add Product"}
+              </button>
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Products Management */}
+      <div className="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-slate-900">
+            Products ({filteredProducts.length})
+          </h2>
+          <div className="flex gap-4">
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
+            />
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value as any)}
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
+            >
+              <option value="all">All Types</option>
+              <option value="glasses">Glasses</option>
+              <option value="sunglasses">Sunglasses</option>
+            </select>
           </div>
-        </section>
+        </div>
+
+        {isLoading ? (
+          <div className="text-center py-8">Loading products...</div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-slate-200">
+                  <th className="text-left py-3 px-2 font-medium text-slate-700">
+                    Image
+                  </th>
+                  <th className="text-left py-3 px-2 font-medium text-slate-700">
+                    Name
+                  </th>
+                  <th className="text-left py-3 px-2 font-medium text-slate-700">
+                    Brand
+                  </th>
+                  <th className="text-left py-3 px-2 font-medium text-slate-700">
+                    Type
+                  </th>
+                  <th className="text-left py-3 px-2 font-medium text-slate-700">
+                    Price
+                  </th>
+                  <th className="text-left py-3 px-2 font-medium text-slate-700">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredProducts.map((product) => (
+                  <tr key={product.id} className="border-b border-slate-100">
+                    <td className="py-3 px-2">
+                      {product.imageUrl && (
+                        <img
+                          src={product.imageUrl}
+                          alt={product.name}
+                          className="w-12 h-12 object-cover rounded-lg"
+                        />
+                      )}
+                    </td>
+                    <td className="py-3 px-2 font-medium">{product.name}</td>
+                    <td className="py-3 px-2">{product.brand}</td>
+                    <td className="py-3 px-2 capitalize">{product.type}</td>
+                    <td className="py-3 px-2">
+                      ${product.price}
+                      {product.oldPrice && (
+                        <span className="ml-2 text-slate-500 line-through">
+                          ${product.oldPrice}
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-3 px-2">
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleEdit(product)}
+                          className="rounded px-3 py-1 text-xs bg-blue-100 text-blue-700 hover:bg-blue-200"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(product.id)}
+                          className="rounded px-3 py-1 text-xs bg-red-100 text-red-700 hover:bg-red-200"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {filteredProducts.length === 0 && (
+              <div className="text-center py-8 text-slate-500">
+                No products found
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

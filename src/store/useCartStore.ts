@@ -1,51 +1,65 @@
-import { create } from 'zustand'
-
-export type CartItem = {
-  id: string
-  name: string
-  price: number
-  imageUrl?: string
-  quantity: number
-  variant?: string
-}
+import { create } from "zustand";
+import { type CartItem } from "../types/product";
 
 type CartState = {
-  items: CartItem[]
-  addItem: (item: Omit<CartItem, 'quantity'>, quantity?: number) => void
-  removeItem: (id: string) => void
-  updateQuantity: (id: string, quantity: number) => void
-  clear: () => void
-}
+  items: CartItem[];
+  addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
+  removeItem: (id: string, filterVariant?: boolean) => void;
+  updateQuantity: (
+    id: string,
+    quantity: number,
+    filterVariant?: boolean
+  ) => void;
+  clear: () => void;
+};
 
 export const useCartStore = create<CartState>((set) => ({
   items: [],
   addItem: (item, quantity = 1) =>
     set((state) => {
-      const existing = state.items.find((i) => i.id === item.id)
+      const itemKey = item.addBlueLightFilter
+        ? `${item.id}-bluefilter`
+        : item.id;
+      const existing = state.items.find((i) => {
+        const existingKey = i.addBlueLightFilter ? `${i.id}-bluefilter` : i.id;
+        return existingKey === itemKey;
+      });
+
       if (existing) {
         return {
-          items: state.items.map((i) =>
-            i.id === item.id
+          items: state.items.map((i) => {
+            const existingKey = i.addBlueLightFilter
+              ? `${i.id}-bluefilter`
+              : i.id;
+            return existingKey === itemKey
               ? { ...i, quantity: i.quantity + quantity }
-              : i,
-          ),
-        }
+              : i;
+          }),
+        };
       }
       return {
         items: [...state.items, { ...item, quantity }],
-      }
+      };
     }),
-  removeItem: (id) =>
+  removeItem: (id, filterVariant = false) =>
     set((state) => ({
-      items: state.items.filter((item) => item.id !== id),
+      items: state.items.filter((item) => {
+        const itemKey = item.addBlueLightFilter
+          ? `${item.id}-bluefilter`
+          : item.id;
+        const targetKey = filterVariant ? `${id}-bluefilter` : id;
+        return itemKey !== targetKey;
+      }),
     })),
-  updateQuantity: (id, quantity) =>
+  updateQuantity: (id, quantity, filterVariant = false) =>
     set((state) => ({
-      items: state.items.map((item) =>
-        item.id === id ? { ...item, quantity } : item,
-      ),
+      items: state.items.map((item) => {
+        const itemKey = item.addBlueLightFilter
+          ? `${item.id}-bluefilter`
+          : item.id;
+        const targetKey = filterVariant ? `${id}-bluefilter` : id;
+        return itemKey === targetKey ? { ...item, quantity } : item;
+      }),
     })),
   clear: () => set({ items: [] }),
-}))
-
-
+}));

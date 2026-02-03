@@ -12,7 +12,7 @@ const CartPage = () => {
 
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
-    0
+    0,
   );
 
   const handleCheckout = () => {
@@ -53,8 +53,8 @@ const CartPage = () => {
           {items.length === 1 ? "item" : "items"})
         </h1>
         <ul className="divide-y divide-slate-100 text-sm">
-          {items.map((item) => (
-            <li key={item.id} className="flex gap-4 py-4">
+          {items.map((item, index) => (
+            <li key={`${item.id}-${index}`} className="flex gap-4 py-4">
               <div className="flex h-20 w-20 items-center justify-center rounded-xl bg-slate-100 text-[10px] text-slate-400">
                 {item.imageUrl ? (
                   <img
@@ -72,6 +72,19 @@ const CartPage = () => {
                     <div className="text-sm font-medium text-slate-900">
                       {item.name}
                     </div>
+                    {item.addBlueLightFilter && (
+                      <div className="flex items-center gap-1 text-xs text-blue-600 font-medium">
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z" />
+                        </svg>
+                        + Blue-light filter
+                      </div>
+                    )}
                     {item.variant ? (
                       <div className="text-xs text-slate-500">
                         {item.variant}
@@ -80,7 +93,7 @@ const CartPage = () => {
                   </div>
                   <button
                     type="button"
-                    onClick={() => removeItem(item.id)}
+                    onClick={() => removeItem(item.id, item.addBlueLightFilter)}
                     className="text-xs text-slate-400 hover:text-red-500"
                   >
                     {t("cart.remove")}
@@ -91,7 +104,11 @@ const CartPage = () => {
                     <button
                       type="button"
                       onClick={() =>
-                        updateQuantity(item.id, Math.max(1, item.quantity - 1))
+                        updateQuantity(
+                          item.id,
+                          Math.max(1, item.quantity - 1),
+                          item.addBlueLightFilter,
+                        )
                       }
                       className="px-1 text-slate-500 hover:text-slate-800"
                     >
@@ -102,7 +119,13 @@ const CartPage = () => {
                     </span>
                     <button
                       type="button"
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      onClick={() =>
+                        updateQuantity(
+                          item.id,
+                          item.quantity + 1,
+                          item.addBlueLightFilter,
+                        )
+                      }
                       className="px-1 text-slate-500 hover:text-slate-800"
                     >
                       +

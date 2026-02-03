@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { getCurrentUser } from "../services/authService";
+import { queryOrdersByUser } from "../services/orderService";
 import { useAuthStore } from "../store/useAuthStore";
+import { useTranslation } from "../hooks/useTranslation";
+
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../config/firebase";
+
 import type { Appointment } from "../types/appointment";
+import type { Order } from "../types/product";
 
 const ProfilePage = () => {
+  const { t } = useTranslation();
   interface User {
     uid: string;
     displayName?: string;
@@ -15,6 +22,7 @@ const ProfilePage = () => {
 
   const [user, setUser] = useState<User | null>(null);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const signOut = useAuthStore((state) => state.signOut);
@@ -28,16 +36,19 @@ const ProfilePage = () => {
 
         if (currentUser && db) {
           const appointmentsRef = collection(db, "appointments");
-          const q = query(
+          const appointmentsQuery = query(
             appointmentsRef,
             where("userId", "==", (currentUser as User).uid)
           );
-          const snapshot = await getDocs(q);
-          const appointmentsData = snapshot.docs.map((doc) => ({
+          const appointmentsSnapshot = await getDocs(appointmentsQuery);
+          const appointmentsData = appointmentsSnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
           }));
           setAppointments(appointmentsData as Appointment[]);
+
+          const ordersData = await queryOrdersByUser((currentUser as User).uid);
+          setOrders(ordersData);
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -77,7 +88,7 @@ const ProfilePage = () => {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
           <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-primary-500 mb-4"></div>
-          <p className="text-slate-600">Loading your profile...</p>
+          <p className="text-slate-600">{t("profile.loading")}</p>
         </div>
       </div>
     );
@@ -88,13 +99,13 @@ const ProfilePage = () => {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
           <p className="text-lg font-semibold text-slate-900 mb-4">
-            Please log in to view your profile.
+            {t("profile.loginRequired")}
           </p>
           <a
             href="/auth"
             className="inline-flex rounded-lg bg-primary-500 px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary-600 transition-colors"
           >
-            Go to Login
+            {t("profile.goToLogin")}
           </a>
         </div>
       </div>
@@ -114,10 +125,9 @@ const ProfilePage = () => {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-slate-900">
-                {user.displayName || "Welcome"}
+                {user.displayName || t("profile.welcome")}
               </h1>
               <p className="text-slate-600 mt-1">{user.email}</p>
-              <p className="text-xs text-slate-500 mt-2">User ID: {user.uid}</p>
             </div>
           </div>
           <button
@@ -128,7 +138,7 @@ const ProfilePage = () => {
             {isSigningOut && (
               <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-red-600 border-t-transparent"></span>
             )}
-            {isSigningOut ? "Signing out..." : "Sign Out"}
+            {isSigningOut ? t("profile.signingOut") : t("profile.signOut")}
           </button>
         </div>
       </div>
@@ -137,10 +147,10 @@ const ProfilePage = () => {
       <div className="rounded-2xl bg-white p-8 shadow-soft ring-1 ring-slate-200">
         <div className="space-y-4">
           <h2 className="text-2xl font-bold text-slate-900">
-            Your Appointments
+            {t("profile.appointments.title")}
           </h2>
           <p className="text-slate-600">
-            Manage and track all your eye exam bookings here.
+            {t("profile.appointments.description")}
           </p>
         </div>
 
@@ -174,10 +184,11 @@ const ProfilePage = () => {
                         : "bg-red-100 text-red-700"
                     }`}
                   >
-                    {appointment.status
-                      ? appointment.status.charAt(0).toUpperCase() +
-                        appointment.status.slice(1)
-                      : "Unknown"}
+                    {appointment.status === "confirmed"
+                      ? t("profile.appointments.confirmed")
+                      : appointment.status === "pending"
+                      ? t("profile.appointments.pending")
+                      : t("profile.appointments.cancelled")}
                   </span>
                 </div>
               </div>
@@ -185,16 +196,128 @@ const ProfilePage = () => {
           </div>
         ) : (
           <div className="mt-6 rounded-lg border-2 border-dashed border-slate-200 bg-slate-50 p-8 text-center">
-            <p className="text-lg text-slate-600 mb-4">No appointments yet</p>
+            <p className="text-lg text-slate-600 mb-4">
+              {t("profile.appointments.none")}
+            </p>
             <p className="text-sm text-slate-500 mb-4">
-              Book an eye exam to get started
+              {t("profile.appointments.noneDescription")}
             </p>
             <a
               href="/exam"
               className="inline-flex rounded-lg bg-primary-500 px-6 py-2 text-sm font-semibold text-white hover:bg-primary-600 transition-colors"
             >
-              Book an Appointment
+              {t("profile.appointments.bookAppointment")}
             </a>
+          </div>
+        )}
+      </div>
+
+      {/* Orders Section */}
+      <div className="rounded-2xl bg-white p-8 shadow-soft ring-1 ring-slate-200">
+        <div className="space-y-4">
+          <h2 className="text-2xl font-bold text-slate-900">
+            {t("profile.orders.title")}
+          </h2>
+          <p className="text-slate-600">{t("profile.orders.description")}</p>
+        </div>
+
+        {orders.length > 0 ? (
+          <div className="mt-6 space-y-4">
+            {orders.map((order) => (
+              <div
+                key={order.id}
+                className="rounded-lg border border-slate-200 bg-slate-50 p-6 hover:bg-slate-100 transition-colors"
+              >
+                <div className="flex items-start justify-between gap-4 mb-4">
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-900">
+                      {t("profile.orders.order")} #
+                      {order.id?.slice(-8).toUpperCase()}
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-1">
+                      {order.createdAt?.toDate?.()?.toLocaleDateString() ||
+                        "Recently placed"}
+                    </p>
+                  </div>
+                  <span
+                    className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
+                      order.status === "delivered"
+                        ? "bg-green-100 text-green-700"
+                        : order.status === "shipped"
+                        ? "bg-blue-100 text-blue-700"
+                        : order.status === "confirmed"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-slate-100 text-slate-700"
+                    }`}
+                  >
+                    {order.status === "delivered"
+                      ? t("profile.orders.status.delivered")
+                      : order.status === "shipped"
+                      ? t("profile.orders.status.shipped")
+                      : order.status === "confirmed"
+                      ? t("profile.orders.status.confirmed")
+                      : t("profile.orders.status.pending")}
+                  </span>
+                </div>
+
+                <div className="space-y-2 text-sm text-slate-600">
+                  <div>
+                    <strong>{t("profile.orders.items")}:</strong>{" "}
+                    {order.items?.length || 0} item(s)
+                  </div>
+                  <div className="flex gap-4 text-xs">
+                    <span>
+                      <strong>{t("profile.orders.delivery")}:</strong>{" "}
+                      {order.deliveryInfo?.option?.name}
+                    </span>
+                    <span>
+                      <strong>{t("profile.orders.total")}:</strong> €
+                      {order.total?.toFixed(2)}
+                    </span>
+                  </div>
+                  {order.deliveryInfo?.option?.id === "home_delivery" &&
+                    order.deliveryInfo?.address && (
+                      <div className="text-xs text-slate-500">
+                        <strong>{t("profile.orders.address")}:</strong>{" "}
+                        {order.deliveryInfo.address.street},{" "}
+                        {order.deliveryInfo.address.city}
+                      </div>
+                    )}
+                </div>
+
+                <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-md">
+                  <div className="flex items-center gap-2 text-amber-800">
+                    <span>💰</span>
+                    <span className="text-xs font-medium">
+                      {t("profile.orders.payment")}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-6 rounded-lg border-2 border-dashed border-slate-200 bg-slate-50 p-8 text-center">
+            <p className="text-lg text-slate-600 mb-4">
+              {t("profile.orders.none")}
+            </p>
+            <p className="text-sm text-slate-500 mb-4">
+              {t("profile.orders.noneDescription")}
+            </p>
+            <div className="flex justify-center gap-3">
+              <a
+                href="/glasses"
+                className="inline-flex rounded-lg bg-primary-500 px-6 py-2 text-sm font-semibold text-white hover:bg-primary-600 transition-colors"
+              >
+                {t("cart.browseGlasses")}
+              </a>
+              <a
+                href="/sunglasses"
+                className="inline-flex rounded-lg border border-slate-200 px-6 py-2 text-sm font-semibold text-slate-700 hover:border-primary-500 hover:text-primary-600 transition-colors"
+              >
+                {t("cart.browseSunglasses")}
+              </a>
+            </div>
           </div>
         )}
       </div>

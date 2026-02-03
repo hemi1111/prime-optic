@@ -1,79 +1,85 @@
-import { useEffect, useState } from 'react'
-import type { ProductType, Product } from '../types/product'
-import { fetchProductsByType, fetchProductBySlug } from '../services/productService'
+import { useEffect, useState } from "react";
+
+import type { ProductType, Product } from "../types/product";
+
+import {
+  fetchProductsByType,
+  fetchProductBySlug,
+} from "../services/productService";
 
 export function useProducts(type: ProductType) {
-  const [products, setProducts] = useState<Product[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let cancelled = false
-    setIsLoading(true)
-    setError(null)
+    const loadProducts = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
 
-    fetchProductsByType(type)
-      .then((items) => {
-        if (!cancelled) {
-          setProducts(items)
-        }
-      })
-      .catch((err) => {
-        if (!cancelled) {
-          console.error(err)
-          setError('Unable to load products right now.')
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setIsLoading(false)
-        }
-      })
+        const firestoreProducts = await fetchProductsByType(type);
+        setProducts(firestoreProducts);
+      } catch (err) {
+        console.error("Error loading products:", err);
+        const errorMessage =
+          err instanceof Error
+            ? err.message
+            : "Failed to load products. Please try again later.";
+        setError(errorMessage);
+        setProducts([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    return () => {
-      cancelled = true
-    }
-  }, [type])
+    loadProducts();
+  }, [type]);
 
-  return { products, isLoading, error }
+  return { products, isLoading, error };
 }
 
 export function useProductBySlug(slug: string | undefined) {
-  const [product, setProduct] = useState<Product | null>(null)
-  const [isLoading, setIsLoading] = useState(!!slug)
-  const [error, setError] = useState<string | null>(null)
+  const [product, setProduct] = useState<Product | null>(null);
+  const [isLoading, setIsLoading] = useState(!!slug);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!slug) return
-
-    let cancelled = false
-    setIsLoading(true)
-    setError(null)
-
-    fetchProductBySlug(slug)
-      .then((item) => {
-        if (!cancelled) {
-          setProduct(item)
-        }
-      })
-      .catch((err) => {
-        if (!cancelled) {
-          console.error(err)
-          setError('Unable to load product details right now.')
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setIsLoading(false)
-        }
-      })
-
-    return () => {
-      cancelled = true
+    if (!slug) {
+      setProduct(null);
+      setError(null);
+      setIsLoading(false);
+      return;
     }
-  }, [slug])
 
-  return { product, isLoading, error }
+    const loadProduct = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const firestoreProduct = await fetchProductBySlug(slug);
+
+        if (firestoreProduct) {
+          setProduct(firestoreProduct);
+        } else {
+          setProduct(null);
+          setError("Product not found");
+        }
+      } catch (err) {
+        console.error("Error loading product:", err);
+        const errorMessage =
+          err instanceof Error
+            ? err.message
+            : "Failed to load product. Please try again later.";
+        setError(errorMessage);
+        setProduct(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadProduct();
+  }, [slug]);
+
+  return { product, isLoading, error };
 }
-
-

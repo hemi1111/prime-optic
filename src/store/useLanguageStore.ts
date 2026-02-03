@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export type Language = "en" | "sq";
+export type Language = "en" | "sq" | "it";
 
 type LanguageState = {
   language: Language;
@@ -16,7 +16,6 @@ export const useLanguageStore = create<LanguageState>()(
     }),
     {
       name: "language-preference",
-    }
-  )
+    },
+  ),
 );
-

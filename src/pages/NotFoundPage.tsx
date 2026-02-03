@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+
 import { useTranslation } from "../hooks/useTranslation";
 
 const NotFoundPage = () => {
