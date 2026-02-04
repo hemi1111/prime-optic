@@ -1,6 +1,6 @@
 import { useTranslation } from "../../hooks/useTranslation";
 
-import { Button } from "../ui/Button";
+import Button from "../ui/Button";
 
 type AdminHeaderProps = {
   onToggleAddForm: () => void;

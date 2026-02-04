@@ -1,6 +1,6 @@
 import type { Product, ProductType } from "../../types/product";
 
-import { Button } from "../ui/Button";
+import Button from "../ui/Button";
 
 type AdminProductTableProps = {
   products: Product[];

@@ -69,6 +69,11 @@ const CartPage = () => {
               <div className="flex flex-1 flex-col gap-1">
                 <div className="flex items-start justify-between gap-2">
                   <div>
+                    {item.brand && (
+                      <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-0.5">
+                        {item.brand}
+                      </div>
+                    )}
                     <div className="text-sm font-medium text-slate-900">
                       {item.name}
                     </div>
@@ -154,7 +159,6 @@ const CartPage = () => {
           </div>
           <div className="flex items-center justify-between">
             <dt>{t("cart.shipping")}</dt>
-            <dd>{t("cart.shipping")}</dd>
           </div>
         </dl>
         <div className="flex items-center justify-between border-t border-slate-100 pt-3 text-sm font-semibold text-slate-900">

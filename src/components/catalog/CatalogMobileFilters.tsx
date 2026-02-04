@@ -8,13 +8,13 @@ type CatalogMobileFiltersProps = {
   filterOptions: readonly { id: string; labelKey: string }[];
 };
 
-export function CatalogMobileFilters({
+const CatalogMobileFilters = ({
   isOpen,
   onClose,
   selectedFilters,
   onToggleFilter,
   filterOptions,
-}: CatalogMobileFiltersProps) {
+}: CatalogMobileFiltersProps) => {
   const { t } = useTranslation();
 
   if (!isOpen) return null;
@@ -58,4 +58,6 @@ export function CatalogMobileFilters({
       </div>
     </div>
   );
-}
+};
+
+export default CatalogMobileFilters;

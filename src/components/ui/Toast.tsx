@@ -14,7 +14,7 @@ type ToastProps = {
   onDismiss: (id: string) => void;
 };
 
-export const Toast = ({ toast, onDismiss }: ToastProps) => {
+const Toast = ({ toast, onDismiss }: ToastProps) => {
   const [isExiting, setIsExiting] = useState(false);
 
   const handleDismiss = () => {
@@ -131,3 +131,5 @@ export const Toast = ({ toast, onDismiss }: ToastProps) => {
     </div>
   );
 };
+
+export default Toast;

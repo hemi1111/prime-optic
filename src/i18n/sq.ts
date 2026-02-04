@@ -317,4 +317,9 @@ export const sq: Record<string, string> = {
   "toast.error.auth.tooManyRequests": "Shumë përpjekje. Ju lutem provoni më vonë.",
   "toast.error.auth.invalidCredential": "Email ose fjalëkalim i pasaktë. Ju lutem kontrolloni kredencialet tuaja.",
   "toast.error.auth.generic": "Autentifikimi dështoi. Ju lutem provoni përsëri.",
+  "storeLocations.title": "Vendndodhjet e Dyqaneve Tona",
+  "storeLocations.description": "Vizitoni një nga dyqanet tona në Tiranë për të provuar kornizat tuaja të preferuara personalisht.",
+  "storeLocations.available": "I Disponueshëm",
+  "storeLocations.unavailable": "I Mbyllur Përkohësisht",
+  "storeLocations.close": "Mbyll",
 };

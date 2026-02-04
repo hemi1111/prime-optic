@@ -1,6 +1,6 @@
 import { useTranslation } from "../hooks/useTranslation";
 
-export function Footer() {
+const Footer = () => {
   const { t } = useTranslation();
 
   return (
@@ -61,4 +61,6 @@ export function Footer() {
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;

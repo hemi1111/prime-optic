@@ -277,9 +277,11 @@ const AdminDashboardPage = () => {
   };
 
   const filteredProducts = products.filter((product) => {
+    const searchLower = searchTerm.toLowerCase();
     const matchesSearch =
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.brand.toLowerCase().includes(searchTerm.toLowerCase());
+      searchTerm === "" ||
+      product.name.toLowerCase().includes(searchLower) ||
+      product.brand.toLowerCase().includes(searchLower);
     const matchesType = typeFilter === "all" || product.type === typeFilter;
     return matchesSearch && matchesType;
   });

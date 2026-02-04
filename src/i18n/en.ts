@@ -317,4 +317,9 @@ export const en: Record<string, string> = {
   "toast.error.auth.tooManyRequests": "Too many attempts. Please try again later.",
   "toast.error.auth.invalidCredential": "Invalid email or password. Please check your credentials.",
   "toast.error.auth.generic": "Authentication failed. Please try again.",
+  "storeLocations.title": "Our Store Locations",
+  "storeLocations.description": "Visit one of our stores in Tirana to try on your favorite frames in person.",
+  "storeLocations.available": "Available",
+  "storeLocations.unavailable": "Temporarily Closed",
+  "storeLocations.close": "Close",
 };

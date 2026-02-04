@@ -318,4 +318,9 @@ export const it: Record<string, string> = {
   "toast.error.auth.tooManyRequests": "Troppi tentativi. Riprova più tardi.",
   "toast.error.auth.invalidCredential": "Email o password non validi. Controlla le tue credenziali.",
   "toast.error.auth.generic": "Autenticazione fallita. Riprova.",
+  "storeLocations.title": "Le Nostre Sedi",
+  "storeLocations.description": "Visita uno dei nostri negozi a Tirana per provare di persona le tue montature preferite.",
+  "storeLocations.available": "Disponibile",
+  "storeLocations.unavailable": "Temporaneamente Chiuso",
+  "storeLocations.close": "Chiudi",
 };

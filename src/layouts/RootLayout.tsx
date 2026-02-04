@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
 
-import { Header } from "./Header";
-import { MobileNav } from "./MobileNav";
-import { Footer } from "./Footer";
-import { ToastProvider } from "../components/ui/ToastContainer";
+import Header from "./Header";
+import MobileNav from "./MobileNav";
+import Footer from "./Footer";
+import ToastProvider from "../components/ui/ToastContainer";
 
 type RootLayoutProps = {
   children: ReactNode;

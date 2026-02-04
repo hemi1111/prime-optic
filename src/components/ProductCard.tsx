@@ -7,8 +7,8 @@ import { useCartStore } from "../store/useCartStore";
 import { useFavoritesStore } from "../store/useFavoritesStore";
 import { useTranslation } from "../hooks/useTranslation";
 import { useToast } from "../hooks/useToast";
-import { Button } from "./ui/Button";
-import { Card } from "./ui/Card";
+import Button from "./ui/Button";
+import Card from "./ui/Card";
 
 type ProductCardProps = {
   product: Product;

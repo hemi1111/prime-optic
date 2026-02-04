@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
-import { Toast, type ToastType } from "./Toast";
+import Toast, { type ToastType } from "./Toast";
 
 type ToastContextType = {
   showToast: (message: string, type: ToastType, duration?: number) => void;
@@ -19,7 +19,7 @@ type ToastProviderProps = {
   children: ReactNode;
 };
 
-export const ToastProvider = ({ children }: ToastProviderProps) => {
+const ToastProvider = ({ children }: ToastProviderProps) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const showToast = useCallback(
@@ -72,5 +72,4 @@ const ToastList = ({ toasts, onDismiss }: ToastListProps) => {
   );
 };
 
-// Re-export Toast component
-export { Toast } from "./Toast";
+export default ToastProvider;

@@ -25,7 +25,7 @@ const LogoIcon = () => (
   </svg>
 );
 
-export function MobileNav() {
+const MobileNav = () => {
   const itemCount = useCartStore((state) =>
     state.items.reduce((sum, item) => sum + item.quantity, 0)
   );
@@ -237,4 +237,6 @@ export function MobileNav() {
       </div>
     </>
   );
-}
+};
+
+export default MobileNav;

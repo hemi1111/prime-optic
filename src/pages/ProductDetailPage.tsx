@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useProductBySlug } from "../hooks/useProducts";
@@ -16,6 +17,8 @@ import {
   ProductDetailSkeleton,
   ProductDetailError,
   ProductDetailNotFound,
+  StoreLocationsModal,
+  ImageMagnifier,
 } from "../components/product-detail-page";
 
 const ProductDetailPage = () => {
@@ -24,6 +27,7 @@ const ProductDetailPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const { product, isLoading, error } = useProductBySlug(slug);
   const addItem = useCartStore((state) => state.addItem);
+  const [isStoreModalOpen, setIsStoreModalOpen] = useState(false);
 
   const handleAddToCart = () => {
     if (!product) return;
@@ -52,13 +56,12 @@ const ProductDetailPage = () => {
         {/* Product Image */}
         <div className="space-y-4">
           {product.imageUrl ? (
-            <div className="bg-gray-50 rounded-xl overflow-hidden">
-              <img
-                src={product.imageUrl}
-                alt={product.name}
-                className="w-full h-96 lg:h-[500px] object-contain p-8"
-              />
-            </div>
+            <ImageMagnifier
+              src={product.imageUrl}
+              alt={product.name}
+              zoomLevel={2.5}
+              magnifierSize={200}
+            />
           ) : (
             <div className="w-full h-96 lg:h-[500px] bg-gray-200 rounded-xl flex items-center justify-center">
               <span className="text-gray-500 text-lg">
@@ -132,9 +135,12 @@ const ProductDetailPage = () => {
                 </svg>
                 {t("productDetail.freeShipping")}
               </span>
-              <span className="text-gray-600">
+              <button
+                onClick={() => setIsStoreModalOpen(true)}
+                className="text-gray-600 hover:text-primary-600 transition-colors cursor-pointer underline"
+              >
                 {t("productDetail.tryInStore")}
-              </span>
+              </button>
             </div>
           </div>
 
@@ -334,6 +340,11 @@ const ProductDetailPage = () => {
           </div>
         </div>
       </div>
+
+      <StoreLocationsModal
+        isOpen={isStoreModalOpen}
+        onClose={() => setIsStoreModalOpen(false)}
+      />
     </div>
   );
 };

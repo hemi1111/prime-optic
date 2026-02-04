@@ -29,7 +29,7 @@ type CheckoutStepperProps = {
   currentStep: number;
 };
 
-export const CheckoutStepper = ({ currentStep }: CheckoutStepperProps) => {
+const CheckoutStepper = ({ currentStep }: CheckoutStepperProps) => {
   return (
     <div className="flex items-center gap-3 text-xs font-medium text-slate-600">
       <StepPill

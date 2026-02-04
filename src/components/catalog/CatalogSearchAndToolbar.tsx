@@ -13,7 +13,7 @@ type CatalogSearchAndToolbarProps = {
   onToggleFilters: () => void;
 };
 
-export function CatalogSearchAndToolbar({
+const CatalogSearchAndToolbar = ({
   searchQuery,
   onSearchChange,
   sortBy,
@@ -22,7 +22,7 @@ export function CatalogSearchAndToolbar({
   selectedFiltersCount,
   isFiltersOpen,
   onToggleFilters,
-}: CatalogSearchAndToolbarProps) {
+}: CatalogSearchAndToolbarProps) => {
   const { t } = useTranslation();
 
   return (
@@ -103,4 +103,6 @@ export function CatalogSearchAndToolbar({
       </div>
     </>
   );
-}
+};
+
+export default CatalogSearchAndToolbar;
