@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 
 import { useProductBySlug } from "../hooks/useProducts";
 import { useTranslation } from "../hooks/useTranslation";
+import { useToast } from "../hooks/useToast";
 import {
   getGenderLabel,
   getMaterialLabel,
@@ -19,6 +20,7 @@ import {
 
 const ProductDetailPage = () => {
   const { t } = useTranslation();
+  const toast = useToast();
   const { slug } = useParams<{ slug: string }>();
   const { product, isLoading, error } = useProductBySlug(slug);
   const addItem = useCartStore((state) => state.addItem);
@@ -37,6 +39,7 @@ const ProductDetailPage = () => {
       },
       1,
     );
+    toast.success(t("toast.addToCart.success"));
   };
 
   if (isLoading) return <ProductDetailSkeleton />;

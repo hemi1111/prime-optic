@@ -2,10 +2,13 @@ import { useState } from "react";
 
 import { bookAppointment } from "../services/appointmentService";
 import { useTranslation } from "../hooks/useTranslation";
+import { useToast } from "../hooks/useToast";
+import { getReadableErrorMessage } from "../utils/errorHandler";
 import { useAuthStore } from "../store/useAuthStore";
 
 const ExamBookingPage = () => {
   const { t } = useTranslation();
+  const toast = useToast();
   const user = useAuthStore((state) => state.user);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -15,13 +18,9 @@ const ExamBookingPage = () => {
   const [preferredTimeSlot, setPreferredTimeSlot] = useState("");
   const [notes, setNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    setSuccessMessage(null);
-    setErrorMessage(null);
     setIsSubmitting(true);
 
     try {
@@ -37,9 +36,7 @@ const ExamBookingPage = () => {
         },
         user?.id,
       );
-      setSuccessMessage(
-        "Your eye exam request has been sent. We will contact you shortly to confirm the exact time.",
-      );
+      toast.success(t("toast.appointment.success"));
       setFullName("");
       setEmail("");
       setPhone("");
@@ -49,11 +46,8 @@ const ExamBookingPage = () => {
       setNotes("");
     } catch (error) {
       console.error(error);
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "We could not submit your request right now. Please try again later.",
-      );
+      const errorMessage = getReadableErrorMessage(error, t);
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -161,16 +155,6 @@ const ExamBookingPage = () => {
           />
         </div>
 
-        {successMessage && (
-          <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
-            {t("exam.success")}
-          </div>
-        )}
-        {errorMessage && (
-          <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
-            {t("exam.error")}
-          </div>
-        )}
 
         <button
           type="submit"

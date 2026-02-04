@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useTranslation } from "../hooks/useTranslation";
-
+import { useToast } from "../hooks/useToast";
+import { getReadableErrorMessage } from "../utils/errorHandler";
 import {
   signUpWithEmailAndPassword,
   logInWithEmailAndPassword,
@@ -12,6 +13,7 @@ type Mode = "sign-in" | "sign-up";
 
 const AuthPage = () => {
   const { t } = useTranslation();
+  const toast = useToast();
   const [mode, setMode] = useState<Mode>("sign-in");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,7 +35,9 @@ const AuthPage = () => {
       }
       navigate("/");
     } catch (err: any) {
-      setError(err.message || "Authentication failed");
+      const errorMessage = getReadableErrorMessage(err, t);
+      setError(errorMessage);
+      toast.error(errorMessage);
       setIsSubmitting(false);
     }
   };

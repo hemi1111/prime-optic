@@ -9,7 +9,7 @@ import {
 } from "../components/home-page";
 
 const HomePage = () => {
-  const { products } = useProducts("glasses");
+  const { products } = useProducts("sunglasses");
 
   return (
     <div className="space-y-16 pb-8">

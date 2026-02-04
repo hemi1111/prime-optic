@@ -13,7 +13,7 @@ type AdminProductTableProps = {
   isLoading: boolean;
 };
 
-export function AdminProductTable({
+const AdminProductTable = ({
   products,
   searchTerm,
   onSearchChange,
@@ -22,7 +22,7 @@ export function AdminProductTable({
   onEdit,
   onDelete,
   isLoading,
-}: AdminProductTableProps) {
+}: AdminProductTableProps) => {
   return (
     <div className="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
       <div className="flex items-center justify-between mb-4">
@@ -135,3 +135,5 @@ export function AdminProductTable({
     </div>
   );
 }
+
+export default AdminProductTable;

@@ -7,6 +7,8 @@ import { useAuthStore } from "../store/useAuthStore";
 import { createOrder, deliveryOptions } from "../services/orderService";
 
 import { useTranslation } from "../hooks/useTranslation";
+import { useToast } from "../hooks/useToast";
+import { getReadableErrorMessage } from "../utils/errorHandler";
 
 import CheckoutStepper from "../components/checkout/CheckoutStepper";
 import OrderSummary from "../components/checkout/OrderSummary";
@@ -20,6 +22,7 @@ type Step = 1 | 2 | 3;
 
 const CheckoutPage = () => {
   const { t } = useTranslation();
+  const toast = useToast();
   const items = useCartStore((state) => state.items);
   const clearCart = useCartStore((state) => state.clear);
   const user = useAuthStore((state) => state.user);
@@ -99,14 +102,15 @@ const CheckoutPage = () => {
         total,
       });
 
-      alert(
-        `Order placed successfully! Order ID: ${orderId}\n\nYou'll receive a confirmation call within 24 hours. Payment will be collected upon delivery.`
+      toast.success(
+        `Order placed successfully! Order ID: ${orderId}. You'll receive a confirmation call within 24 hours.`
       );
       clearCart();
       navigate("/");
     } catch (error) {
       console.error("Order creation failed:", error);
-      alert("Failed to place order. Please try again or contact our store.");
+      const errorMessage = getReadableErrorMessage(error, t);
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
