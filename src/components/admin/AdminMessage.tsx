@@ -2,7 +2,7 @@ type AdminMessageProps = {
   message: string;
 };
 
-export function AdminMessage({ message }: AdminMessageProps) {
+const AdminMessage = ({ message }: AdminMessageProps) => {
   if (!message) return null;
 
   const isError = message.includes("Error");
@@ -17,3 +17,5 @@ export function AdminMessage({ message }: AdminMessageProps) {
     </div>
   );
 }
+
+export default AdminMessage;

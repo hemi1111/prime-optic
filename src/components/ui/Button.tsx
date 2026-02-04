@@ -61,14 +61,14 @@ const Spinner = () => (
   </svg>
 );
 
-export function Button({
+const Button = ({
   variant = "primary",
   size = "md",
   loading = false,
   children,
   className = "",
   ...props
-}: ButtonProps) {
+}: ButtonProps) => {
   const base =
     "font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 inline-flex items-center justify-center gap-2";
   const variantClass = variantClasses[variant];
@@ -105,4 +105,6 @@ export function Button({
       )}
     </button>
   );
-}
+};
+
+export default Button;

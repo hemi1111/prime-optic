@@ -12,13 +12,13 @@ const paddingClasses = {
   lg: "p-6",
 };
 
-export function Card({
+const Card = ({
   as: Component = "div",
   padding = "md",
   className = "",
   children,
   ...props
-}: CardProps) {
+}: CardProps) => {
   const paddingClass = paddingClasses[padding];
   const withShadow =
     padding !== "none"
@@ -33,24 +33,27 @@ export function Card({
       {children}
     </Component>
   );
-}
+};
 
 type CardHeaderProps = {
   children: React.ReactNode;
   className?: string;
 };
 
-export function CardHeader({ children, className = "" }: CardHeaderProps) {
+const CardHeader = ({ children, className = "" }: CardHeaderProps) => {
   return (
     <div className={`space-y-1 ${className}`.trim()}>{children}</div>
   );
-}
+};
 
 type CardContentProps = {
   children: React.ReactNode;
   className?: string;
 };
 
-export function CardContent({ children, className = "" }: CardContentProps) {
+const CardContent = ({ children, className = "" }: CardContentProps) => {
   return <div className={className || undefined}>{children}</div>;
-}
+};
+
+export default Card;
+export { CardHeader, CardContent };

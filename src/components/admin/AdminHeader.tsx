@@ -1,6 +1,6 @@
 import { useTranslation } from "../../hooks/useTranslation";
 
-import { Button } from "../ui/Button";
+import Button from "../ui/Button";
 
 type AdminHeaderProps = {
   onToggleAddForm: () => void;
@@ -11,14 +11,14 @@ type AdminHeaderProps = {
   canMakeAdmin: boolean;
 };
 
-export function AdminHeader({
+const AdminHeader = ({
   onToggleAddForm,
   showAddForm,
   onPopulateSample,
   onMakeAdmin,
   isLoading,
   canMakeAdmin,
-}: AdminHeaderProps) {
+}: AdminHeaderProps) => {
   const { t } = useTranslation();
 
   return (
@@ -61,3 +61,5 @@ export function AdminHeader({
     </header>
   );
 }
+
+export default AdminHeader;

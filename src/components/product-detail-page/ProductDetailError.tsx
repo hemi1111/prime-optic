@@ -2,7 +2,7 @@ type ProductDetailErrorProps = {
   error: string;
 };
 
-export function ProductDetailError({ error }: ProductDetailErrorProps) {
+const ProductDetailError = ({ error }: ProductDetailErrorProps) => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
@@ -11,3 +11,5 @@ export function ProductDetailError({ error }: ProductDetailErrorProps) {
     </div>
   );
 }
+
+export default ProductDetailError;

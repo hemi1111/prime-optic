@@ -1,4 +1,4 @@
-export function ProductDetailSkeleton() {
+const ProductDetailSkeleton = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -18,4 +18,6 @@ export function ProductDetailSkeleton() {
       </div>
     </div>
   );
-}
+};
+
+export default ProductDetailSkeleton;

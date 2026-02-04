@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useTranslation } from "../hooks/useTranslation";
 import {
   fetchAllProducts,
   createProduct,
@@ -9,7 +8,11 @@ import {
 import { populateSampleProducts } from "../utils/populateProducts";
 import { makeUserAdmin } from "../utils/userUtils";
 import { useAuthStore } from "../store/useAuthStore";
+import { useTranslation } from "../hooks/useTranslation";
+import { useToast } from "../hooks/useToast";
+import { getReadableErrorMessage } from "../utils/errorHandler";
 import type { Product, ProductType } from "../types/product";
+import { AdminHeader, AdminMessage, AdminProductTable } from "../components/admin";
 
 interface ProductFormData {
   name: string;
@@ -31,8 +34,9 @@ interface ProductFormData {
 }
 
 const AdminDashboardPage = () => {
-  const { t } = useTranslation();
   const { user } = useAuthStore();
+  const { t } = useTranslation();
+  const toast = useToast();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -71,7 +75,9 @@ const AdminDashboardPage = () => {
       setProducts(allProducts);
       setMessage(`Loaded ${allProducts.length} products`);
     } catch (error) {
-      setMessage(`Error loading products: ${error}`);
+      const errorMessage = getReadableErrorMessage(error, t);
+      toast.error(errorMessage);
+      setMessage(`Error loading products: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
@@ -129,10 +135,12 @@ const AdminDashboardPage = () => {
 
       if (editingProduct) {
         await updateProduct(editingProduct.id, productData);
+        toast.success(t("toast.admin.productUpdated"));
         setMessage("Product updated successfully");
         setEditingProduct(null);
       } else {
         await createProduct(productData);
+        toast.success(t("toast.admin.productCreated"));
         setMessage("Product created successfully");
         setShowAddForm(false);
       }
@@ -140,7 +148,9 @@ const AdminDashboardPage = () => {
       resetForm();
       loadProducts();
     } catch (error) {
-      setMessage(`Error: ${error}`);
+      const errorMessage = getReadableErrorMessage(error, t);
+      toast.error(errorMessage);
+      setMessage(`Error: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
@@ -176,10 +186,13 @@ const AdminDashboardPage = () => {
     setIsLoading(true);
     try {
       await deleteProduct(id);
+      toast.success(t("toast.admin.productDeleted"));
       setMessage("Product deleted successfully");
       loadProducts();
     } catch (error) {
-      setMessage(`Error deleting product: ${error}`);
+      const errorMessage = getReadableErrorMessage(error, t);
+      toast.error(errorMessage);
+      setMessage(`Error deleting product: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
@@ -196,10 +209,13 @@ const AdminDashboardPage = () => {
     setIsLoading(true);
     try {
       await populateSampleProducts(10);
+      toast.success(t("toast.admin.sampleDataAdded"));
       setMessage("Successfully populated 10 sample products");
       loadProducts();
     } catch (error) {
-      setMessage(`Error populating products: ${error}`);
+      const errorMessage = getReadableErrorMessage(error, t);
+      toast.error(errorMessage);
+      setMessage(`Error populating products: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
@@ -207,6 +223,7 @@ const AdminDashboardPage = () => {
 
   const handleMakeAdmin = async () => {
     if (!user) {
+      toast.error("No user logged in");
       setMessage("No user logged in");
       return;
     }
@@ -221,9 +238,12 @@ const AdminDashboardPage = () => {
     setIsLoading(true);
     try {
       await makeUserAdmin(user.id);
+      toast.success("User promoted to admin! Please refresh the page.");
       setMessage("User promoted to admin! Please refresh the page.");
     } catch (error) {
-      setMessage(`Error making user admin: ${error}`);
+      const errorMessage = getReadableErrorMessage(error, t);
+      toast.error(errorMessage);
+      setMessage(`Error making user admin: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
@@ -257,9 +277,11 @@ const AdminDashboardPage = () => {
   };
 
   const filteredProducts = products.filter((product) => {
+    const searchLower = searchTerm.toLowerCase();
     const matchesSearch =
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.brand.toLowerCase().includes(searchTerm.toLowerCase());
+      searchTerm === "" ||
+      product.name.toLowerCase().includes(searchLower) ||
+      product.brand.toLowerCase().includes(searchLower);
     const matchesType = typeFilter === "all" || product.type === typeFilter;
     return matchesSearch && matchesType;
   });

@@ -5,7 +5,7 @@ import { useTranslation } from "../hooks/useTranslation";
 import { useCatalogState } from "../hooks/useCatalogState";
 import { getBrandBySlug } from "../config/brands";
 
-import { Button } from "../components/ui/Button";
+import Button from "../components/ui/Button";
 import {
   CatalogFiltersSidebar,
   CatalogSearchAndToolbar,

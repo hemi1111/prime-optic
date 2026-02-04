@@ -2,7 +2,7 @@ import type { Product } from "../../types/product";
 
 import ProductCard from "../ProductCard";
 
-import { Button } from "../ui/Button";
+import Button from "../ui/Button";
 
 type CatalogProductGridProps = {
   isLoading: boolean;
@@ -19,7 +19,7 @@ type CatalogProductGridProps = {
   backToHomeLink?: { to: string; label: string };
 };
 
-export function CatalogProductGrid({
+const CatalogProductGrid = ({
   isLoading,
   error,
   products,
@@ -32,7 +32,7 @@ export function CatalogProductGrid({
   clearFiltersLabel = "Clear filters",
   clearSearchLabel = "Clear search",
   backToHomeLink,
-}: CatalogProductGridProps) {
+}: CatalogProductGridProps) => {
   const hasResults = products.length > 0;
   const showEmptyActions =
     (hasActiveFilters || hasSearchQuery) && (onClearFilters || onClearSearch);
@@ -113,4 +113,6 @@ export function CatalogProductGrid({
       ))}
     </div>
   );
-}
+};
+
+export default CatalogProductGrid;

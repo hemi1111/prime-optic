@@ -6,8 +6,9 @@ import { type Product, type CartItem } from "../types/product";
 import { useCartStore } from "../store/useCartStore";
 import { useFavoritesStore } from "../store/useFavoritesStore";
 import { useTranslation } from "../hooks/useTranslation";
-import { Button } from "./ui/Button";
-import { Card } from "./ui/Card";
+import { useToast } from "../hooks/useToast";
+import Button from "./ui/Button";
+import Card from "./ui/Card";
 
 type ProductCardProps = {
   product: Product;
@@ -15,6 +16,7 @@ type ProductCardProps = {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const { t } = useTranslation();
+  const toast = useToast();
   const addItem = useCartStore((state) => state.addItem);
   const { addToFavorites, removeFromFavorites, isFavorite } =
     useFavoritesStore();
@@ -70,6 +72,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
       1,
     );
 
+    toast.success(t("toast.addToCart.success"));
+
     setTimeout(() => {
       setIsAdding(false);
       setShowBlueLightOption(false);
@@ -96,8 +100,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
     e.stopPropagation();
     if (isWishlisted) {
       removeFromFavorites(product.id);
+      toast.success(t("toast.removeFromFavorites.success"));
     } else {
       addToFavorites(product);
+      toast.success(t("toast.addToFavorites.success"));
     }
   };
 

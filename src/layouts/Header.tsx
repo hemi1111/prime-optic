@@ -25,7 +25,7 @@ const Logo = () => (
   </svg>
 );
 
-export function Header() {
+const Header = () => {
   const itemCount = useCartStore((state) =>
     state.items.reduce((sum, item) => sum + item.quantity, 0)
   );
@@ -181,4 +181,6 @@ export function Header() {
       </div>
     </header>
   );
-}
+};
+
+export default Header;

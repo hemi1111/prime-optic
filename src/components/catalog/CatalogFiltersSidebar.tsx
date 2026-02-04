@@ -6,11 +6,11 @@ type CatalogFiltersSidebarProps = {
   onToggleFilter: (id: string) => void;
 };
 
-export function CatalogFiltersSidebar({
+const CatalogFiltersSidebar = ({
   selectedFilters,
   onClearFilters,
   onToggleFilter,
-}: CatalogFiltersSidebarProps) {
+}: CatalogFiltersSidebarProps) => {
   const { t } = useTranslation();
 
   const genderOptions = [
@@ -116,4 +116,6 @@ export function CatalogFiltersSidebar({
       </div>
     </aside>
   );
-}
+};
+
+export default CatalogFiltersSidebar;
