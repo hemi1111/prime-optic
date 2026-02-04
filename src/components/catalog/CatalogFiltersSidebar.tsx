@@ -14,18 +14,18 @@ const CatalogFiltersSidebar = ({
   const { t } = useTranslation();
 
   const genderOptions = [
-    { id: "men", label: t("catalog.filters.men") },
-    { id: "women", label: t("catalog.filters.women") },
-    { id: "kids", label: t("catalog.filters.kids") },
+    { id: "men", label: t("common.men") },
+    { id: "women", label: t("common.women") },
+    { id: "kids", label: t("common.kids") },
   ];
   const shapeOptions = [
-    { id: "round", label: t("catalog.filters.round") },
-    { id: "square", label: t("catalog.filters.square") },
-    { id: "cat-eye", label: t("catalog.filters.catEye") },
+    { id: "round", label: t("productDetail.shapes.round") },
+    { id: "square", label: t("productDetail.shapes.square") },
+    { id: "cat-eye", label: t("productDetail.shapes.catEye") },
   ];
   const materialOptions = [
-    { id: "metal", label: t("catalog.filters.metal") },
-    { id: "plastic", label: t("catalog.filters.plastic") },
+    { id: "metal", label: t("productDetail.materials.metal") },
+    { id: "plastic", label: t("productDetail.materials.plastic") },
   ];
 
   return (

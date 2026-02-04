@@ -18,7 +18,7 @@ const CategoriesSection = () => {
           <div className="absolute inset-0 bg-gradient-to-br from-primary-50/0 to-primary-50/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           <div className="relative space-y-3">
             <div className="text-xs font-bold uppercase tracking-wider text-primary-600">
-              {t("home.categories.glasses.title")}
+              {t("nav.glasses")}
             </div>
             <div className="text-lg font-bold text-slate-900">
               {t("home.categories.glasses.heading")}

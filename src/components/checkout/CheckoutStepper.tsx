@@ -25,26 +25,30 @@ const StepPill = ({ active, completed, label }: StepPillProps) => {
   );
 };
 
+import { useTranslation } from "../../hooks/useTranslation";
+
 type CheckoutStepperProps = {
   currentStep: number;
 };
 
 const CheckoutStepper = ({ currentStep }: CheckoutStepperProps) => {
+  const { t } = useTranslation();
+  
   return (
     <div className="flex items-center gap-3 text-xs font-medium text-slate-600">
       <StepPill
         active={currentStep >= 1}
         completed={currentStep > 1}
-        label="Contact details"
+        label={t("checkout.contactDetails")}
       />
       <div className="h-px flex-1 bg-slate-200" />
       <StepPill
         active={currentStep >= 2}
         completed={currentStep > 2}
-        label="Delivery"
+        label={t("common.delivery")}
       />
       <div className="h-px flex-1 bg-slate-200" />
-      <StepPill active={currentStep >= 3} label="Confirm order" />
+      <StepPill active={currentStep >= 3} label={t("checkout.confirmOrder")} />
     </div>
   );
 };

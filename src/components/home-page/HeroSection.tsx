@@ -18,7 +18,7 @@ const HeroSection = () => {
             <span className="bg-gradient-to-r from-primary-300 to-primary-200 bg-clip-text text-transparent">
               {t("home.hero.titleHighlight")}
             </span>{" "}
-            for every moment.
+            {t("home.hero.titleDescription")}
           </h1>
           <p className="max-w-xl text-base leading-relaxed text-slate-200 md:text-lg">
             {t("home.hero.description")}

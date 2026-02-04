@@ -109,7 +109,7 @@ const AuthPage = () => {
                 htmlFor="name"
                 className="block text-sm font-semibold text-slate-700"
               >
-                {t("auth.name")}
+                {t("common.fullName")}
               </label>
               <input
                 id="name"

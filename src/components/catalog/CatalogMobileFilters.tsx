@@ -19,9 +19,26 @@ const CatalogMobileFilters = ({
 
   if (!isOpen) return null;
 
+  const getTranslationKey = (labelKey: string): string => {
+    // Map gender filters to common keys
+    if (labelKey === "men" || labelKey === "women" || labelKey === "kids") {
+      return `common.${labelKey}`;
+    }
+    // Map shape filters to productDetail.shapes keys
+    if (labelKey === "round" || labelKey === "square" || labelKey === "catEye") {
+      return `productDetail.shapes.${labelKey}`;
+    }
+    // Map material filters to productDetail.materials keys
+    if (labelKey === "metal" || labelKey === "plastic") {
+      return `productDetail.materials.${labelKey}`;
+    }
+    // Fallback to catalog.filters for any other keys
+    return `catalog.filters.${labelKey}`;
+  };
+
   const optionsWithLabels = filterOptions.map((f) => ({
     id: f.id,
-    label: t(`catalog.filters.${f.labelKey}`),
+    label: t(getTranslationKey(f.labelKey)),
   }));
 
   return (

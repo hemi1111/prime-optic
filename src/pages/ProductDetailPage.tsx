@@ -79,6 +79,7 @@ const ProductDetailPage = () => {
               {t("productDetail.sizesInMm")}
             </p>
           </div>
+          <img src={"https://assets.glassesdirect.co.uk/media/filer_public/07/76/07765c92-6dc2-47cc-b3d4-56093aa93a99/diagram-glasses-frame-size-medium-glassesdirect.png"} alt={product.name} className="w-full h-auto" />
         </div>
 
         {/* Product Info */}
@@ -150,7 +151,7 @@ const ProductDetailPage = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-medium text-blue-900">
-                    {t("catalog.blueLightFilter")}
+                    {t("common.blueLightFilter")}
                   </h4>
                   <p className="text-sm text-blue-700">
                     {t("catalog.protectYourEyes")}

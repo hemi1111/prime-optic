@@ -59,11 +59,10 @@ const CheckoutPage = () => {
     return (
       <div className="mx-auto max-w-lg space-y-4 text-center">
         <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-          No items to checkout
+          {t("checkout.emptyCart")}
         </h1>
         <p className="text-sm text-slate-500">
-          Your cart is empty. Add products first, then return here to complete
-          your order.
+          {t("checkout.emptyCartDescription")}
         </p>
       </div>
     );
@@ -120,13 +119,13 @@ const CheckoutPage = () => {
     <div className="space-y-6">
       <header className="space-y-2">
         <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-          Checkout
+          {t("checkout.title")}
         </h1>
         <p className="text-sm text-slate-500">
-          {t("common.cashOnDelivery")} - pay when you receive your order.{" "}
+          {t("common.cashOnDelivery")} - {t("checkout.payOnReceive")}{" "}
           {selectedDelivery.id === "home_delivery"
-            ? "+€2 delivery fee"
-            : "Free store pickup"}
+            ? t("checkout.deliveryFeeText")
+            : t("checkout.freePickup")}
         </p>
       </header>
 

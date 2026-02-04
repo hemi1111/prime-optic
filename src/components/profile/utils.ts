@@ -1,8 +1,22 @@
 import type { Appointment } from "../../types/appointment";
 import type { Order } from "../../types/product";
+import type { Language } from "../../store/useLanguageStore";
+
+// Map language codes to locale codes for date formatting
+const getLocale = (language: Language): string => {
+  const localeMap: Record<Language, string> = {
+    en: "en-US",
+    sq: "sq-AL",
+    it: "it-IT",
+  };
+  return localeMap[language] || "en-US";
+};
 
 // Format appointment date
-export const formatAppointmentDate = (appointment: Appointment): string => {
+export const formatAppointmentDate = (
+  appointment: Appointment,
+  language: Language = "en"
+): string => {
   const date = appointment.date || appointment.preferredDate;
   if (!date) return "Date not set";
   
@@ -12,7 +26,7 @@ export const formatAppointmentDate = (appointment: Appointment): string => {
       // If it's already a formatted string, return it
       return date;
     }
-    return dateObj.toLocaleDateString("en-US", {
+    return dateObj.toLocaleDateString(getLocale(language), {
       weekday: "long",
       year: "numeric",
       month: "long",
@@ -37,12 +51,12 @@ export const formatAppointmentTime = (appointment: Appointment): string => {
 };
 
 // Format order date
-export const formatOrderDate = (order: Order): string => {
+export const formatOrderDate = (order: Order, language: Language = "en"): string => {
   if (!order.createdAt) return "Recently placed";
   try {
     const date = order.createdAt?.toDate?.();
     if (!date) return "Recently placed";
-    return date.toLocaleDateString("en-US", {
+    return date.toLocaleDateString(getLocale(language), {
       year: "numeric",
       month: "long",
       day: "numeric",

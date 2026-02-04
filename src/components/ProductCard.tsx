@@ -208,7 +208,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             <div className="flex">{renderStars(product.rating)}</div>
             {product.reviewCount && (
               <span className="text-sm text-gray-500">
-                ({product.reviewCount} reviews)
+                ({product.reviewCount} {t("common.reviews")})
               </span>
             )}
           </div>
@@ -222,13 +222,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
           >
             {product.name}
           </Link>
-          <p className="text-sm text-gray-500">by {product.brand}</p>
+          <p className="text-sm text-gray-500">{t("common.by")} {product.brand}</p>
         </div>
 
         {/* Color Options */}
         {product.colorOptions && product.colorOptions.length > 0 && (
           <div className="space-y-2">
-            <p className="text-sm font-medium text-gray-700">Color:</p>
+            <p className="text-sm font-medium text-gray-700">{t("common.color")}:</p>
             <div className="flex gap-2">
               {product.colorOptions.map((color, index) => (
                 <button
@@ -265,7 +265,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         {/* Lens Options */}
         {product.lensOptions && product.lensOptions.length > 0 && (
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Lens:</label>
+            <label className="text-sm font-medium text-gray-700">{t("common.lens")}:</label>
             <select
               value={selectedLensOption.id}
               onChange={(e) => {
@@ -326,7 +326,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           >
             {showBlueLightOption
               ? t("common.confirmSelection")
-              : "Add to Cart"}
+              : t("common.addToCart")}
           </Button>
         </div>
 

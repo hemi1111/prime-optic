@@ -8,7 +8,7 @@ interface OrderCardProps {
 }
 
 const OrderCard = ({ order }: OrderCardProps) => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
   const getStatusLabel = (status: string | undefined): string => {
     switch (status) {
@@ -52,7 +52,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
           <h3 className="text-base font-bold text-slate-900 mb-1">
             {t("profile.orders.order")} #{order.id?.slice(-8).toUpperCase()}
           </h3>
-          <p className="text-sm text-slate-500">{formatOrderDate(order)}</p>
+          <p className="text-sm text-slate-500">{formatOrderDate(order, language)}</p>
         </div>
         <span
           className={`inline-flex rounded-full px-3 py-1.5 text-xs font-semibold ${getStatusStyles(
@@ -76,9 +76,11 @@ const OrderCard = ({ order }: OrderCardProps) => {
       {/* Order Summary */}
       <div className="space-y-3 pt-4 border-t border-slate-200">
         <div className="flex items-center justify-between text-sm">
-          <span className="text-slate-600">{t("profile.orders.delivery")}:</span>
+          <span className="text-slate-600">{t("common.delivery")}:</span>
           <span className="font-medium text-slate-900">
-            {order.deliveryInfo?.option?.name || "N/A"}
+            {order.deliveryInfo?.option?.id
+              ? t(`delivery.${order.deliveryInfo.option.id}.name`)
+              : order.deliveryInfo?.option?.name || "N/A"}
           </span>
         </div>
         {order.deliveryInfo?.option?.id === "home_delivery" &&
@@ -95,19 +97,19 @@ const OrderCard = ({ order }: OrderCardProps) => {
             </div>
           )}
         <div className="flex items-center justify-between text-sm pt-2 border-t border-slate-100">
-          <span className="text-slate-600">Subtotal:</span>
+          <span className="text-slate-600">{t("common.subtotal")}:</span>
           <span className="text-slate-900">
             €{order.subtotal?.toFixed(2) || "0.00"}
           </span>
         </div>
         <div className="flex items-center justify-between text-sm">
-          <span className="text-slate-600">Delivery Fee:</span>
+          <span className="text-slate-600">{t("common.deliveryFee")}:</span>
           <span className="text-slate-900">
             €{order.deliveryFee?.toFixed(2) || "0.00"}
           </span>
         </div>
         <div className="flex items-center justify-between text-base font-bold pt-2 border-t-2 border-slate-200">
-          <span className="text-slate-900">{t("profile.orders.total")}:</span>
+          <span className="text-slate-900">{t("common.total")}:</span>
           <span className="text-primary-600">
             €{order.total?.toFixed(2) || "0.00"}
           </span>

@@ -7,7 +7,7 @@ interface AppointmentCardProps {
 }
 
 const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
   return (
     <div className="rounded-lg border border-slate-200 bg-white p-5 hover:shadow-md transition-all">
@@ -33,7 +33,7 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
               <div className="flex items-center gap-3 flex-wrap mb-2">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold text-slate-900">
-                    {formatAppointmentDate(appointment)}
+                    {formatAppointmentDate(appointment, language)}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-slate-600">

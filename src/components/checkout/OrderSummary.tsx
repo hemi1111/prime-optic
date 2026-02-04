@@ -51,7 +51,7 @@ const OrderSummary = ({
         </div>
         <div className="flex items-center justify-between">
           <span>
-            {t("common.delivery")} ({selectedDelivery.name})
+            {t("common.delivery")} ({t(`delivery.${selectedDelivery.id}.name`)})
           </span>
           <span className="font-medium text-slate-900">
             {deliveryFee === 0
@@ -60,7 +60,7 @@ const OrderSummary = ({
           </span>
         </div>
         <div className="flex items-center justify-between border-t border-slate-100 pt-3 text-sm font-semibold text-slate-900">
-          <span>Total</span>
+          <span>{t("common.total")}</span>
           <span>€{total.toFixed(2)}</span>
         </div>
         <div className="text-xs text-slate-500 bg-amber-50 p-2 rounded-md border border-amber-200">

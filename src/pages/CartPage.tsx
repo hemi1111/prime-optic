@@ -148,11 +148,11 @@ const CartPage = () => {
 
       <aside className="space-y-4 rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
         <h2 className="text-sm font-semibold tracking-tight text-slate-900">
-          {t("cart.orderSummary")}
+          {t("common.orderSummary")}
         </h2>
         <dl className="space-y-2 text-xs text-slate-600">
           <div className="flex items-center justify-between">
-            <dt>{t("cart.subtotal")}</dt>
+            <dt>{t("common.subtotal")}</dt>
             <dd className="font-medium text-slate-900">
               €{subtotal.toFixed(2)}
             </dd>
@@ -162,7 +162,7 @@ const CartPage = () => {
           </div>
         </dl>
         <div className="flex items-center justify-between border-t border-slate-100 pt-3 text-sm font-semibold text-slate-900">
-          <span>{t("cart.total")}</span>
+          <span>{t("common.total")}</span>
           <span>€{subtotal.toFixed(2)}</span>
         </div>
         <button

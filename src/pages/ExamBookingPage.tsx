@@ -74,14 +74,14 @@ const ExamBookingPage = () => {
         <div className="grid gap-4 md:grid-cols-2">
           <Field
             id="fullName"
-            label={t("exam.form.name")}
+            label={t("common.fullName")}
             value={fullName}
             onChange={(event) => setFullName(event.target.value)}
             required
           />
           <Field
             id="phone"
-            label={t("exam.form.phone")}
+            label={t("common.phoneNumber")}
             type="tel"
             value={phone}
             onChange={(event) => setPhone(event.target.value)}
@@ -99,7 +99,6 @@ const ExamBookingPage = () => {
         <Field
           id="store"
           label={t("exam.form.store")}
-          placeholder="e.g., City Center branch"
           value={preferredStore}
           onChange={(event) => setPreferredStore(event.target.value)}
         />
@@ -127,9 +126,7 @@ const ExamBookingPage = () => {
               required
               className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none ring-primary-200 focus:ring-2"
             >
-              <option value="" disabled>
-                Select a time range
-              </option>
+              <option value=""></option>
               <option value="09-11">09:00 – 11:00</option>
               <option value="11-13">11:00 – 13:00</option>
               <option value="14-16">14:00 – 16:00</option>
@@ -151,7 +148,6 @@ const ExamBookingPage = () => {
             value={notes}
             onChange={(event) => setNotes(event.target.value)}
             className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none ring-primary-200 placeholder:text-slate-400 focus:ring-2"
-            placeholder="Let us know if you have any specific concerns or preferences."
           />
         </div>
 

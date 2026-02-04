@@ -67,14 +67,16 @@ const DeliveryForm = ({
             />
             <div className="flex-1">
               <div className="font-medium text-slate-900 flex items-center gap-2">
-                {option.name}
+                {t(`delivery.${option.id}.name`)}
                 <span className="text-primary-600 font-semibold">
-                  {option.price === 0 ? "Free" : `+€${option.price}`}
+                  {option.price === 0 ? t("common.free") : `+€${option.price}`}
                 </span>
               </div>
-              <div className="text-xs text-slate-500">{option.description}</div>
+              <div className="text-xs text-slate-500">
+                {t(`delivery.${option.id}.description`)}
+              </div>
               <div className="text-xs text-slate-400">
-                {option.estimatedDays}
+                {t(`delivery.${option.id}.estimatedDays`)}
               </div>
             </div>
           </label>
@@ -83,7 +85,9 @@ const DeliveryForm = ({
 
       {selectedDelivery.id === "home_delivery" && (
         <div className="space-y-3 p-4 bg-slate-50 rounded-lg border">
-          <h4 className="font-medium text-slate-900">Delivery Address</h4>
+          <h4 className="font-medium text-slate-900">
+            {t("checkout.deliveryAddress")}
+          </h4>
           <Field
             label={t("common.streetAddress")}
             id="street"
@@ -127,7 +131,7 @@ const DeliveryForm = ({
           onClick={onBack}
           className="rounded-full border border-slate-200 px-5 py-2 text-xs font-semibold text-slate-700 hover:border-primary-500 hover:text-primary-600"
         >
-          Back
+          {t("checkout.back")}
         </button>
         <button
           type="submit"

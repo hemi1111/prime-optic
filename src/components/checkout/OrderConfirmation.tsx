@@ -55,9 +55,9 @@ const OrderConfirmation = ({
             {t("common.deliveryMethod")}
           </h4>
           <p className="text-slate-600">
-            {selectedDelivery.name} -{" "}
+            {t(`delivery.${selectedDelivery.id}.name`)} -{" "}
             {selectedDelivery.price === 0
-              ? "Free"
+              ? t("common.free")
               : `€${selectedDelivery.price}`}
           </p>
           {selectedDelivery.id === "home_delivery" &&
@@ -86,7 +86,7 @@ const OrderConfirmation = ({
           onClick={onBack}
           className="rounded-full border border-slate-200 px-5 py-2 text-xs font-semibold text-slate-700 hover:border-primary-500 hover:text-primary-600"
         >
-          Back
+          {t("checkout.back")}
         </button>
         <button
           type="button"
