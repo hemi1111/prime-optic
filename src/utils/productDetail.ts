@@ -27,8 +27,18 @@ export function getMaterialLabel(t: TFunction, material?: string): string {
       return t("productDetail.materials.titanium");
     case "mixed":
       return t("productDetail.materials.mixed");
+    case "nylon":
+      return t("productDetail.materials.nylon");
+    case "carbon fiber":
+      return t("productDetail.materials.carbonFiber");
+    case "TR90":
+      return t("productDetail.materials.TR90");
+    case "recycled acetate":
+      return t("productDetail.materials.recycledAcetate");
+    case "acetate/metal":
+      return t("productDetail.materials.acetateMetal");
     default:
-      return t("productDetail.notAvailable");
+      return material || t("productDetail.notAvailable");
   }
 }
 
@@ -46,8 +56,20 @@ export function getShapeLabel(t: TFunction, shape?: string): string {
       return t("productDetail.shapes.aviator");
     case "rectangular":
       return t("productDetail.shapes.rectangular");
+    case "oversized":
+      return t("productDetail.shapes.oversized");
+    case "pilot":
+      return t("productDetail.shapes.pilot");
+    case "rounded square":
+      return t("productDetail.shapes.roundedSquare");
+    case "wrapped":
+      return t("productDetail.shapes.wrapped");
+    case "sport":
+      return t("productDetail.shapes.sport");
+    case "browline":
+      return t("productDetail.shapes.browline");
     default:
-      return t("productDetail.notAvailable");
+      return shape || t("productDetail.notAvailable");
   }
 }
 

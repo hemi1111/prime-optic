@@ -5,7 +5,6 @@ type CatalogMobileFiltersProps = {
   onClose: () => void;
   selectedFilters: string[];
   onToggleFilter: (id: string) => void;
-  filterOptions: readonly { id: string; labelKey: string }[];
 };
 
 const CatalogMobileFilters = ({
@@ -13,33 +12,43 @@ const CatalogMobileFilters = ({
   onClose,
   selectedFilters,
   onToggleFilter,
-  filterOptions,
 }: CatalogMobileFiltersProps) => {
   const { t } = useTranslation();
 
   if (!isOpen) return null;
 
-  const getTranslationKey = (labelKey: string): string => {
-    // Map gender filters to common keys
-    if (labelKey === "men" || labelKey === "women" || labelKey === "kids") {
-      return `common.${labelKey}`;
-    }
-    // Map shape filters to productDetail.shapes keys
-    if (labelKey === "round" || labelKey === "square" || labelKey === "catEye") {
-      return `productDetail.shapes.${labelKey}`;
-    }
-    // Map material filters to productDetail.materials keys
-    if (labelKey === "metal" || labelKey === "plastic") {
-      return `productDetail.materials.${labelKey}`;
-    }
-    // Fallback to catalog.filters for any other keys
-    return `catalog.filters.${labelKey}`;
-  };
+  const genderOptions = [
+    { id: "men", label: t("common.men") },
+    { id: "women", label: t("common.women") },
+    { id: "kids", label: t("common.kids") },
+  ];
+  const shapeOptions = [
+    { id: "round", label: t("productDetail.shapes.round") },
+    { id: "square", label: t("productDetail.shapes.square") },
+    { id: "cat-eye", label: t("productDetail.shapes.catEye") },
+    { id: "oval", label: t("productDetail.shapes.oval") },
+    { id: "aviator", label: t("productDetail.shapes.aviator") },
+    { id: "rectangular", label: t("productDetail.shapes.rectangular") },
+    { id: "oversized", label: t("productDetail.shapes.oversized") },
+    { id: "pilot", label: t("productDetail.shapes.pilot") },
+    { id: "rounded square", label: t("productDetail.shapes.roundedSquare") },
+    { id: "wrapped", label: t("productDetail.shapes.wrapped") },
+    { id: "sport", label: t("productDetail.shapes.sport") },
+    { id: "browline", label: t("productDetail.shapes.browline") },
+  ];
+  const materialOptions = [
+    { id: "metal", label: t("productDetail.materials.metal") },
+    { id: "plastic", label: t("productDetail.materials.plastic") },
+    { id: "acetate", label: t("productDetail.materials.acetate") },
+    { id: "titanium", label: t("productDetail.materials.titanium") },
+    { id: "mixed", label: t("productDetail.materials.mixed") },
+    { id: "nylon", label: t("productDetail.materials.nylon") },
+    { id: "carbon fiber", label: t("productDetail.materials.carbonFiber") },
+    { id: "TR90", label: t("productDetail.materials.TR90") },
+    { id: "recycled acetate", label: t("productDetail.materials.recycledAcetate") },
+    { id: "acetate/metal", label: t("productDetail.materials.acetateMetal") },
+  ];
 
-  const optionsWithLabels = filterOptions.map((f) => ({
-    id: f.id,
-    label: t(getTranslationKey(f.labelKey)),
-  }));
 
   return (
     <div className="lg:hidden rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100 animate-slide-up">
@@ -56,21 +65,72 @@ const CatalogMobileFilters = ({
             ✕
           </button>
         </div>
-        <div className="flex flex-wrap gap-2">
-          {optionsWithLabels.map((filter) => (
-            <button
-              key={filter.id}
-              type="button"
-              onClick={() => onToggleFilter(filter.id)}
-              className={`rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-200 ${
-                selectedFilters.includes(filter.id)
-                  ? "bg-primary-500 text-white shadow-sm"
-                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-              }`}
-            >
-              {filter.label}
-            </button>
-          ))}
+        <div className="space-y-4">
+          <div>
+            <div className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
+              {t("catalog.filters.gender")}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {genderOptions.map((filter) => (
+                <button
+                  key={filter.id}
+                  type="button"
+                  onClick={() => onToggleFilter(filter.id)}
+                  className={`rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-200 ${
+                    selectedFilters.includes(filter.id)
+                      ? "bg-primary-500 text-white shadow-sm"
+                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                  }`}
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
+              {t("catalog.filters.frameShape")}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {shapeOptions.map((filter) => (
+                <button
+                  key={filter.id}
+                  type="button"
+                  onClick={() => onToggleFilter(filter.id)}
+                  className={`rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-200 ${
+                    selectedFilters.includes(filter.id)
+                      ? "bg-primary-500 text-white shadow-sm"
+                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                  }`}
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
+              {t("catalog.filters.material")}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {materialOptions.map((filter) => (
+                <button
+                  key={filter.id}
+                  type="button"
+                  onClick={() => onToggleFilter(filter.id)}
+                  className={`rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-200 ${
+                    selectedFilters.includes(filter.id)
+                      ? "bg-primary-500 text-white shadow-sm"
+                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                  }`}
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>

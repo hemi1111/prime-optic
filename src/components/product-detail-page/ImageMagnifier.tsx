@@ -16,8 +16,48 @@ const ImageMagnifier = ({
   const [isHovering, setIsHovering] = useState(false);
   const [magnifierPosition, setMagnifierPosition] = useState({ x: 0, y: 0 });
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [imageInfo, setImageInfo] = useState({
+    displayedWidth: 0,
+    displayedHeight: 0,
+    naturalWidth: 0,
+    naturalHeight: 0,
+    scaleX: 1,
+    scaleY: 1,
+  });
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
+
+  const handleImageLoad = () => {
+    if (imageRef.current) {
+      const img = imageRef.current;
+      const computedStyle = window.getComputedStyle(img);
+      const paddingTop = parseFloat(computedStyle.paddingTop) || 0;
+      const paddingLeft = parseFloat(computedStyle.paddingLeft) || 0;
+      const paddingRight = parseFloat(computedStyle.paddingRight) || 0;
+      const paddingBottom = parseFloat(computedStyle.paddingBottom) || 0;
+      
+      // Get the actual displayed image dimensions (excluding padding)
+      const displayedWidth = img.offsetWidth - paddingLeft - paddingRight;
+      const displayedHeight = img.offsetHeight - paddingTop - paddingBottom;
+      
+      // Get natural image dimensions
+      const naturalWidth = img.naturalWidth;
+      const naturalHeight = img.naturalHeight;
+      
+      // Calculate scale factors (how much the image is scaled down from natural size)
+      const scaleX = naturalWidth / displayedWidth;
+      const scaleY = naturalHeight / displayedHeight;
+      
+      setImageInfo({
+        displayedWidth,
+        displayedHeight,
+        naturalWidth,
+        naturalHeight,
+        scaleX,
+        scaleY,
+      });
+    }
+  };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current || !imageRef.current) return;
@@ -26,13 +66,26 @@ const ImageMagnifier = ({
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    // Calculate position relative to image
+    // Calculate position relative to image element (including padding)
     const imageRect = imageRef.current.getBoundingClientRect();
     const imageX = e.clientX - imageRect.left;
     const imageY = e.clientY - imageRect.top;
 
+    // Get computed styles to account for padding
+    const computedStyle = window.getComputedStyle(imageRef.current);
+    const paddingTop = parseFloat(computedStyle.paddingTop) || 0;
+    const paddingLeft = parseFloat(computedStyle.paddingLeft) || 0;
+    
+    // Calculate position relative to actual image content (excluding padding)
+    const contentX = imageX - paddingLeft;
+    const contentY = imageY - paddingTop;
+
+    // Clamp to image bounds
+    const clampedX = Math.max(0, Math.min(contentX, imageInfo.displayedWidth || contentX));
+    const clampedY = Math.max(0, Math.min(contentY, imageInfo.displayedHeight || contentY));
+
     setMousePosition({ x, y });
-    setMagnifierPosition({ x: imageX, y: imageY });
+    setMagnifierPosition({ x: clampedX, y: clampedY });
   };
 
   const handleMouseEnter = () => {
@@ -44,8 +97,17 @@ const ImageMagnifier = ({
   };
 
   // Calculate the background position for the magnified image
-  const backgroundX = -(magnifierPosition.x * zoomLevel - magnifierSize / 2);
-  const backgroundY = -(magnifierPosition.y * zoomLevel - magnifierSize / 2);
+  // We need to map the displayed position to the natural image position
+  // and then calculate where to position the background so the cursor point is centered
+  const naturalX = magnifierPosition.x * imageInfo.scaleX;
+  const naturalY = magnifierPosition.y * imageInfo.scaleY;
+  
+  // The background is zoomed, so we need to position it so that the point under the cursor
+  // appears at the center of the magnifier
+  // Background size is zoomLevel * 100% of the magnifier size
+  // We want: naturalX * zoomLevel to be at magnifierSize / 2
+  const backgroundX = -(naturalX * zoomLevel - magnifierSize / 2);
+  const backgroundY = -(naturalY * zoomLevel - magnifierSize / 2);
 
   return (
     <div
@@ -60,6 +122,7 @@ const ImageMagnifier = ({
         src={src}
         alt={alt}
         className="w-full h-96 lg:h-[500px] object-contain p-8 pointer-events-none select-none"
+        onLoad={handleImageLoad}
       />
 
       {isHovering && (
@@ -73,7 +136,7 @@ const ImageMagnifier = ({
               width: `${magnifierSize}px`,
               height: `${magnifierSize}px`,
               backgroundImage: `url(${src})`,
-              backgroundSize: `${zoomLevel * 100}%`,
+              backgroundSize: `${imageInfo.naturalWidth * zoomLevel}px ${imageInfo.naturalHeight * zoomLevel}px`,
               backgroundPosition: `${backgroundX}px ${backgroundY}px`,
               backgroundRepeat: "no-repeat",
               transform: "translateZ(0)",

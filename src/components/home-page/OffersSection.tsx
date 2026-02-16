@@ -14,23 +14,23 @@ const OffersSection = () => {
       </div>
       <div className="grid gap-6 md:grid-cols-3">
         <Link
-          to="/glasses"
+          to="/custom-glasses"
           className="group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100 transition-all duration-300 hover:scale-[1.02] hover:shadow-medium hover:ring-primary-200"
         >
           <div className="absolute right-0 top-0 h-32 w-32 rounded-bl-full bg-primary-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           <div className="relative space-y-3">
             <div className="inline-flex rounded-full bg-primary-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary-700">
-              {t("home.offers.promotion.title")}
+              {t("home.offers.customGlasses.title")}
             </div>
             <div className="text-lg font-bold text-slate-900">
-              {t("home.offers.promotion.heading")}
+              {t("home.offers.customGlasses.heading")}
             </div>
             <p className="text-sm leading-relaxed text-slate-600">
-              {t("home.offers.promotion.description")}
+              {t("home.offers.customGlasses.description")}
             </p>
           </div>
           <div className="relative mt-6 flex items-center gap-2 text-sm font-semibold text-primary-600 transition-colors group-hover:text-primary-700">
-            {t("home.offers.promotion.cta")}
+            {t("home.offers.customGlasses.cta")}
             <span className="transition-transform duration-300 group-hover:translate-x-1">
               →
             </span>

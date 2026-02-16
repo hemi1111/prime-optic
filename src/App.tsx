@@ -14,6 +14,7 @@ import ExamBookingPage from "./pages/ExamBookingPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProfilePage from "./pages/ProfilePage";
+import CustomGlassesBuilderPage from "./pages/CustomGlassesBuilderPage";
 
 import "./App.css";
 
@@ -32,6 +33,7 @@ const App = () => {
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/exam" element={<ExamBookingPage />} />
+        <Route path="/custom-glasses" element={<CustomGlassesBuilderPage />} />
         <Route path="/admin" element={<AdminDashboardPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

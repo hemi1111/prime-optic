@@ -29,7 +29,6 @@ const CatalogPage = ({ type }: CatalogPageProps) => {
     setSearchQuery,
     filteredAndSortedProducts,
     toggleFilter,
-    filterOptions,
   } = useCatalogState(products);
 
   const title =
@@ -74,7 +73,6 @@ const CatalogPage = ({ type }: CatalogPageProps) => {
             onClose={() => setIsFiltersOpen(false)}
             selectedFilters={selectedFilters}
             onToggleFilter={toggleFilter}
-            filterOptions={filterOptions}
           />
 
           <CatalogProductGrid

@@ -22,10 +22,27 @@ const CatalogFiltersSidebar = ({
     { id: "round", label: t("productDetail.shapes.round") },
     { id: "square", label: t("productDetail.shapes.square") },
     { id: "cat-eye", label: t("productDetail.shapes.catEye") },
+    { id: "oval", label: t("productDetail.shapes.oval") },
+    { id: "aviator", label: t("productDetail.shapes.aviator") },
+    { id: "rectangular", label: t("productDetail.shapes.rectangular") },
+    { id: "oversized", label: t("productDetail.shapes.oversized") },
+    { id: "pilot", label: t("productDetail.shapes.pilot") },
+    { id: "rounded square", label: t("productDetail.shapes.roundedSquare") },
+    { id: "wrapped", label: t("productDetail.shapes.wrapped") },
+    { id: "sport", label: t("productDetail.shapes.sport") },
+    { id: "browline", label: t("productDetail.shapes.browline") },
   ];
   const materialOptions = [
     { id: "metal", label: t("productDetail.materials.metal") },
     { id: "plastic", label: t("productDetail.materials.plastic") },
+    { id: "acetate", label: t("productDetail.materials.acetate") },
+    { id: "titanium", label: t("productDetail.materials.titanium") },
+    { id: "mixed", label: t("productDetail.materials.mixed") },
+    { id: "nylon", label: t("productDetail.materials.nylon") },
+    { id: "carbon fiber", label: t("productDetail.materials.carbonFiber") },
+    { id: "TR90", label: t("productDetail.materials.TR90") },
+    { id: "recycled acetate", label: t("productDetail.materials.recycledAcetate") },
+    { id: "acetate/metal", label: t("productDetail.materials.acetateMetal") },
   ];
 
   return (

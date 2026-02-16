@@ -29,7 +29,6 @@ const BrandCatalogPage = () => {
     setSearchQuery,
     filteredAndSortedProducts,
     toggleFilter,
-    filterOptions,
   } = useCatalogState(products);
 
   if (brandSlug && !brand) {
@@ -91,7 +90,6 @@ const BrandCatalogPage = () => {
             onClose={() => setIsFiltersOpen(false)}
             selectedFilters={selectedFilters}
             onToggleFilter={toggleFilter}
-            filterOptions={filterOptions}
           />
 
           <CatalogProductGrid
