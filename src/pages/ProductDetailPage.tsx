@@ -9,6 +9,8 @@ import {
   getMaterialLabel,
   getShapeLabel,
   formatDimensions as formatDimensionsUtil,
+  getProductThumbnail,
+  getProductImages,
 } from "../utils/productDetail";
 
 import { useCartStore } from "../store/useCartStore";
@@ -18,7 +20,7 @@ import {
   ProductDetailError,
   ProductDetailNotFound,
   StoreLocationsModal,
-  ImageMagnifier,
+  ProductImageSlider,
 } from "../components/product-detail-page";
 
 const ProductDetailPage = () => {
@@ -36,7 +38,7 @@ const ProductDetailPage = () => {
         id: product.id,
         name: product.name,
         price: product.price,
-        imageUrl: product.imageUrl,
+        imageUrl: getProductThumbnail(product) ?? product.imageUrl,
         slug: product.slug,
         brand: product.brand,
         type: product.type,
@@ -55,9 +57,9 @@ const ProductDetailPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Product Image */}
         <div className="space-y-4">
-          {product.imageUrl ? (
-            <ImageMagnifier
-              src={product.imageUrl}
+          {getProductImages(product).length > 0 ? (
+            <ProductImageSlider
+              images={getProductImages(product)}
               alt={product.name}
               zoomLevel={2.5}
               magnifierSize={200}

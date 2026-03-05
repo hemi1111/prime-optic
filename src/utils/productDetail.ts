@@ -1,5 +1,22 @@
 type TFunction = (key: string) => string;
 
+/** Thumbnail is always imageUrl (images array is for the detail slider only). */
+export function getProductThumbnail(product: {
+  imageUrl?: string;
+}): string | undefined {
+  return product.imageUrl;
+}
+
+/** All images for the detail slider: imageUrl first, then images array. */
+export function getProductImages(product: {
+  images?: string[];
+  imageUrl?: string;
+}): string[] {
+  const first = product.imageUrl ? [product.imageUrl] : [];
+  const rest = product.images ?? [];
+  return [...first, ...rest].filter(Boolean);
+}
+
 export function getGenderLabel(t: TFunction, gender?: string): string {
   switch (gender) {
     case "men":

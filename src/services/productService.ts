@@ -103,6 +103,13 @@ export async function fetchAllProducts(): Promise<Product[]> {
   );
 }
 
+/** Firestore rejects undefined; strip so addDoc/updateDoc don't throw. */
+function withoutUndefined<T extends object>(obj: T): Partial<T> {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([, v]) => v !== undefined)
+  ) as Partial<T>;
+}
+
 export async function createProduct(
   productData: Omit<Product, "id">,
 ): Promise<string> {
@@ -112,7 +119,7 @@ export async function createProduct(
 
   const productsCol = collection(db, "products");
   const docRef = await addDoc(productsCol, {
-    ...productData,
+    ...withoutUndefined(productData as Partial<Product>),
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
@@ -130,7 +137,7 @@ export async function updateProduct(
 
   const productRef = doc(db, "products", id);
   await updateDoc(productRef, {
-    ...productData,
+    ...withoutUndefined(productData),
     updatedAt: serverTimestamp(),
   });
 }

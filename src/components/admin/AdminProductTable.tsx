@@ -1,4 +1,5 @@
 import type { Product, ProductType } from "../../types/product";
+import { getProductThumbnail } from "../../utils/productDetail";
 
 import Button from "../ui/Button";
 
@@ -82,9 +83,9 @@ const AdminProductTable = ({
               {products.map((product) => (
                 <tr key={product.id} className="border-b border-slate-100">
                   <td className="py-3 px-2">
-                    {product.imageUrl && (
+                    {getProductThumbnail(product) && (
                       <img
-                        src={product.imageUrl}
+                        src={getProductThumbnail(product)}
                         alt={product.name}
                         className="w-12 h-12 object-cover rounded-lg"
                       />

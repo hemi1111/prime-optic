@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { type Product, type CartItem } from "../types/product";
+import { getProductThumbnail } from "../utils/productDetail";
 
 import { useCartStore } from "../store/useCartStore";
 import { useFavoritesStore } from "../store/useFavoritesStore";
@@ -24,15 +25,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const [showBlueLightOption, setShowBlueLightOption] = useState(false);
   const [addBlueLightFilter, setAddBlueLightFilter] = useState(false);
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
-  const [selectedLensOption, setSelectedLensOption] = useState(
-    product.lensOptions?.[0] || { id: "standard", name: "Standard" },
-  );
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const isWishlisted = isFavorite(product.id);
 
   const blueLightFilterPrice = product.blueLightFilterPrice || 25;
-  const finalPrice = product.price + (selectedLensOption?.priceAdjustment || 0);
+  const finalPrice = product.price;
 
   const renderStars = (rating: number) => {
     return [...Array(5)].map((_, index) => (
@@ -66,7 +63,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         id: product.id,
         name: product.name,
         price: cartPrice,
-        imageUrl: product.imageUrl,
+        imageUrl: getProductThumbnail(product) ?? product.imageUrl,
         addBlueLightFilter,
       } as CartItem,
       1,
@@ -81,20 +78,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
     }, 300);
   };
 
-  const nextImage = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const images = product.images || [product.imageUrl].filter(Boolean);
-    setCurrentImageIndex((prev) => (prev + 1) % images.length);
-  };
-
-  const prevImage = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const images = product.images || [product.imageUrl].filter(Boolean);
-    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
-  };
-
   const toggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -107,9 +90,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
     }
   };
 
-  const currentImage = product.images?.[currentImageIndex] || product.imageUrl;
-  const hasMultipleImages = product.images && product.images.length > 1;
-
   return (
     <Card
       as="article"
@@ -117,7 +97,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       className="group relative w-full md:max-w-sm mx-auto shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
     >
       <Link to={`/products/${product.slug}`}>
-        <div className="relative h-64 bg-gray-50">
+        <div className="relative h-64 bg-white">
           {/* Badges */}
           <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
             {product.isBestSeller && (
@@ -132,52 +112,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
             )}
           </div>
 
-          {/* Navigation Arrows */}
-          {hasMultipleImages && (
-            <>
-              <button
-                onClick={prevImage}
-                className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-all"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </button>
-              <button
-                onClick={nextImage}
-                className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-all"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
-            </>
-          )}
-
-          {/* Product Image */}
-          {currentImage ? (
+          {/* Product Image (thumbnail = imageUrl only, no slider) */}
+          {product.imageUrl ? (
             <img
-              src={currentImage}
+              src={product.imageUrl}
               alt={product.name}
               className="w-full h-full object-contain p-4 transition-transform duration-300 group-hover:scale-105"
             />
@@ -261,32 +199,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
             </span>
           )}
         </div>
-
-        {/* Lens Options */}
-        {product.lensOptions && product.lensOptions.length > 0 && (
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">{t("common.lens")}:</label>
-            <select
-              value={selectedLensOption.id}
-              onChange={(e) => {
-                const option = product.lensOptions?.find(
-                  (opt) => opt.id === e.target.value,
-                );
-                if (option) setSelectedLensOption(option);
-              }}
-              className="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              {product.lensOptions.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option.name}
-                  {option.priceAdjustment
-                    ? ` (+€${option.priceAdjustment})`
-                    : ""}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
 
         {/* Actions */}
         <div className="flex gap-2 pt-2">

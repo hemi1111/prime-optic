@@ -3,7 +3,8 @@ import { mockProducts } from "../data/mockProducts";
 
 export const populateSampleProducts = async (count = 10) => {
   try {
-    const sampleProducts = mockProducts.slice(0, count);
+    // const sampleProducts = mockProducts.slice(0, count);
+    const sampleProducts = mockProducts
 
     for (let i = 0; i < sampleProducts.length; i++) {
       const product = sampleProducts[i];

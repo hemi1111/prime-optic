@@ -22,6 +22,7 @@ interface ProductFormData {
   oldPrice: string;
   gender: "men" | "women" | "unisex" | "kids";
   imageUrl: string;
+  images: string[];
   description: string;
   slug: string;
   frameMaterial: string;
@@ -53,6 +54,7 @@ const AdminDashboardPage = () => {
     oldPrice: "",
     gender: "unisex",
     imageUrl: "",
+    images: [],
     description: "",
     slug: "",
     frameMaterial: "",
@@ -120,6 +122,11 @@ const AdminDashboardPage = () => {
         ...formData,
         price: parseFloat(formData.price),
         oldPrice: formData.oldPrice ? parseFloat(formData.oldPrice) : undefined,
+        imageUrl: formData.imageUrl || undefined,
+        images: (() => {
+          const valid = formData.images.filter(Boolean);
+          return valid.length > 0 ? valid : undefined;
+        })(),
         rating: 0,
         reviewCount: 0,
         frameMaterial:
@@ -166,6 +173,7 @@ const AdminDashboardPage = () => {
       oldPrice: product.oldPrice?.toString() || "",
       gender: product.gender || "unisex",
       imageUrl: product.imageUrl || "",
+      images: product.images ?? [],
       description: product.description || "",
       slug: product.slug,
       frameMaterial: product.frameMaterial || "",
@@ -258,6 +266,7 @@ const AdminDashboardPage = () => {
       oldPrice: "",
       gender: "unisex",
       imageUrl: "",
+      images: [],
       description: "",
       slug: "",
       frameMaterial: "",
@@ -422,7 +431,7 @@ const AdminDashboardPage = () => {
 
             <div className="space-y-1">
               <label className="block text-xs font-medium text-slate-700">
-                Image URL
+                Image URL (thumbnail for cart, cards, listings)
               </label>
               <input
                 type="url"
@@ -432,6 +441,29 @@ const AdminDashboardPage = () => {
                 }
                 className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
               />
+            </div>
+
+            <div className="md:col-span-2 space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
+                Images (one URL per line, for product detail slider)
+              </label>
+              <textarea
+                value={formData.images.join("\n")}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    images: e.target.value.split("\n").map((s) => s.trim()),
+                  })
+                }
+                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-mono"
+                rows={4}
+                placeholder="One URL per line. Shown in slider on product page."
+              />
+              {formData.images.filter(Boolean).length > 0 && (
+                <p className="text-xs text-slate-500">
+                  {formData.images.filter(Boolean).length} image(s) in slider.
+                </p>
+              )}
             </div>
 
             {/* Specifications */}
