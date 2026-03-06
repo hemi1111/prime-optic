@@ -14,6 +14,35 @@ type PrescriptionEye = {
   add: string;
 };
 
+const formatEyePrescription = (
+  eyeLabel: string,
+  eye: PrescriptionEye
+): string | null => {
+  const parts: string[] = [];
+
+  if (eye.sph.trim()) parts.push(`SPH ${eye.sph.trim()}`);
+  if (eye.cyl.trim()) parts.push(`CYL ${eye.cyl.trim()}`);
+  if (eye.axis.trim()) parts.push(`AXIS ${eye.axis.trim()}`);
+  if (eye.add.trim()) parts.push(`ADD ${eye.add.trim()}`);
+
+  if (parts.length === 0) {
+    return null;
+  }
+
+  return `${eyeLabel}: ${parts.join(", ")}`;
+};
+
+const formatPrescriptionVariant = (
+  rightEye: PrescriptionEye,
+  leftEye: PrescriptionEye
+): string | undefined => {
+  const right = formatEyePrescription("OD", rightEye);
+  const left = formatEyePrescription("OS", leftEye);
+  const sections = [right, left].filter(Boolean) as string[];
+
+  return sections.length > 0 ? sections.join(" | ") : undefined;
+};
+
 const CustomGlassesBuilderPage = () => {
   const { t } = useTranslation();
   const toast = useToast();
@@ -63,11 +92,7 @@ const CustomGlassesBuilderPage = () => {
 
     try {
       const totalPrice = calculateTotalPrice();
-      const prescriptionData = {
-        rightEye,
-        leftEye,
-        lensType: selectedLensType.id,
-      };
+      const prescriptionVariant = formatPrescriptionVariant(rightEye, leftEye);
 
       // Create a custom name that includes lens type
       const customName = `${selectedFrame.name} - ${selectedLensType.name}${
@@ -79,7 +104,7 @@ const CustomGlassesBuilderPage = () => {
         name: customName,
         price: totalPrice,
         addBlueLightFilter,
-        variant: JSON.stringify(prescriptionData),
+        variant: prescriptionVariant,
       };
 
       addItem(cartItem, 1);

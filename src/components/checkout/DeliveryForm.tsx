@@ -83,10 +83,10 @@ const DeliveryForm = ({
         ))}
       </div>
 
-      {selectedDelivery.id === "home_delivery" && (
+      {selectedDelivery.id === "home" && (
         <div className="space-y-3 p-4 bg-slate-50 rounded-lg border">
           <h4 className="font-medium text-slate-900">
-            {t("checkout.deliveryAddress")}
+            {t("checkout.deliveryAddress")} 
           </h4>
           <Field
             label={t("common.streetAddress")}

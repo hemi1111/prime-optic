@@ -1,6 +1,8 @@
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
   onAuthStateChanged,
   signOut,
   getAuth,
@@ -69,6 +71,30 @@ export const logInWithEmailAndPassword = async (
         await createUserDocument(
           userCredential.user.uid,
           userCredential.user.email || email,
+          "user",
+          userCredential.user.displayName || undefined
+        );
+      }
+    }
+
+    return userCredential.user;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const signInWithGoogle = async () => {
+  try {
+    const userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
+
+    if (userCredential.user && db) {
+      const userDocRef = doc(db, "users", userCredential.user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (!userDoc.exists()) {
+        await createUserDocument(
+          userCredential.user.uid,
+          userCredential.user.email || "",
           "user",
           userCredential.user.displayName || undefined
         );
