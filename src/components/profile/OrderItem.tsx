@@ -38,8 +38,13 @@ const OrderItem = ({ item, index: _index }: OrderItemProps) => {
               {item.name}
             </h5>
             <p className="text-xs text-slate-500 mt-0.5">{item.brand}</p>
-            <div className="flex items-center gap-3 mt-2 text-xs text-slate-600">
+            <div className="flex items-center gap-3 mt-2 text-xs text-slate-600 flex-wrap">
               <span>Qty: {item.quantity}</span>
+              {item.selectedColorName && (
+                <span>
+                  {t("common.color")}: {item.selectedColorName}
+                </span>
+              )}
               {item.addBlueLightFilter && (
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
                   <svg
@@ -53,7 +58,7 @@ const OrderItem = ({ item, index: _index }: OrderItemProps) => {
                       clipRule="evenodd"
                     />
                   </svg>
-                  Blue Light Filter
+                  {t("common.blueLightFilter")}
                 </span>
               )}
             </div>

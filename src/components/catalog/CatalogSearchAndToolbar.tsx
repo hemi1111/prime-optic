@@ -20,7 +20,7 @@ const CatalogSearchAndToolbar = ({
   onSortChange,
   resultCount,
   selectedFiltersCount,
-  isFiltersOpen,
+  isFiltersOpen: _isFiltersOpen,
   onToggleFilters,
 }: CatalogSearchAndToolbarProps) => {
   const { t } = useTranslation();

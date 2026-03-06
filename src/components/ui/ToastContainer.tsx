@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
-import Toast, { type ToastType } from "./Toast";
+import ToastComponent, { type ToastType, type Toast } from "./Toast";
 
 type ToastContextType = {
   showToast: (message: string, type: ToastType, duration?: number) => void;
@@ -65,7 +65,7 @@ const ToastList = ({ toasts, onDismiss }: ToastListProps) => {
     >
       {toasts.map((toast) => (
         <div key={toast.id} className="pointer-events-auto">
-          <Toast toast={toast} onDismiss={onDismiss} />
+          <ToastComponent toast={toast} onDismiss={onDismiss} />
         </div>
       ))}
     </div>

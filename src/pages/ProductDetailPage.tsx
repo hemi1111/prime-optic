@@ -15,6 +15,7 @@ import {
 } from "../utils/productDetail";
 
 import { useCartStore } from "../store/useCartStore";
+import type { CartItem } from "../types/product";
 
 import {
   ProductDetailSkeleton,
@@ -32,21 +33,30 @@ const ProductDetailPage = () => {
   const { product, isLoading, error } = useProductBySlug(slug);
   const addItem = useCartStore((state) => state.addItem);
   const [isStoreModalOpen, setIsStoreModalOpen] = useState(false);
+  const [selectedColorIndex, setSelectedColorIndex] = useState(0);
+  const [addBlueLightFilter, setAddBlueLightFilter] = useState(false);
+
+  const blueLightFilterPrice = product?.blueLightFilterPrice ?? 25;
+  const cartPrice =
+    product && addBlueLightFilter && product.blueLightFilter
+      ? product.price + blueLightFilterPrice
+      : product?.price ?? 0;
 
   const handleAddToCart = () => {
     if (!product) return;
-    addItem(
-      {
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        imageUrl: getProductThumbnail(product) ?? product.imageUrl,
-        slug: product.slug,
-        brand: product.brand,
-        type: product.type,
-      },
-      1,
-    );
+    const selectedColor = product.colorOptions?.[selectedColorIndex];
+    const payload: Omit<CartItem, "quantity"> = {
+      id: product.id,
+      name: product.name,
+      price: cartPrice,
+      imageUrl: getProductThumbnail(product) ?? product.imageUrl,
+      slug: product.slug,
+      brand: product.brand,
+      type: product.type,
+      addBlueLightFilter: product.blueLightFilter ? addBlueLightFilter : undefined,
+      selectedColorName: selectedColor?.name,
+    };
+    addItem(payload, 1);
     toast.success(t("toast.addToCart.success"));
   };
 
@@ -117,6 +127,35 @@ const ProductDetailPage = () => {
             )}
           </div>
 
+          {/* Color options */}
+          {product.colorOptions && product.colorOptions.length > 0 && (
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft ring-1 ring-slate-100">
+              <p className="text-sm font-medium text-slate-700 mb-3">
+                {t("common.color")}:{" "}
+                <span className="font-semibold text-slate-900">
+                  {product.colorOptions[selectedColorIndex]?.name}
+                </span>
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {product.colorOptions.map((color, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => setSelectedColorIndex(index)}
+                    className={`w-8 h-8 rounded-full border-2 transition-all shrink-0 ${
+                      selectedColorIndex === index
+                        ? "border-primary-500 ring-2 ring-primary-200 shadow-md"
+                        : "border-slate-300 hover:border-slate-400"
+                    }`}
+                    style={{ backgroundColor: color.hex }}
+                    title={color.name}
+                    aria-label={color.name}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Price & CTA block */}
           <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-6 ring-1 ring-slate-100 space-y-4">
             <div className="flex items-baseline gap-4">
@@ -145,20 +184,30 @@ const ProductDetailPage = () => {
               </button>
             </div>
 
-            {product.blueLightFilter && product.blueLightFilterPrice && (
-              <div className="rounded-lg border border-primary-200 bg-primary-50/80 p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-medium text-primary-900">
-                      {t("common.blueLightFilter")}
-                    </h4>
-                    <p className="text-sm text-primary-700">
-                      {t("catalog.protectYourEyes")}
+            {product.blueLightFilter && product.blueLightFilterPrice != null && (
+              <div className="rounded-lg border border-primary-200 bg-primary-50/80 p-4 space-y-3">
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id="detail-bluelight"
+                    checked={addBlueLightFilter}
+                    onChange={(e) => setAddBlueLightFilter(e.target.checked)}
+                    className="mt-1 w-4 h-4 text-primary-600 rounded border-primary-300 focus:ring-2 focus:ring-primary-500"
+                  />
+                  <label
+                    htmlFor="detail-bluelight"
+                    className="flex-1 cursor-pointer"
+                  >
+                    <span className="font-medium text-primary-900">
+                      {t("common.addBlueLightFilter")}{" "}
+                      <span className="font-semibold text-primary-800">
+                        (+{formatPrice(blueLightFilterPrice)})
+                      </span>
+                    </span>
+                    <p className="text-sm text-primary-700 mt-0.5">
+                      {t("common.blueLightDescription")}
                     </p>
-                  </div>
-                  <span className="font-semibold text-primary-900">
-                    +{formatPrice(product.blueLightFilterPrice)}
-                  </span>
+                  </label>
                 </div>
               </div>
             )}
@@ -178,7 +227,7 @@ const ProductDetailPage = () => {
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
-              {t("common.addToCart")} — {formatPrice(product.price)}
+              {t("common.addToCart")} — {formatPrice(cartPrice)}
             </button>
           </div>
 

@@ -1,6 +1,8 @@
 import {
   addDoc,
   collection,
+  doc,
+  getDoc,
   serverTimestamp,
   query,
   where,
@@ -9,6 +11,17 @@ import {
 } from "firebase/firestore";
 import { db } from "../config/firebase";
 import type { Order } from "../types/product";
+
+export async function getOrderById(orderId: string): Promise<Order | null> {
+  if (!db) {
+    console.warn("[Orders] Firestore is not configured.");
+    return null;
+  }
+  const orderRef = doc(db, "orders", orderId);
+  const snapshot = await getDoc(orderRef);
+  if (!snapshot.exists()) return null;
+  return { id: snapshot.id, ...snapshot.data() } as Order;
+}
 
 export async function createOrder(
   order: Omit<Order, "id" | "createdAt" | "status">,

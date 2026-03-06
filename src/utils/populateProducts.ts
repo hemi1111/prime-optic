@@ -1,7 +1,7 @@
 import { createProduct } from "../services/productService";
 import { mockProducts } from "../data/mockProducts";
 
-export const populateSampleProducts = async (count = 10) => {
+export const populateSampleProducts = async (_count = 10) => {
   try {
     // const sampleProducts = mockProducts.slice(0, count);
     const sampleProducts = mockProducts

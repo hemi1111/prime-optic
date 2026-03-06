@@ -9,6 +9,7 @@ import BrandCatalogPage from "./pages/BrandCatalogPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
+import OrderReviewPage from "./pages/OrderReviewPage";
 import AuthPage from "./pages/AuthPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import ExamBookingPage from "./pages/ExamBookingPage";
@@ -34,6 +35,7 @@ const App = () => {
         <Route path="/cart" element={<CartPage />} />
         <Route path="/favorites" element={<FavoritesPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/orders/:orderId/review" element={<OrderReviewPage />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/exam" element={<ExamBookingPage />} />
