@@ -112,7 +112,7 @@ const ImageMagnifier = ({
   return (
     <div
       ref={containerRef}
-      className="relative bg-gray-50 rounded-xl overflow-hidden"
+      className="relative overflow-hidden"
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -121,7 +121,7 @@ const ImageMagnifier = ({
         ref={imageRef}
         src={src}
         alt={alt}
-        className="w-full h-96 lg:h-[500px] object-contain p-8 pointer-events-none select-none"
+        className="w-full max-h-[640px] object-contain object-center pointer-events-none select-none block"
         onLoad={handleImageLoad}
       />
 
@@ -143,11 +143,11 @@ const ImageMagnifier = ({
             }}
           />
 
-          {/* Overlay to darken non-magnified area */}
+          {/* Overlay to grey out image outside magnifier */}
           <div
             className="absolute inset-0 pointer-events-none z-0"
             style={{
-              background: `radial-gradient(circle ${magnifierSize / 2}px at ${mousePosition.x}px ${mousePosition.y}px, transparent 0%, rgba(0, 0, 0, 0.1) 100%)`,
+              background: `radial-gradient(circle ${magnifierSize / 2}px at ${mousePosition.x}px ${mousePosition.y}px, transparent 0%, rgba(0, 0, 0, 0.25) 100%)`,
             }}
           />
         </>

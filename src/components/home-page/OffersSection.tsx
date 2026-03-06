@@ -12,7 +12,7 @@ const OffersSection = () => {
           {t("home.offers.title")}
         </h2>
       </div>
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:gap-6 md:grid-cols-3">
         <Link
           to="/custom-glasses"
           className="group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100 transition-all duration-300 hover:scale-[1.02] hover:shadow-medium hover:ring-primary-200"

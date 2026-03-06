@@ -5,6 +5,10 @@ export const it: Record<string, string> = {
   "nav.signIn": "Accedi",
   "nav.signOut": "Esci",
   "nav.cart": "Carrello",
+  "nav.profile": "Profilo",
+  "nav.settings": "Impostazioni",
+  "settings.currency": "Valuta",
+  "settings.language": "Lingua",
   "currency.eur": "Euro",
   "currency.usd": "Dollaro USA",
   "currency.all": "Lek albanese",
@@ -76,6 +80,10 @@ export const it: Record<string, string> = {
   "footer.tagline": "Occhiali da vista e da sole di alta qualità.",
   "footer.contact": "Contatto: primeoptic@gmail.com",
   "footer.phone": "Telefono: +000 111 234",
+  "footer.copyright": "© 2026 Prime Optic",
+  "footer.followUs": "Seguici",
+  "footer.address": "Vienici a trovare in negozio",
+  "footer.hours": "Lun–Sab 9:00–20:00",
   "catalog.noResults": "Nessun prodotto trovato",
   "catalog.loading": "Caricamento prodotti...",
   "catalog.error": "Caricamento prodotti fallito",
@@ -257,6 +265,10 @@ export const it: Record<string, string> = {
     "Sfoglia la nostra selezione curata di montature premium per occhiali.",
   "catalog.description.sunglasses":
     "Sfoglia la nostra selezione curata di montature premium per occhiali da sole.",
+  "catalog.intro.glasses":
+    "Trova la montatura perfetta per l'uso quotidiano. Forme classiche e design moderni, occhiali da vista di marchi affidabili con montatura e assistenza professionale.",
+  "catalog.intro.sunglasses":
+    "Esplora la protezione solare per ogni occasione. Lenti polarizzate, protezione UV e montature premium: scopri il tuo prossimo paio di occhiali da sole.",
   "catalog.productsFound": "prodotti trovati",
   "catalog.product": "prodotto",
   "catalog.products": "prodotti",

@@ -39,11 +39,11 @@ const CatalogProductGrid = ({
 
   if (isLoading) {
     return (
-      <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-3 sm:gap-4 md:gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: 6 }).map((_, idx) => (
           <div
             key={idx}
-            className="h-80 animate-pulse rounded-2xl bg-slate-100"
+            className="h-64 md:h-80 animate-pulse rounded-2xl bg-slate-100 min-w-0"
           />
         ))}
       </div>
@@ -101,11 +101,11 @@ const CatalogProductGrid = ({
   }
 
   return (
-    <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-3 sm:gap-4 md:gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
       {products.map((product, idx) => (
         <div
           key={product.id}
-          className="animate-fade-in"
+          className="animate-fade-in min-w-0"
           style={{ animationDelay: `${idx * 50}ms` }}
         >
           <ProductCard product={product} />

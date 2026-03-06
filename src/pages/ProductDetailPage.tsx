@@ -64,46 +64,28 @@ const ProductDetailPage = () => {
   if (error) return <ProductDetailError error={error} />;
   if (!product) return <ProductDetailNotFound />;
 
+  const sizeGuideBlock = (
+    <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-soft ring-1 ring-slate-100 lg:p-4">
+      <h3 className="font-semibold text-slate-900 mb-2">
+        {t("productDetail.sizeGuide")}
+      </h3>
+      <p className="text-sm text-slate-600 mb-3">
+        {t("productDetail.sizesInMm")}
+      </p>
+      <img
+        src="https://assets.glassesdirect.co.uk/media/filer_public/07/76/07765c92-6dc2-47cc-b3d4-56093aa93a99/diagram-glasses-frame-size-medium-glassesdirect.png"
+        alt={t("productDetail.sizeGuide")}
+        className="w-full h-auto rounded-lg"
+      />
+    </div>
+  );
+
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* Product Image */}
-        <div className="space-y-4">
-          {getProductImages(product).length > 0 ? (
-            <ProductImageSlider
-              images={getProductImages(product)}
-              alt={product.name}
-              zoomLevel={1.35}
-              magnifierSize={160}
-            />
-          ) : (
-            <div className="w-full aspect-square max-h-[500px] bg-slate-100 rounded-xl flex items-center justify-center">
-              <span className="text-slate-500 text-lg">
-                {t("common.noImage")}
-              </span>
-            </div>
-          )}
-
-          {/* Size Guide */}
-          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-soft ring-1 ring-slate-100">
-            <h3 className="font-semibold text-slate-900 mb-2">
-              {t("productDetail.sizeGuide")}
-            </h3>
-            <p className="text-sm text-slate-600 mb-3">
-              {t("productDetail.sizesInMm")}
-            </p>
-            <img
-              src="https://assets.glassesdirect.co.uk/media/filer_public/07/76/07765c92-6dc2-47cc-b3d4-56093aa93a99/diagram-glasses-frame-size-medium-glassesdirect.png"
-              alt={t("productDetail.sizeGuide")}
-              className="w-full h-auto rounded-lg"
-            />
-          </div>
-        </div>
-
-        {/* Product Info */}
-        <div className="space-y-6">
-          {/* Header */}
-          <div className="space-y-3">
+    <div className="container mx-auto px-3 py-4 max-w-6xl lg:px-4 lg:py-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-4 lg:gap-x-6 lg:gap-y-6 lg:grid-rows-[auto_auto]">
+        {/* Left column: title + image + size guide in one block (no grid gap between them) */}
+        <div className="order-1 flex flex-col gap-2 lg:col-start-1 lg:row-start-1 lg:row-span-2 min-h-0">
+          <div className="space-y-1.5 lg:space-y-2">
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium text-slate-500 uppercase tracking-wider">
                 {product.brand}
@@ -117,7 +99,7 @@ const ProductDetailPage = () => {
                 </>
               )}
             </div>
-            <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
               {product.name}
             </h1>
             {product.sku && (
@@ -126,10 +108,35 @@ const ProductDetailPage = () => {
               </p>
             )}
           </div>
+          <div className="min-h-0 flex-1 lg:flex-initial">
+            {getProductImages(product).length > 0 ? (
+              <ProductImageSlider
+                images={getProductImages(product)}
+                alt={product.name}
+                zoomLevel={1.35}
+                magnifierSize={160}
+              />
+            ) : (
+              <div className="w-full aspect-square max-h-[500px] bg-slate-100 rounded-xl flex items-center justify-center">
+                <span className="text-slate-500 text-lg">
+                  {t("common.noImage")}
+                </span>
+              </div>
+            )}
+          </div>
+          <div className="hidden lg:block">
+            {sizeGuideBlock}
+          </div>
+        </div>
 
-          {/* Color options */}
-          {product.colorOptions && product.colorOptions.length > 0 && (
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft ring-1 ring-slate-100">
+        {/* Size guide on mobile only: last in order */}
+        <div className="order-6 lg:hidden">
+          {sizeGuideBlock}
+        </div>
+
+        {/* Color options: order 3, right column - mobile only; on desktop it's inside the add-to-cart card */}
+        {product.colorOptions && product.colorOptions.length > 0 && (
+          <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-soft ring-1 ring-slate-100 order-3 lg:hidden">
               <p className="text-sm font-medium text-slate-700 mb-3">
                 {t("common.color")}:{" "}
                 <span className="font-semibold text-slate-900">
@@ -156,8 +163,36 @@ const ProductDetailPage = () => {
             </div>
           )}
 
-          {/* Price & CTA block */}
-          <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-6 ring-1 ring-slate-100 space-y-4">
+        {/* Price & CTA block: order 4, right column - includes color picker on desktop, fit-content height */}
+        <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-4 ring-1 ring-slate-100 space-y-4 order-4 lg:col-start-2 lg:row-start-1 h-fit lg:p-6">
+            {/* Color picker - desktop only (inside add-to-cart card) */}
+            {product.colorOptions && product.colorOptions.length > 0 && (
+              <div className="hidden lg:block">
+                <p className="text-sm font-medium text-slate-700 mb-3">
+                  {t("common.color")}:{" "}
+                  <span className="font-semibold text-slate-900">
+                    {product.colorOptions[selectedColorIndex]?.name}
+                  </span>
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {product.colorOptions.map((color, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => setSelectedColorIndex(index)}
+                      className={`w-8 h-8 rounded-full border-2 transition-all shrink-0 ${
+                        selectedColorIndex === index
+                          ? "border-primary-500 ring-2 ring-primary-200 shadow-md"
+                          : "border-slate-300 hover:border-slate-400"
+                      }`}
+                      style={{ backgroundColor: color.hex }}
+                      title={color.name}
+                      aria-label={color.name}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="flex items-baseline gap-4">
               <span className="text-3xl font-bold text-slate-900">
                 {formatPrice(product.price)}
@@ -185,7 +220,7 @@ const ProductDetailPage = () => {
             </div>
 
             {product.blueLightFilter && product.blueLightFilterPrice != null && (
-              <div className="rounded-lg border border-primary-200 bg-primary-50/80 p-4 space-y-3">
+              <div className="rounded-lg border border-primary-200 bg-primary-50/80 p-3 space-y-3 lg:p-4">
                 <div className="flex items-start gap-3">
                   <input
                     type="checkbox"
@@ -229,15 +264,15 @@ const ProductDetailPage = () => {
               </svg>
               {t("common.addToCart")} — {formatPrice(cartPrice)}
             </button>
-          </div>
+        </div>
 
-          {/* Product Details card */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft ring-1 ring-slate-100">
-            <h2 className="text-lg font-bold text-slate-900 mb-4">
+        {/* Product Details card: order 5, right column */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft ring-1 ring-slate-100 order-5 lg:col-start-2 lg:row-start-2 lg:p-6">
+            <h2 className="text-lg font-bold text-slate-900 mb-3 lg:mb-4">
               {t("productDetail.productDetails")}
             </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
               <div className="space-y-3">
                 <h3 className="text-sm font-semibold text-slate-700 border-b border-slate-200 pb-2">
                   {t("productDetail.specifications")}
@@ -316,7 +351,7 @@ const ProductDetailPage = () => {
             </div>
 
             {(product.lenseTechnology || (product.features && product.features.length > 0) || product.description) && (
-              <div className="mt-6 pt-6 border-t border-slate-100 space-y-4">
+              <div className="mt-4 pt-4 border-t border-slate-100 space-y-4 lg:mt-6 lg:pt-6">
                 {product.lenseTechnology && (
                   <div>
                     <h4 className="text-sm font-semibold text-slate-800 mb-1">{t("productDetail.lenseTechnology")}</h4>
@@ -342,12 +377,11 @@ const ProductDetailPage = () => {
               </div>
             )}
 
-            <div className="mt-4 pt-4 border-t border-slate-100 flex flex-wrap gap-4 text-xs text-slate-500">
+            <div className="mt-3 pt-3 border-t border-slate-100 flex flex-wrap gap-3 text-xs text-slate-500 lg:mt-4 lg:pt-4 lg:gap-4">
               {product.origin && <span>{t("productDetail.origin")}: {product.origin}</span>}
               {product.warranty && <span>{t("productDetail.warranty")}: {product.warranty}</span>}
               {product.upc && <span>{t("productDetail.upc")}: {product.upc}</span>}
             </div>
-          </div>
         </div>
       </div>
 

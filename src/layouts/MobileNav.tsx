@@ -9,6 +9,7 @@ import { getInitials } from "../utils/format";
 
 import LanguageSwitcher from "../components/LanguageSwitcher";
 import CurrencySwitcher from "../components/CurrencySwitcher";
+import SocialLinks from "../components/SocialLinks";
 
 const LogoIcon = () => (
   <svg
@@ -223,16 +224,19 @@ const MobileNav = () => {
             )}
           </nav>
 
-          <div className="p-4 border-t border-slate-200 bg-white">
-            <div className="mb-3 flex flex-col gap-3">
-              <CurrencySwitcher />
-              <LanguageSwitcher />
-            </div>
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <div className="flex items-center justify-center w-6 h-6 rounded bg-gradient-to-br from-primary-500 to-primary-600">
-                <LogoIcon />
+          <div className="border-t border-slate-200 bg-white">
+            <div className="p-4 border-b border-slate-100">
+              <p className="text-xs font-medium text-slate-500 mb-3">
+                {t("nav.settings")}
+              </p>
+              <div className="flex flex-col gap-3">
+                <CurrencySwitcher />
+                <LanguageSwitcher />
               </div>
-              <span className="font-medium">{t("footer.shopName")}</span>
+            </div>
+            <div className="p-4 flex flex-col gap-3 items-center">
+              <SocialLinks className="justify-center" />
+              <p className="text-xs text-slate-500">{t("footer.copyright")}</p>
             </div>
           </div>
         </div>

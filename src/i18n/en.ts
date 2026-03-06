@@ -5,6 +5,10 @@ export const en: Record<string, string> = {
   "nav.signIn": "Sign in",
   "nav.signOut": "Sign out",
   "nav.cart": "Cart",
+  "nav.profile": "Profile",
+  "nav.settings": "Settings",
+  "settings.currency": "Currency",
+  "settings.language": "Language",
   "currency.eur": "Euro",
   "currency.usd": "US dollar",
   "currency.all": "Albanian lek",
@@ -75,6 +79,10 @@ export const en: Record<string, string> = {
   "footer.tagline": "High-quality prescription glasses and sunglasses.",
   "footer.contact": "Contact: primeoptic@gmail.com",
   "footer.phone": "Phone: +000 111 234",
+  "footer.copyright": "© 2026 Prime Optic",
+  "footer.followUs": "Follow us",
+  "footer.address": "Visit us at our store",
+  "footer.hours": "Mon–Sat 9:00–20:00",
   "catalog.noResults": "No products found",
   "catalog.loading": "Loading products...",
   "catalog.error": "Failed to load products",
@@ -255,6 +263,10 @@ export const en: Record<string, string> = {
     "Browse our curated selection of premium glasses frames.",
   "catalog.description.sunglasses":
     "Browse our curated selection of premium sunglasses frames.",
+  "catalog.intro.glasses":
+    "Find the perfect frame for everyday wear. From classic shapes to modern designs, we offer prescription-ready glasses from trusted brands with expert fitting and care.",
+  "catalog.intro.sunglasses":
+    "Explore stylish sun protection for every occasion. Polarized lenses, UV protection, and premium frames—discover your next favorite pair of sunglasses.",
   "catalog.productsFound": "products found",
   "catalog.product": "product",
   "catalog.products": "products",

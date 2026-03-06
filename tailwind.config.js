@@ -55,7 +55,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['system-ui', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['Plus Jakarta Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
     },
   },

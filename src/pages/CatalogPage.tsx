@@ -46,14 +46,22 @@ const CatalogPage = ({ type }: CatalogPageProps) => {
     type === "glasses"
       ? t("catalog.description.glasses")
       : t("catalog.description.sunglasses");
+  const intro =
+    type === "glasses"
+      ? t("catalog.intro.glasses")
+      : t("catalog.intro.sunglasses");
 
   return (
     <div className="space-y-8 pb-8">
-      <header className="space-y-3">
+      <header className="rounded-2xl bg-gradient-to-br from-slate-50 via-white to-primary-50/30 border border-slate-100 px-5 py-6 md:px-8 md:py-8 space-y-4">
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
           {title}
         </h1>
         <p className="text-base text-slate-600 md:text-lg">{description}</p>
+        <p className="text-sm text-slate-500 leading-relaxed max-w-2xl">
+          {intro}
+        </p>
+        <div className="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
       </header>
 
       <div className="grid gap-6 lg:grid-cols-[280px,1fr]">

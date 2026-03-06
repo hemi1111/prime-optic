@@ -5,6 +5,10 @@ export const sq: Record<string, string> = {
   "nav.signIn": "Hyr",
   "nav.signOut": "Dil",
   "nav.cart": "Shporta",
+  "nav.profile": "Profili",
+  "nav.settings": "Cilësimet",
+  "settings.currency": "Valuta",
+  "settings.language": "Gjuha",
   "currency.eur": "Euro",
   "currency.usd": "Dollari amerikan",
   "currency.all": "Leku shqiptar",
@@ -75,6 +79,10 @@ export const sq: Record<string, string> = {
   "footer.tagline": "Syze optike dhe syze dielli me cilësi të lartë",
   "footer.contact": "Kontakt: primeoptic@gmail.com",
   "footer.phone": "Telefon: +000 111 234",
+  "footer.copyright": "© 2026 Prime Optic",
+  "footer.followUs": "Na ndiqni",
+  "footer.address": "Na vizitoni në dyqan",
+  "footer.hours": "Hënë–Shtu 9:00–20:00",
   "catalog.noResults": "Nuk u gjetën produkte",
   "catalog.loading": "Duke ngarkuar produktet...",
   "catalog.error": "Dështoi ngarkimi i produkteve",
@@ -256,6 +264,10 @@ export const sq: Record<string, string> = {
     "Shfletoni përzgjedhjen tonë të kuruar të kornizave premium syzash.",
   "catalog.description.sunglasses":
     "Shfletoni përzgjedhjen tonë të kuruar të kornizave premium syzash dielli.",
+  "catalog.intro.glasses":
+    "Gjeni kornizën e përsosur për përdorim të përditshëm. Nga format klasike te dizajnet moderne, ofrojmë syze me recetë nga marka të besueshme me montim dhe kujdes ekspert.",
+  "catalog.intro.sunglasses":
+    "Eksploroni mbrojtjen nga dielli për çdo rast. Lente të polarizuara, mbrojtje UV dhe korniza premium—zbuloni çiftin tuaj të radhës të syzeve dielli.",
   "catalog.productsFound": "produkte u gjetën",
   "catalog.product": "produkt",
   "catalog.products": "produkte",
