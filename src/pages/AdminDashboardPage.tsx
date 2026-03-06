@@ -5,6 +5,11 @@ import {
   updateProduct,
   deleteProduct,
 } from "../services/productService";
+import {
+  getCurrencyRates,
+  setCurrencyRates,
+  type CurrencyCode,
+} from "../services/currencyService";
 import { populateSampleProducts } from "../utils/populateProducts";
 import { makeUserAdmin } from "../utils/userUtils";
 import { useAuthStore } from "../store/useAuthStore";
@@ -46,6 +51,12 @@ const AdminDashboardPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<ProductType | "all">("all");
 
+  const [currencyRates, setCurrencyRatesState] = useState<
+    Record<CurrencyCode, number>
+  >({ EUR: 1, USD: 1.08, ALL: 104 });
+  const [currencyRatesLoading, setCurrencyRatesLoading] = useState(false);
+  const [currencyRatesSaving, setCurrencyRatesSaving] = useState(false);
+
   const [formData, setFormData] = useState<ProductFormData>({
     name: "",
     brand: "",
@@ -68,6 +79,21 @@ const AdminDashboardPage = () => {
 
   useEffect(() => {
     loadProducts();
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    setCurrencyRatesLoading(true);
+    getCurrencyRates()
+      .then((data) => {
+        if (!cancelled) setCurrencyRatesState(data.rates);
+      })
+      .finally(() => {
+        if (!cancelled) setCurrencyRatesLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const loadProducts = async () => {
@@ -285,6 +311,22 @@ const AdminDashboardPage = () => {
     resetForm();
   };
 
+  const handleSaveCurrencyRates = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCurrencyRatesSaving(true);
+    try {
+      await setCurrencyRates(currencyRates);
+      toast.success("Currency rates updated.");
+      setMessage("Currency rates saved.");
+    } catch (error) {
+      const errorMessage = getReadableErrorMessage(error, t);
+      toast.error(errorMessage);
+      setMessage(`Error saving rates: ${errorMessage}`);
+    } finally {
+      setCurrencyRatesSaving(false);
+    }
+  };
+
   const filteredProducts = products.filter((product) => {
     const searchLower = searchTerm.toLowerCase();
     const matchesSearch =
@@ -307,6 +349,65 @@ const AdminDashboardPage = () => {
       />
 
       <AdminMessage message={message} />
+
+      {/* Currency rates (1 EUR = ...) */}
+      <div className="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
+        <h2 className="mb-4 text-lg font-semibold text-slate-900">
+          Currency rates (base: EUR)
+        </h2>
+        {currencyRatesLoading ? (
+          <p className="text-sm text-slate-500">Loading rates...</p>
+        ) : (
+          <form
+            onSubmit={handleSaveCurrencyRates}
+            className="flex flex-wrap items-end gap-4"
+          >
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
+                1 EUR = USD
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={currencyRates.USD}
+                onChange={(e) =>
+                  setCurrencyRatesState((prev) => ({
+                    ...prev,
+                    USD: parseFloat(e.target.value) || 0,
+                  }))
+                }
+                className="w-24 rounded-lg border border-slate-200 px-3 py-2 text-sm"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
+                1 EUR = ALL
+              </label>
+              <input
+                type="number"
+                step="1"
+                min="0"
+                value={currencyRates.ALL}
+                onChange={(e) =>
+                  setCurrencyRatesState((prev) => ({
+                    ...prev,
+                    ALL: parseFloat(e.target.value) || 0,
+                  }))
+                }
+                className="w-24 rounded-lg border border-slate-200 px-3 py-2 text-sm"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={currencyRatesSaving}
+              className="rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700 disabled:opacity-60"
+            >
+              {currencyRatesSaving ? "Saving..." : "Save rates"}
+            </button>
+          </form>
+        )}
+      </div>
 
       {/* Product Form */}
       {showAddForm && (

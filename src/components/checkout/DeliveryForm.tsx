@@ -2,6 +2,7 @@ import Field from "../ui/Field";
 
 import { deliveryOptions } from "../../services/orderService";
 import { useTranslation } from "../../hooks/useTranslation";
+import { useCurrency } from "../../hooks/useCurrency";
 
 import type { DeliveryOption } from "../../types/product";
 
@@ -40,6 +41,7 @@ const DeliveryForm = ({
   };
 
   const { t } = useTranslation();
+  const { formatPrice } = useCurrency();
 
   return (
     <form className="space-y-5 text-sm" onSubmit={handleSubmit}>
@@ -69,7 +71,7 @@ const DeliveryForm = ({
               <div className="font-medium text-slate-900 flex items-center gap-2">
                 {t(`delivery.${option.id}.name`)}
                 <span className="text-primary-600 font-semibold">
-                  {option.price === 0 ? t("common.free") : `+€${option.price}`}
+                  {option.price === 0 ? t("common.free") : `+${formatPrice(option.price)}`}
                 </span>
               </div>
               <div className="text-xs text-slate-500">

@@ -8,6 +8,7 @@ import { useUIStore } from "../store/useUIStore";
 import { getInitials } from "../utils/format";
 
 import LanguageSwitcher from "../components/LanguageSwitcher";
+import CurrencySwitcher from "../components/CurrencySwitcher";
 
 const Logo = () => (
   <svg
@@ -119,6 +120,7 @@ const Header = () => {
           </nav>
 
           <div className="hidden md:flex items-center gap-4">
+            <CurrencySwitcher />
             <LanguageSwitcher />
             {user ? (
               <Link

@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 
 import { useProductBySlug } from "../hooks/useProducts";
 import { useTranslation } from "../hooks/useTranslation";
+import { useCurrency } from "../hooks/useCurrency";
 import { useToast } from "../hooks/useToast";
 import {
   getGenderLabel,
@@ -25,6 +26,7 @@ import {
 
 const ProductDetailPage = () => {
   const { t } = useTranslation();
+  const { formatPrice } = useCurrency();
   const toast = useToast();
   const { slug } = useParams<{ slug: string }>();
   const { product, isLoading, error } = useProductBySlug(slug);
@@ -119,11 +121,11 @@ const ProductDetailPage = () => {
           <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-6 ring-1 ring-slate-100 space-y-4">
             <div className="flex items-baseline gap-4">
               <span className="text-3xl font-bold text-slate-900">
-                €{product.price.toFixed(2)}
+                {formatPrice(product.price)}
               </span>
               {product.oldPrice && product.oldPrice > product.price && (
                 <span className="text-xl text-slate-500 line-through">
-                  €{product.oldPrice.toFixed(2)}
+                  {formatPrice(product.oldPrice)}
                 </span>
               )}
             </div>
@@ -132,7 +134,7 @@ const ProductDetailPage = () => {
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
-                {t("productDetail.freeShipping")}
+                {t("productDetail.freeShipping", { amount: formatPrice(100) })}
               </span>
               <button
                 type="button"
@@ -155,7 +157,7 @@ const ProductDetailPage = () => {
                     </p>
                   </div>
                   <span className="font-semibold text-primary-900">
-                    +€{product.blueLightFilterPrice}
+                    +{formatPrice(product.blueLightFilterPrice)}
                   </span>
                 </div>
               </div>
@@ -176,7 +178,7 @@ const ProductDetailPage = () => {
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
-              {t("common.addToCart")} — €{product.price.toFixed(2)}
+              {t("common.addToCart")} — {formatPrice(product.price)}
             </button>
           </div>
 

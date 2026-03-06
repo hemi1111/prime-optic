@@ -8,6 +8,7 @@ import { useUIStore } from "../store/useUIStore";
 import { getInitials } from "../utils/format";
 
 import LanguageSwitcher from "../components/LanguageSwitcher";
+import CurrencySwitcher from "../components/CurrencySwitcher";
 
 const LogoIcon = () => (
   <svg
@@ -223,7 +224,8 @@ const MobileNav = () => {
           </nav>
 
           <div className="p-4 border-t border-slate-200 bg-white">
-            <div className="mb-3">
+            <div className="mb-3 flex flex-col gap-3">
+              <CurrencySwitcher />
               <LanguageSwitcher />
             </div>
             <div className="flex items-center gap-2 text-xs text-slate-500">

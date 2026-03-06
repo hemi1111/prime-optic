@@ -1,4 +1,5 @@
 import { useTranslation } from "../../hooks/useTranslation";
+import { useCurrency } from "../../hooks/useCurrency";
 import type { CartItem } from "../../types/product";
 
 interface OrderItemProps {
@@ -6,8 +7,9 @@ interface OrderItemProps {
   index: number;
 }
 
-const OrderItem = ({ item, index }: OrderItemProps) => {
+const OrderItem = ({ item, index: _index }: OrderItemProps) => {
   const { t } = useTranslation();
+  const { formatPrice } = useCurrency();
 
   const itemPrice =
     item.price +
@@ -58,11 +60,11 @@ const OrderItem = ({ item, index }: OrderItemProps) => {
           </div>
           <div className="flex-shrink-0 text-right">
             <p className="text-sm font-semibold text-slate-900">
-              €{totalPrice.toFixed(2)}
+              {formatPrice(totalPrice)}
             </p>
             {item.quantity > 1 && (
               <p className="text-xs text-slate-500">
-                €{itemPrice.toFixed(2)} each
+                {formatPrice(itemPrice)} each
               </p>
             )}
           </div>

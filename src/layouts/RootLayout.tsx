@@ -4,6 +4,7 @@ import Header from "./Header";
 import MobileNav from "./MobileNav";
 import Footer from "./Footer";
 import ToastProvider from "../components/ui/ToastContainer";
+import CurrencyRatesLoader from "../components/CurrencyRatesLoader";
 
 type RootLayoutProps = {
   children: ReactNode;
@@ -12,6 +13,7 @@ type RootLayoutProps = {
 const RootLayout = ({ children }: RootLayoutProps) => {
   return (
     <ToastProvider>
+      <CurrencyRatesLoader />
       <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900">
         <Header />
         <MobileNav />

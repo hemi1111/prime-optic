@@ -1,4 +1,5 @@
 import { useTranslation } from "../../hooks/useTranslation";
+import { useCurrency } from "../../hooks/useCurrency";
 import type { Order } from "../../types/product";
 import { formatOrderDate } from "./utils";
 import OrderItem from "./OrderItem";
@@ -9,6 +10,7 @@ interface OrderCardProps {
 
 const OrderCard = ({ order }: OrderCardProps) => {
   const { t, language } = useTranslation();
+  const { formatPrice } = useCurrency();
 
   const getStatusLabel = (status: string | undefined): string => {
     switch (status) {
@@ -99,19 +101,19 @@ const OrderCard = ({ order }: OrderCardProps) => {
         <div className="flex items-center justify-between text-sm pt-2 border-t border-slate-100">
           <span className="text-slate-600">{t("common.subtotal")}:</span>
           <span className="text-slate-900">
-            €{order.subtotal?.toFixed(2) || "0.00"}
+            {formatPrice(order.subtotal ?? 0)}
           </span>
         </div>
         <div className="flex items-center justify-between text-sm">
           <span className="text-slate-600">{t("common.deliveryFee")}:</span>
           <span className="text-slate-900">
-            €{order.deliveryFee?.toFixed(2) || "0.00"}
+            {formatPrice(order.deliveryFee ?? 0)}
           </span>
         </div>
         <div className="flex items-center justify-between text-base font-bold pt-2 border-t-2 border-slate-200">
           <span className="text-slate-900">{t("common.total")}:</span>
           <span className="text-primary-600">
-            €{order.total?.toFixed(2) || "0.00"}
+            {formatPrice(order.total ?? 0)}
           </span>
         </div>
       </div>

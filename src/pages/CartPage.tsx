@@ -2,9 +2,11 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { useCartStore } from "../store/useCartStore";
 import { useTranslation } from "../hooks/useTranslation";
+import { useCurrency } from "../hooks/useCurrency";
 
 const CartPage = () => {
   const { t } = useTranslation();
+  const { formatPrice } = useCurrency();
   const items = useCartStore((state) => state.items);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
@@ -69,7 +71,7 @@ const CartPage = () => {
         </h1>
         <p className="text-slate-600">{t("cart.emptyDescription")}</p>
         <p className="text-sm text-slate-500">
-          {t("cart.freeShippingNote")}
+          {t("cart.freeShippingNote", { amount: formatPrice(100) })}
         </p>
         <div className="flex flex-wrap justify-center gap-3">
           <Link
@@ -168,7 +170,7 @@ const CartPage = () => {
                     </button>
                   </div>
                   <div className="text-sm font-bold text-slate-900">
-                    €{(item.price * item.quantity).toFixed(2)}
+                    {formatPrice(item.price * item.quantity)}
                   </div>
                 </div>
               </div>
@@ -184,7 +186,7 @@ const CartPage = () => {
         <dl className="space-y-2 text-sm text-slate-600">
           <div className="flex items-center justify-between">
             <dt>{t("common.subtotal")}</dt>
-            <dd className="font-medium text-slate-900">€{subtotal.toFixed(2)}</dd>
+            <dd className="font-medium text-slate-900">{formatPrice(subtotal)}</dd>
           </div>
           <div className="flex items-center justify-between">
             <dt>{t("cart.shipping")}</dt>
@@ -193,7 +195,7 @@ const CartPage = () => {
         </dl>
         <div className="flex items-center justify-between border-t border-slate-200 pt-4 mt-4 text-base font-bold text-slate-900">
           <span>{t("common.total")}</span>
-          <span>€{subtotal.toFixed(2)}</span>
+          <span>{formatPrice(subtotal)}</span>
         </div>
         <button
           type="button"
