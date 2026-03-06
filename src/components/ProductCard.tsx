@@ -7,6 +7,7 @@ import { getProductThumbnail } from "../utils/productDetail";
 import { useCartStore } from "../store/useCartStore";
 import { useFavoritesStore } from "../store/useFavoritesStore";
 import { useTranslation } from "../hooks/useTranslation";
+import { useCurrency } from "../hooks/useCurrency";
 import { useToast } from "../hooks/useToast";
 import Button from "./ui/Button";
 import Card from "./ui/Card";
@@ -17,6 +18,7 @@ type ProductCardProps = {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const { t } = useTranslation();
+  const { formatPrice } = useCurrency();
   const toast = useToast();
   const addItem = useCartStore((state) => state.addItem);
   const { addToFavorites, removeFromFavorites, isFavorite } =
@@ -191,11 +193,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
         {/* Price */}
         <div className="flex items-baseline gap-2">
           <span className="text-xl font-bold text-gray-900">
-            €{finalPrice.toFixed(2)}
+            {formatPrice(finalPrice)}
           </span>
           {product.oldPrice && product.oldPrice > product.price && (
             <span className="text-sm text-gray-400 line-through">
-              €{product.oldPrice.toFixed(2)}
+              {formatPrice(product.oldPrice)}
             </span>
           )}
         </div>
@@ -257,8 +259,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 htmlFor={`bluelight-${product.id}`}
                 className="text-sm font-medium text-gray-800"
               >
-                {t("common.addBlueLightFilter")} (+€
-                {blueLightFilterPrice.toFixed(2)})
+                {t("common.addBlueLightFilter")} (
+                {formatPrice(blueLightFilterPrice)})
               </label>
             </div>
             <p className="text-xs text-blue-600">{t("common.protectsEyes")}</p>

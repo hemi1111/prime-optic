@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { useProducts } from "../hooks/useProducts";
 import { useTranslation } from "../hooks/useTranslation";
+import { useCurrency } from "../hooks/useCurrency";
 import { useToast } from "../hooks/useToast";
 import { useCartStore } from "../store/useCartStore";
 import { LENS_TYPES, type LensType } from "../config/lensTypes";
@@ -45,6 +46,7 @@ const formatPrescriptionVariant = (
 
 const CustomGlassesBuilderPage = () => {
   const { t } = useTranslation();
+  const { formatPrice } = useCurrency();
   const toast = useToast();
   const { products, isLoading } = useProducts("glasses");
   const addItem = useCartStore((state) => state.addItem);
@@ -172,7 +174,7 @@ const CustomGlassesBuilderPage = () => {
               </option>
               {products.map((product) => (
                 <option key={product.id} value={product.id}>
-                  {product.brand} - {product.name} (€{product.price.toFixed(2)})
+                  {product.brand} - {product.name} ({formatPrice(product.price)})
                 </option>
               ))}
             </select>
@@ -191,7 +193,7 @@ const CustomGlassesBuilderPage = () => {
                   {selectedFrame.brand} - {selectedFrame.name}
                 </h3>
                 <p className="text-sm text-slate-600">
-                  €{selectedFrame.price.toFixed(2)}
+                  {formatPrice(selectedFrame.price)}
                 </p>
               </div>
             </div>
@@ -220,7 +222,7 @@ const CustomGlassesBuilderPage = () => {
               <option key={lensType.id} value={lensType.id}>
                 {lensType.name}
                 {lensType.priceAdjustment > 0
-                  ? ` (+€${lensType.priceAdjustment.toFixed(2)})`
+                  ? ` (+${formatPrice(lensType.priceAdjustment)})`
                   : ""}
               </option>
             ))}
@@ -361,7 +363,7 @@ const CustomGlassesBuilderPage = () => {
                 {t("common.addBlueLightFilter")}
               </span>
               <span className="ml-2 text-sm text-slate-600">
-                (+€{blueLightFilterPrice.toFixed(2)})
+                ({formatPrice(blueLightFilterPrice)})
               </span>
             </div>
           </label>
@@ -375,26 +377,26 @@ const CustomGlassesBuilderPage = () => {
           <div className="rounded-lg bg-slate-50 p-6 space-y-2">
             <div className="flex justify-between text-sm text-slate-600">
               <span>{t("customGlasses.framePrice")}:</span>
-              <span>€{selectedFrame.price.toFixed(2)}</span>
+              <span>{formatPrice(selectedFrame.price)}</span>
             </div>
             <div className="flex justify-between text-sm text-slate-600">
               <span>{selectedLensType.name}:</span>
               <span>
                 {selectedLensType.priceAdjustment > 0
-                  ? `+€${selectedLensType.priceAdjustment.toFixed(2)}`
+                  ? `+${formatPrice(selectedLensType.priceAdjustment)}`
                   : t("common.free")}
               </span>
             </div>
             {addBlueLightFilter && (
               <div className="flex justify-between text-sm text-slate-600">
                 <span>{t("common.blueLightFilter")}:</span>
-                <span>+€{blueLightFilterPrice.toFixed(2)}</span>
+                <span>+{formatPrice(blueLightFilterPrice)}</span>
               </div>
             )}
             <div className="border-t border-slate-200 pt-2 mt-2">
               <div className="flex justify-between text-lg font-bold text-slate-900">
                 <span>{t("customGlasses.totalPrice")}:</span>
-                <span>€{totalPrice.toFixed(2)}</span>
+                <span>{formatPrice(totalPrice)}</span>
               </div>
             </div>
           </div>
@@ -446,7 +448,7 @@ const CustomGlassesBuilderPage = () => {
             </>
           ) : (
             <>
-              {t("customGlasses.addToCart")} - €{totalPrice.toFixed(2)}
+              {t("customGlasses.addToCart")} - {formatPrice(totalPrice)}
             </>
           )}
         </button>

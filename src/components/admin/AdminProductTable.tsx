@@ -1,5 +1,6 @@
 import type { Product, ProductType } from "../../types/product";
 import { getProductThumbnail } from "../../utils/productDetail";
+import { useCurrency } from "../../hooks/useCurrency";
 
 import Button from "../ui/Button";
 
@@ -24,6 +25,7 @@ const AdminProductTable = ({
   onDelete,
   isLoading,
 }: AdminProductTableProps) => {
+  const { formatPrice } = useCurrency();
   return (
     <div className="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
       <div className="flex items-center justify-between mb-4">
@@ -95,10 +97,10 @@ const AdminProductTable = ({
                   <td className="py-3 px-2">{product.brand}</td>
                   <td className="py-3 px-2 capitalize">{product.type}</td>
                   <td className="py-3 px-2">
-                    ${product.price}
+                    {formatPrice(product.price)}
                     {product.oldPrice && (
                       <span className="ml-2 text-slate-500 line-through">
-                        ${product.oldPrice}
+                        {formatPrice(product.oldPrice)}
                       </span>
                     )}
                   </td>

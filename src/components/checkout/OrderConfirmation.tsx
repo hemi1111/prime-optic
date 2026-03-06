@@ -1,4 +1,5 @@
 import { useTranslation } from "../../hooks/useTranslation";
+import { useCurrency } from "../../hooks/useCurrency";
 
 import type { DeliveryOption } from "../../types/product";
 
@@ -33,6 +34,7 @@ const OrderConfirmation = ({
   isSubmitting,
 }: OrderConfirmationProps) => {
   const { t } = useTranslation();
+  const { formatPrice } = useCurrency();
 
   return (
     <div className="space-y-6 text-sm">
@@ -55,7 +57,7 @@ const OrderConfirmation = ({
           </h4>
           <p className="font-medium text-slate-900">
             {t(`delivery.${selectedDelivery.id}.name`)}{" "}
-            {selectedDelivery.price === 0 ? t("common.free") : `(€${selectedDelivery.price})`}
+            {selectedDelivery.price === 0 ? t("common.free") : `(${formatPrice(selectedDelivery.price)})`}
           </p>
           {selectedDelivery.id === "home_delivery" && deliveryAddress.street && (
             <p className="text-slate-600 mt-0.5">
