@@ -123,6 +123,11 @@ const CartPage = () => {
                     <div className="font-medium text-slate-900">
                       {item.name}
                     </div>
+                    {item.selectedColorName && (
+                      <div className="mt-0.5 text-xs text-slate-600">
+                        {t("common.color")}: {item.selectedColorName}
+                      </div>
+                    )}
                     {item.addBlueLightFilter && (
                       <div className="mt-0.5 flex items-center gap-1 text-xs font-medium text-primary-600">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
@@ -139,7 +144,13 @@ const CartPage = () => {
                   </div>
                   <button
                     type="button"
-                    onClick={() => removeItem(item.id, item.addBlueLightFilter)}
+                    onClick={() =>
+                      removeItem(
+                        item.id,
+                        item.addBlueLightFilter,
+                        item.selectedColorName
+                      )
+                    }
                     className="shrink-0 text-xs text-slate-400 hover:text-red-500 transition"
                   >
                     {t("cart.remove")}
@@ -150,7 +161,12 @@ const CartPage = () => {
                     <button
                       type="button"
                       onClick={() =>
-                        updateQuantity(item.id, Math.max(1, item.quantity - 1), item.addBlueLightFilter)
+                        updateQuantity(
+                          item.id,
+                          Math.max(1, item.quantity - 1),
+                          item.addBlueLightFilter,
+                          item.selectedColorName
+                        )
                       }
                       className="flex h-8 w-8 items-center justify-center rounded-l-full text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition"
                     >
@@ -162,7 +178,12 @@ const CartPage = () => {
                     <button
                       type="button"
                       onClick={() =>
-                        updateQuantity(item.id, item.quantity + 1, item.addBlueLightFilter)
+                        updateQuantity(
+                          item.id,
+                          item.quantity + 1,
+                          item.addBlueLightFilter,
+                          item.selectedColorName
+                        )
                       }
                       className="flex h-8 w-8 items-center justify-center rounded-r-full text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition"
                     >

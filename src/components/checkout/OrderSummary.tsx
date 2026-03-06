@@ -44,6 +44,8 @@ const OrderSummary = ({
               <span className="font-medium text-slate-900">{item.name}</span>
               <span className="block text-xs text-slate-500">
                 {t("common.qty")} {item.quantity}
+                {item.selectedColorName &&
+                  " · " + t("common.color") + ": " + item.selectedColorName}
                 {item.addBlueLightFilter && " · " + t("common.blueLightFilter")}
               </span>
             </div>

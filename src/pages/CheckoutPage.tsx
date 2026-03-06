@@ -105,7 +105,11 @@ const CheckoutPage = () => {
         `Order placed successfully! Order ID: ${orderId}. You'll receive a confirmation call within 24 hours.`
       );
       clearCart();
-      navigate("/");
+      if (user?.id) {
+        navigate(`/orders/${orderId}/review`, { replace: true });
+      } else {
+        navigate("/");
+      }
     } catch (error) {
       console.error("Order creation failed:", error);
       const errorMessage = getReadableErrorMessage(error, t);

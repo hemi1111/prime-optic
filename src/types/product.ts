@@ -77,6 +77,7 @@ export type Product = {
 export type CartItem = Product & {
   quantity: number;
   addBlueLightFilter?: boolean;
+  selectedColorName?: string;
   variant?: string;
 };
 

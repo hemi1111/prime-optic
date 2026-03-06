@@ -60,13 +60,18 @@ const ProductCard = ({ product }: ProductCardProps) => {
       ? finalPrice + blueLightFilterPrice
       : finalPrice;
 
+    const selectedColor = product.colorOptions?.[selectedColorIndex];
     addItem(
       {
         id: product.id,
         name: product.name,
         price: cartPrice,
         imageUrl: getProductThumbnail(product) ?? product.imageUrl,
+        slug: product.slug,
+        brand: product.brand,
+        type: product.type,
         addBlueLightFilter,
+        selectedColorName: selectedColor?.name,
       } as CartItem,
       1,
     );
