@@ -4,11 +4,60 @@ import type { Product } from "../types/product";
 
 export type SortOption = "price-low" | "price-high" | "newest" | "popular";
 
+const GENDER_IDS = ["men", "women", "kids", "unisex"] as const;
+const SHAPE_IDS = [
+  "round", "square", "cat-eye", "oval", "aviator", "rectangular",
+  "oversized", "pilot", "rounded square", "wrapped", "sport", "browline",
+] as const;
+const MATERIAL_IDS = [
+  "metal", "plastic", "acetate", "titanium", "mixed", "nylon",
+  "carbon fiber", "TR90", "recycled acetate", "acetate/metal",
+] as const;
+
+export type AvailableFilterOptions = {
+  genderIds: string[];
+  shapeIds: string[];
+  materialIds: string[];
+};
+
+function getAvailableFilterOptions(products: Product[]): AvailableFilterOptions {
+  const genderSet = new Set<string>();
+  const shapeSet = new Set<string>();
+  const materialSet = new Set<string>();
+  for (const p of products) {
+    if (p.gender && GENDER_IDS.includes(p.gender as typeof GENDER_IDS[number])) {
+      genderSet.add(p.gender);
+    }
+    if (p.frameShape) shapeSet.add(p.frameShape);
+    if (p.frameMaterial) materialSet.add(p.frameMaterial);
+  }
+  return {
+    genderIds: GENDER_IDS.filter((id) => genderSet.has(id)),
+    shapeIds: SHAPE_IDS.filter((id) => shapeSet.has(id)),
+    materialIds: MATERIAL_IDS.filter((id) => materialSet.has(id)),
+  };
+}
+
 export function useCatalogState(products: Product[]) {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<SortOption>("newest");
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const availableFilterOptions = useMemo(
+    () => getAvailableFilterOptions(products),
+    [products]
+  );
+
+  const selectedFiltersSanitized = useMemo(() => {
+    const { genderIds, shapeIds, materialIds } = availableFilterOptions;
+    return selectedFilters.filter(
+      (id) =>
+        genderIds.includes(id) ||
+        shapeIds.includes(id) ||
+        materialIds.includes(id)
+    );
+  }, [selectedFilters, availableFilterOptions]);
 
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = products;
@@ -23,45 +72,46 @@ export function useCatalogState(products: Product[]) {
       );
     }
 
-    if (selectedFilters.length > 0) {
+    if (selectedFiltersSanitized.length > 0) {
       filtered = filtered.filter((product) => {
         const genderMatch =
-          (selectedFilters.includes("men") && product.gender === "men") ||
-          (selectedFilters.includes("women") && product.gender === "women") ||
-          (selectedFilters.includes("kids") && product.gender === "kids");
+          (selectedFiltersSanitized.includes("men") && product.gender === "men") ||
+          (selectedFiltersSanitized.includes("women") && product.gender === "women") ||
+          (selectedFiltersSanitized.includes("kids") && product.gender === "kids") ||
+          (selectedFiltersSanitized.includes("unisex") && product.gender === "unisex");
         const shapeMatch =
-          (selectedFilters.includes("round") && product.frameShape === "round") ||
-          (selectedFilters.includes("square") && product.frameShape === "square") ||
-          (selectedFilters.includes("cat-eye") && product.frameShape === "cat-eye") ||
-          (selectedFilters.includes("oval") && product.frameShape === "oval") ||
-          (selectedFilters.includes("aviator") && product.frameShape === "aviator") ||
-          (selectedFilters.includes("rectangular") && product.frameShape === "rectangular") ||
-          (selectedFilters.includes("oversized") && product.frameShape === "oversized") ||
-          (selectedFilters.includes("pilot") && product.frameShape === "pilot") ||
-          (selectedFilters.includes("rounded square") && product.frameShape === "rounded square") ||
-          (selectedFilters.includes("wrapped") && product.frameShape === "wrapped") ||
-          (selectedFilters.includes("sport") && product.frameShape === "sport") ||
-          (selectedFilters.includes("browline") && product.frameShape === "browline");
+          (selectedFiltersSanitized.includes("round") && product.frameShape === "round") ||
+          (selectedFiltersSanitized.includes("square") && product.frameShape === "square") ||
+          (selectedFiltersSanitized.includes("cat-eye") && product.frameShape === "cat-eye") ||
+          (selectedFiltersSanitized.includes("oval") && product.frameShape === "oval") ||
+          (selectedFiltersSanitized.includes("aviator") && product.frameShape === "aviator") ||
+          (selectedFiltersSanitized.includes("rectangular") && product.frameShape === "rectangular") ||
+          (selectedFiltersSanitized.includes("oversized") && product.frameShape === "oversized") ||
+          (selectedFiltersSanitized.includes("pilot") && product.frameShape === "pilot") ||
+          (selectedFiltersSanitized.includes("rounded square") && product.frameShape === "rounded square") ||
+          (selectedFiltersSanitized.includes("wrapped") && product.frameShape === "wrapped") ||
+          (selectedFiltersSanitized.includes("sport") && product.frameShape === "sport") ||
+          (selectedFiltersSanitized.includes("browline") && product.frameShape === "browline");
         const materialMatch =
-          (selectedFilters.includes("metal") && product.frameMaterial === "metal") ||
-          (selectedFilters.includes("plastic") && product.frameMaterial === "plastic") ||
-          (selectedFilters.includes("acetate") && product.frameMaterial === "acetate") ||
-          (selectedFilters.includes("titanium") && product.frameMaterial === "titanium") ||
-          (selectedFilters.includes("mixed") && product.frameMaterial === "mixed") ||
-          (selectedFilters.includes("nylon") && product.frameMaterial === "nylon") ||
-          (selectedFilters.includes("carbon fiber") && product.frameMaterial === "carbon fiber") ||
-          (selectedFilters.includes("TR90") && product.frameMaterial === "TR90") ||
-          (selectedFilters.includes("recycled acetate") && product.frameMaterial === "recycled acetate") ||
-          (selectedFilters.includes("acetate/metal") && product.frameMaterial === "acetate/metal");
+          (selectedFiltersSanitized.includes("metal") && product.frameMaterial === "metal") ||
+          (selectedFiltersSanitized.includes("plastic") && product.frameMaterial === "plastic") ||
+          (selectedFiltersSanitized.includes("acetate") && product.frameMaterial === "acetate") ||
+          (selectedFiltersSanitized.includes("titanium") && product.frameMaterial === "titanium") ||
+          (selectedFiltersSanitized.includes("mixed") && product.frameMaterial === "mixed") ||
+          (selectedFiltersSanitized.includes("nylon") && product.frameMaterial === "nylon") ||
+          (selectedFiltersSanitized.includes("carbon fiber") && product.frameMaterial === "carbon fiber") ||
+          (selectedFiltersSanitized.includes("TR90") && product.frameMaterial === "TR90") ||
+          (selectedFiltersSanitized.includes("recycled acetate") && product.frameMaterial === "recycled acetate") ||
+          (selectedFiltersSanitized.includes("acetate/metal") && product.frameMaterial === "acetate/metal");
 
-        const genderFilters = ["men", "women", "kids"].filter((f) =>
-          selectedFilters.includes(f)
+        const genderFilters = ["men", "women", "kids", "unisex"].filter((f) =>
+          selectedFiltersSanitized.includes(f)
         );
         const shapeFilters = ["round", "square", "cat-eye", "oval", "aviator", "rectangular", "oversized", "pilot", "rounded square", "wrapped", "sport", "browline"].filter((f) =>
-          selectedFilters.includes(f)
+          selectedFiltersSanitized.includes(f)
         );
         const materialFilters = ["metal", "plastic", "acetate", "titanium", "mixed", "nylon", "carbon fiber", "TR90", "recycled acetate", "acetate/metal"].filter((f) =>
-          selectedFilters.includes(f)
+          selectedFiltersSanitized.includes(f)
         );
 
         const genderOk = genderFilters.length === 0 || genderMatch;
@@ -86,7 +136,7 @@ export function useCatalogState(products: Product[]) {
     });
 
     return sorted;
-  }, [products, selectedFilters, sortBy, searchQuery]);
+  }, [products, selectedFiltersSanitized, sortBy, searchQuery]);
 
   const toggleFilter = (filterId: string) => {
     setSelectedFilters((prev) =>
@@ -96,8 +146,13 @@ export function useCatalogState(products: Product[]) {
     );
   };
 
+  const resetFilters = () => {
+    setSelectedFilters([]);
+    setSearchQuery("");
+  };
+
   return {
-    selectedFilters,
+    selectedFilters: selectedFiltersSanitized,
     setSelectedFilters,
     sortBy,
     setSortBy,
@@ -107,5 +162,7 @@ export function useCatalogState(products: Product[]) {
     setSearchQuery,
     filteredAndSortedProducts,
     toggleFilter,
+    resetFilters,
+    availableFilterOptions,
   };
 }

@@ -11,8 +11,8 @@ type ProductImageSliderProps = {
 const ProductImageSlider = ({
   images,
   alt,
-  zoomLevel = 2.5,
-  magnifierSize = 200,
+  zoomLevel = 1.35,
+  magnifierSize = 160,
 }: ProductImageSliderProps) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 

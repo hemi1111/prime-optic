@@ -28,8 +28,8 @@ const ContactForm = ({
   };
 
   return (
-    <form className="space-y-4 text-sm" onSubmit={handleSubmit}>
-      <h3 className="font-semibold text-slate-900">
+    <form className="space-y-5 text-sm" onSubmit={handleSubmit}>
+      <h3 className="text-base font-bold text-slate-900">
         {t("common.contactInformation")}
       </h3>
       <Field
@@ -66,7 +66,7 @@ const ContactForm = ({
       />
       <button
         type="submit"
-        className="inline-flex items-center justify-center rounded-full bg-primary-500 px-6 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-primary-600"
+        className="w-full inline-flex items-center justify-center rounded-full bg-gradient-to-r from-primary-500 to-primary-600 px-6 py-3 text-sm font-bold text-white shadow-soft hover:from-primary-600 hover:to-primary-700 transition"
       >
         {t("common.continueToDelivery")}
       </button>

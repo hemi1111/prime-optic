@@ -117,22 +117,19 @@ const CheckoutPage = () => {
 
   return (
     <div className="space-y-6">
-      <header className="space-y-2">
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+      <header className="space-y-1">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
           {t("checkout.title")}
         </h1>
-        <p className="text-sm text-slate-500">
-          {t("common.cashOnDelivery")} - {t("checkout.payOnReceive")}{" "}
-          {selectedDelivery.id === "home_delivery"
-            ? t("checkout.deliveryFeeText")
-            : t("checkout.freePickup")}
+        <p className="text-sm text-slate-600">
+          {t("checkout.subtitle")}
         </p>
       </header>
 
       <CheckoutStepper currentStep={step} />
 
       <div className="grid gap-6 md:grid-cols-[minmax(0,3fr),minmax(0,2fr)]">
-        <section className="space-y-4 rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
+        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft ring-1 ring-slate-100">
           {step === 1 && (
             <ContactForm
               customerInfo={customerInfo}

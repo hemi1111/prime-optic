@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 
+import { useScrollToTop } from "./hooks/useScrollToTop";
 import RootLayout from "./layouts/RootLayout";
 
 import HomePage from "./pages/HomePage";
@@ -19,6 +20,8 @@ import CustomGlassesBuilderPage from "./pages/CustomGlassesBuilderPage";
 import "./App.css";
 
 const App = () => {
+  useScrollToTop();
+
   return (
     <RootLayout>
       <Routes>

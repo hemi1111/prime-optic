@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useProducts } from "../hooks/useProducts";
 import { useTranslation } from "../hooks/useTranslation";
 import { useCatalogState } from "../hooks/useCatalogState";
@@ -20,7 +21,6 @@ const CatalogPage = ({ type }: CatalogPageProps) => {
   const { products, isLoading, error } = useProducts(type);
   const {
     selectedFilters,
-    setSelectedFilters,
     sortBy,
     setSortBy,
     isFiltersOpen,
@@ -29,7 +29,14 @@ const CatalogPage = ({ type }: CatalogPageProps) => {
     setSearchQuery,
     filteredAndSortedProducts,
     toggleFilter,
+    resetFilters,
+    availableFilterOptions,
   } = useCatalogState(products);
+
+  useEffect(() => {
+    resetFilters();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- clear when catalog type changes
+  }, [type]);
 
   const title =
     type === "glasses"
@@ -52,8 +59,9 @@ const CatalogPage = ({ type }: CatalogPageProps) => {
       <div className="grid gap-6 lg:grid-cols-[280px,1fr]">
         <CatalogFiltersSidebar
           selectedFilters={selectedFilters}
-          onClearFilters={() => setSelectedFilters([])}
+          onClearFilters={resetFilters}
           onToggleFilter={toggleFilter}
+          availableFilterOptions={availableFilterOptions}
         />
 
         <section className="space-y-6">
@@ -73,6 +81,7 @@ const CatalogPage = ({ type }: CatalogPageProps) => {
             onClose={() => setIsFiltersOpen(false)}
             selectedFilters={selectedFilters}
             onToggleFilter={toggleFilter}
+            availableFilterOptions={availableFilterOptions}
           />
 
           <CatalogProductGrid
@@ -85,7 +94,7 @@ const CatalogPage = ({ type }: CatalogPageProps) => {
             }. Try adjusting your ${
               searchQuery ? "search term" : "selection"
             } or browse all products.`}
-            onClearFilters={() => setSelectedFilters([])}
+            onClearFilters={resetFilters}
             onClearSearch={() => setSearchQuery("")}
             hasActiveFilters={selectedFilters.length > 0}
             hasSearchQuery={!!searchQuery.trim()}

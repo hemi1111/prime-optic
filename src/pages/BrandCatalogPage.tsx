@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import { useProductsByBrand } from "../hooks/useProducts";
@@ -20,7 +21,6 @@ const BrandCatalogPage = () => {
   const { products, isLoading, error } = useProductsByBrand(brandSlug);
   const {
     selectedFilters,
-    setSelectedFilters,
     sortBy,
     setSortBy,
     isFiltersOpen,
@@ -29,7 +29,14 @@ const BrandCatalogPage = () => {
     setSearchQuery,
     filteredAndSortedProducts,
     toggleFilter,
+    resetFilters,
+    availableFilterOptions,
   } = useCatalogState(products);
+
+  useEffect(() => {
+    resetFilters();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- clear when brand changes
+  }, [brandSlug]);
 
   if (brandSlug && !brand) {
     return (
@@ -69,8 +76,9 @@ const BrandCatalogPage = () => {
       <div className="grid gap-6 lg:grid-cols-[280px,1fr]">
         <CatalogFiltersSidebar
           selectedFilters={selectedFilters}
-          onClearFilters={() => setSelectedFilters([])}
+          onClearFilters={resetFilters}
           onToggleFilter={toggleFilter}
+          availableFilterOptions={availableFilterOptions}
         />
 
         <section className="space-y-6">
@@ -90,6 +98,7 @@ const BrandCatalogPage = () => {
             onClose={() => setIsFiltersOpen(false)}
             selectedFilters={selectedFilters}
             onToggleFilter={toggleFilter}
+            availableFilterOptions={availableFilterOptions}
           />
 
           <CatalogProductGrid
@@ -98,7 +107,7 @@ const BrandCatalogPage = () => {
             products={filteredAndSortedProducts}
             emptyTitle={t("brand.noProducts")}
             emptyDescription={t("brand.noProductsDescription")}
-            onClearFilters={() => setSelectedFilters([])}
+            onClearFilters={resetFilters}
             onClearSearch={() => setSearchQuery("")}
             hasActiveFilters={selectedFilters.length > 0}
             hasSearchQuery={!!searchQuery.trim()}
