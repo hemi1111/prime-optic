@@ -60,7 +60,7 @@ export const deliveryOptions = [
     estimatedDays: "1-2 business days",
   },
   {
-    id: "home_delivery",
+    id: "home",
     name: "Home Delivery",
     description: "Delivered to your address",
     price: 2,

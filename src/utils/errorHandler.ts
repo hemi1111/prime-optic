@@ -29,6 +29,10 @@ export const getReadableErrorMessage = (
           return t("toast.error.network");
         case "auth/invalid-credential":
           return t("toast.error.auth.invalidCredential");
+        case "auth/popup-closed-by-user":
+          return t("toast.error.auth.popupClosed");
+        case "auth/cancelled-popup-request":
+          return t("toast.error.auth.cancelledPopup");
         default:
           return t("toast.error.auth.generic");
       }

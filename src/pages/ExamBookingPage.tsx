@@ -100,12 +100,25 @@ const ExamBookingPage = () => {
             onChange={(event) => setEmail(event.target.value)}
             required
           />
-          <Field
-            id="store"
-            label={t("exam.form.store")}
-            value={preferredStore}
-            onChange={(event) => setPreferredStore(event.target.value)}
-          />
+          <div className="space-y-1 text-sm">
+            <label htmlFor="store" className="block text-xs font-medium text-slate-700">
+              {t("exam.form.store")}
+            </label>
+            <select
+              id="store"
+              value={preferredStore}
+              onChange={(event) => setPreferredStore(event.target.value)}
+              required
+              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none ring-primary-200 focus:ring-2"
+            >
+              <option value="">{t("exam.form.storePlaceholder")}</option>
+              {availableStores.map((store) => (
+                <option key={store.id} value={store.name}>
+                  {store.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div className="grid gap-4 md:grid-cols-2">
             <Field

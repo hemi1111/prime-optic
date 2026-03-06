@@ -20,6 +20,40 @@ const CartPage = () => {
     navigate("/checkout");
   };
 
+  const formatLegacyVariant = (variant?: string): string | null => {
+    if (!variant) return null;
+
+    try {
+      const parsed = JSON.parse(variant) as {
+        rightEye?: Record<string, string>;
+        leftEye?: Record<string, string>;
+      };
+
+      const formatEye = (label: string, eye?: Record<string, string>) => {
+        if (!eye) return null;
+        const parts: string[] = [];
+        if (eye.sph?.trim()) parts.push(`SPH ${eye.sph.trim()}`);
+        if (eye.cyl?.trim()) parts.push(`CYL ${eye.cyl.trim()}`);
+        if (eye.axis?.trim()) parts.push(`AXIS ${eye.axis.trim()}`);
+        if (eye.add?.trim()) parts.push(`ADD ${eye.add.trim()}`);
+        if (parts.length === 0) return null;
+        return `${label}: ${parts.join(", ")}`;
+      };
+
+      const right = formatEye("OD", parsed.rightEye);
+      const left = formatEye("OS", parsed.leftEye);
+      const sections = [right, left].filter(Boolean) as string[];
+
+      if (sections.length === 0) {
+        return null;
+      }
+
+      return sections.join(" | ");
+    } catch {
+      return variant;
+    }
+  };
+
   if (!items.length) {
     return (
       <div className="mx-auto max-w-lg space-y-6 text-center">
@@ -95,8 +129,10 @@ const CartPage = () => {
                         + {t("common.blueLightFilter")}
                       </div>
                     )}
-                    {item.variant && (
-                      <div className="text-xs text-slate-500">{item.variant}</div>
+                    {formatLegacyVariant(item.variant) && (
+                      <div className="text-xs text-slate-500">
+                        {formatLegacyVariant(item.variant)}
+                      </div>
                     )}
                   </div>
                   <button

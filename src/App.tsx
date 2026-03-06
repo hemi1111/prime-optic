@@ -16,6 +16,7 @@ import FavoritesPage from "./pages/FavoritesPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProfilePage from "./pages/ProfilePage";
 import CustomGlassesBuilderPage from "./pages/CustomGlassesBuilderPage";
+import AdminProtectedRoute from "./components/AdminProtectedRoute";
 
 import "./App.css";
 
@@ -37,7 +38,14 @@ const App = () => {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/exam" element={<ExamBookingPage />} />
         <Route path="/custom-glasses" element={<CustomGlassesBuilderPage />} />
-        <Route path="/admin" element={<AdminDashboardPage />} />
+        <Route
+          path="/admin"
+          element={
+            <AdminProtectedRoute>
+              <AdminDashboardPage />
+            </AdminProtectedRoute>
+          }
+        />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </RootLayout>
