@@ -7,9 +7,9 @@ export type StoreLocation = {
   isAvailable: boolean;
 };
 
-export const storeLocations: StoreLocation[] = [
+/** Seed data for populating the stores Firestore collection (admin). */
+export const storeLocationsSeed: Omit<StoreLocation, "id">[] = [
   {
-    id: "1",
     name: "Prime Optic - City Center",
     address: "Rruga Dëshmorët e Kombit, Tirana 1001, Albania",
     phone: "+355 4 123 4567",
@@ -17,7 +17,6 @@ export const storeLocations: StoreLocation[] = [
     isAvailable: true,
   },
   {
-    id: "2",
     name: "Prime Optic - Blloku",
     address: "Rruga Ismail Qemali, Blloku, Tirana 1001, Albania",
     phone: "+355 4 234 5678",
@@ -25,7 +24,6 @@ export const storeLocations: StoreLocation[] = [
     isAvailable: true,
   },
   {
-    id: "3",
     name: "Prime Optic - TEG",
     address: "Tirana East Gate, Rruga e Elbasanit, Tirana 1001, Albania",
     phone: "+355 4 345 6789",
@@ -33,7 +31,6 @@ export const storeLocations: StoreLocation[] = [
     isAvailable: true,
   },
   {
-    id: "4",
     name: "Prime Optic - Qendra Tregtare",
     address: "Qendra Tregtare Univers, Rruga Kavajës, Tirana 1001, Albania",
     phone: "+355 4 456 7890",
@@ -41,7 +38,6 @@ export const storeLocations: StoreLocation[] = [
     isAvailable: true,
   },
   {
-    id: "5",
     name: "Prime Optic - Airport Road",
     address: "Rruga e Aeroportit, Lapraka, Tirana 1001, Albania",
     phone: "+355 4 567 8901",

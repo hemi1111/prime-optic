@@ -3,11 +3,12 @@ import {
   collection,
   doc,
   getDoc,
-  serverTimestamp,
-  query,
-  where,
   getDocs,
   orderBy,
+  query,
+  serverTimestamp,
+  updateDoc,
+  where,
 } from "firebase/firestore";
 import { db } from "../config/firebase";
 import type { Order } from "../types/product";
@@ -58,10 +59,38 @@ export async function queryOrdersByUser(userId: string): Promise<Order[]> {
   );
 
   const snapshot = await getDocs(q);
-  return snapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
+  return snapshot.docs.map((d) => ({
+    id: d.id,
+    ...d.data(),
   })) as Order[];
+}
+
+export async function queryAllOrders(): Promise<Order[]> {
+  if (!db) {
+    console.warn("[Orders] Firestore is not configured.");
+    return [];
+  }
+  const ordersCol = collection(db, "orders");
+  const q = query(ordersCol, orderBy("createdAt", "desc"));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((d) => ({
+    id: d.id,
+    ...d.data(),
+  })) as Order[];
+}
+
+export async function updateOrderStatus(
+  id: string,
+  status: Order["status"],
+): Promise<void> {
+  if (!db) {
+    throw new Error("Firestore is not configured");
+  }
+  const ref = doc(db, "orders", id);
+  await updateDoc(ref, {
+    status,
+    updatedAt: serverTimestamp(),
+  });
 }
 
 export const deliveryOptions = [

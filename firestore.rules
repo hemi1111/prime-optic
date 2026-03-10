@@ -86,6 +86,12 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
+    // Stores collection (store locations) - anyone can read; only admins can write
+    match /stores/{storeId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
     // Default deny all other collections
     match /{document=**} {
       allow read, write: if false;

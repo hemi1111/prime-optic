@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { type Product, type CartItem } from "../types/product";
-import { getProductThumbnail } from "../utils/productDetail";
+import { getProductImages, getProductThumbnail } from "../utils/productDetail";
 
 import { useCartStore } from "../store/useCartStore";
 import { useFavoritesStore } from "../store/useFavoritesStore";
@@ -32,6 +32,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
   const blueLightFilterPrice = product.blueLightFilterPrice || 25;
   const finalPrice = product.price;
+
+  const { primaryImage, hoverImage } = useMemo(() => {
+    const images = getProductImages(product);
+    const primary = getProductThumbnail(product) ?? images[0];
+    const hover = images.length > 1 ? images[1] : primary;
+    return { primaryImage: primary, hoverImage: hover };
+  }, [product]);
 
   const renderStars = (rating: number) => {
     return [...Array(5)].map((_, index) => (
@@ -119,13 +126,20 @@ const ProductCard = ({ product }: ProductCardProps) => {
             )}
           </div>
 
-          {/* Product Image (thumbnail = imageUrl only, no slider) */}
-          {product.imageUrl ? (
-            <img
-              src={product.imageUrl}
-              alt={product.name}
-              className="w-full h-full object-contain p-4 transition-transform duration-300 group-hover:scale-105"
-            />
+          {/* Product Image with hover swap (uses primary + next image when available) */}
+          {primaryImage ? (
+            <div className="relative h-full w-full overflow-hidden">
+              <img
+                src={primaryImage}
+                alt={product.name}
+                className="absolute inset-0 h-full w-full object-contain p-4 transition-opacity duration-300 group-hover:opacity-0"
+              />
+              <img
+                src={hoverImage}
+                alt={product.name}
+                className="absolute inset-0 h-full w-full object-contain p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+              />
+            </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-gray-400">
               <div className="text-4xl mb-2">👓</div>

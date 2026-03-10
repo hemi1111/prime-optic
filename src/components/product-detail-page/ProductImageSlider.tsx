@@ -15,6 +15,7 @@ const ProductImageSlider = ({
   magnifierSize = 160,
 }: ProductImageSliderProps) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
   if (!images.length) {
     return null;
@@ -31,75 +32,63 @@ const ProductImageSlider = ({
     setSelectedIndex((i) => (i + 1) % images.length);
   };
 
-  const arrows = hasMultiple && (
-    <>
-      <button
-        type="button"
-        onClick={goPrev}
-        className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg transition-all lg:hidden"
-        aria-label="Previous image"
-      >
-        <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
-      <button
-        type="button"
-        onClick={goNext}
-        className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg transition-all lg:hidden"
-        aria-label="Next image"
-      >
-        <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
-    </>
-  );
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    setTouchStartX(e.changedTouches[0]?.clientX ?? null);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (touchStartX == null || !hasMultiple) return;
+    const endX = e.changedTouches[0]?.clientX ?? touchStartX;
+    const deltaX = touchStartX - endX;
+    if (Math.abs(deltaX) > 40) {
+      if (deltaX > 0) goNext();
+      else goPrev();
+    }
+    setTouchStartX(null);
+  };
 
   return (
     <div className="flex flex-col">
-      {/* Mobile: plain larger image with slider arrows */}
-      <div className="relative bg-gray-50 rounded-xl overflow-hidden min-h-[380px] sm:min-h-[420px] lg:hidden">
-        {arrows}
+      {/* Mobile: simple slider with swipe + dots */}
+      <div
+        className="relative min-h-[min(85vw,520px)] overflow-hidden rounded-xl bg-gray-50 sm:min-h-[min(75vw,560px)] lg:hidden"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         <img
           src={currentImage}
           alt={alt}
-          className="w-full h-full min-h-[380px] sm:min-h-[420px] object-contain p-3"
+          className="h-full min-h-[min(85vw,520px)] w-full object-contain p-2 sm:min-h-[min(75vw,560px)] sm:p-3"
         />
-      </div>
-      {/* Desktop: single image with magnifier, no arrows */}
-      <div className="relative overflow-hidden hidden lg:block min-h-0">
-        <ImageMagnifier
-          src={currentImage}
-          alt={alt}
-          zoomLevel={zoomLevel}
-          magnifierSize={magnifierSize}
-        />
-      </div>
-
-      {/* Thumbnail strip - switch between images (mobile and desktop) */}
-      {hasMultiple && (
-        <div className="flex gap-2 overflow-x-auto pb-1 mt-4">
-          {images.map((src, index) => (
-            <button
-              key={`${src}-${index}`}
-              type="button"
-              onClick={() => setSelectedIndex(index)}
-              className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                selectedIndex === index
-                  ? "border-blue-600 ring-2 ring-blue-200"
-                  : "border-gray-200 hover:border-gray-300"
-              }`}
-            >
-              <img
-                src={src}
-                alt={`${alt} view ${index + 1}`}
-                className="w-full h-full object-cover"
+        {hasMultiple && (
+          <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-2">
+            {images.map((_, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => setSelectedIndex(index)}
+                className={`h-2.5 w-2.5 rounded-full transition-colors ${
+                  index === selectedIndex ? "bg-slate-900" : "bg-slate-300"
+                }`}
+                aria-label={`Go to image ${index + 1}`}
               />
-            </button>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
+      {/* Desktop: full images stacked vertically, scroll to view more */}
+      <div className="hidden flex-col gap-6 lg:flex">
+        {images.map((src, index) => (
+          <div key={`${src}-${index}`} className="overflow-hidden rounded-xl bg-gray-50">
+            <ImageMagnifier
+              src={src}
+              alt={`${alt} view ${index + 1}`}
+              zoomLevel={zoomLevel}
+              magnifierSize={magnifierSize}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

@@ -1,16 +1,27 @@
 import { useTranslation } from "../../hooks/useTranslation";
-import { storeLocations } from "../../data/storeLocations";
+import type { StoreLocation } from "../../data/storeLocations";
+import type { Product } from "../../types/product";
 
 type StoreLocationsModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  product?: Product | null;
+  stores: StoreLocation[];
 };
 
 const StoreLocationsModal = ({
   isOpen,
   onClose,
+  product,
+  stores,
 }: StoreLocationsModalProps) => {
   const { t } = useTranslation();
+
+  const getQuantityForStore = (storeId: string): number | null => {
+    if (!product?.storeStock?.length) return null;
+    const entry = product.storeStock.find((e) => e.storeId === storeId);
+    return entry ? entry.quantity : null;
+  };
 
   if (!isOpen) return null;
 
@@ -54,7 +65,14 @@ const StoreLocationsModal = ({
           </p>
 
           <div className="space-y-4">
-            {storeLocations.map((store) => (
+            {stores.length === 0 ? (
+              <p className="text-sm text-slate-500">No store locations configured.</p>
+            ) : (
+            <>
+            {stores.map((store) => {
+              const quantity = getQuantityForStore(store.id);
+              const showStock = product?.storeStock && quantity !== null;
+              return (
               <div
                 key={store.id}
                 className="rounded-lg border border-slate-200 p-4 transition-shadow hover:shadow-md"
@@ -133,11 +151,28 @@ const StoreLocationsModal = ({
                         </svg>
                         <span>{store.hours}</span>
                       </div>
+
+                      {showStock && (
+                        <div className="mt-2 pt-2 border-t border-slate-100">
+                          {quantity! > 0 ? (
+                            <span className="text-sm font-medium text-emerald-700">
+                              {t("storeLocations.quantityInStock", { count: String(quantity) })}
+                            </span>
+                          ) : (
+                            <span className="text-sm font-medium text-slate-500">
+                              {t("storeLocations.outOfStock")}
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
-            ))}
+            );
+            })}
+            </>
+            )}
           </div>
         </div>
 

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useProducts } from "../hooks/useProducts";
 import { useTranslation } from "../hooks/useTranslation";
 import { useCatalogState } from "../hooks/useCatalogState";
@@ -11,14 +11,17 @@ import {
   CatalogMobileFilters,
   CatalogProductGrid,
 } from "../components/catalog";
+import Button from "../components/ui/Button";
 
 type CatalogPageProps = {
   type: ProductType;
 };
 
 const CatalogPage = ({ type }: CatalogPageProps) => {
+  const productsPerPage = 9;
   const { t } = useTranslation();
   const { products, isLoading, error } = useProducts(type);
+  const [visibleCount, setVisibleCount] = useState(productsPerPage);
   const {
     selectedFilters,
     sortBy,
@@ -33,10 +36,19 @@ const CatalogPage = ({ type }: CatalogPageProps) => {
     availableFilterOptions,
   } = useCatalogState(products);
 
+  const paginatedProducts = useMemo(() => {
+    return filteredAndSortedProducts.slice(0, visibleCount);
+  }, [visibleCount, filteredAndSortedProducts]);
+
   useEffect(() => {
     resetFilters();
+    setVisibleCount(productsPerPage);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- clear when catalog type changes
   }, [type]);
+
+  useEffect(() => {
+    setVisibleCount(productsPerPage);
+  }, [searchQuery, sortBy, selectedFilters]);
 
   const title =
     type === "glasses"
@@ -95,7 +107,7 @@ const CatalogPage = ({ type }: CatalogPageProps) => {
           <CatalogProductGrid
             isLoading={isLoading}
             error={error}
-            products={filteredAndSortedProducts}
+            products={paginatedProducts}
             emptyTitle={t("catalog.noResults")}
             emptyDescription={`We couldn't find any ${type} matching your current ${
               searchQuery ? "search" : "filters"
@@ -107,6 +119,23 @@ const CatalogPage = ({ type }: CatalogPageProps) => {
             hasActiveFilters={selectedFilters.length > 0}
             hasSearchQuery={!!searchQuery.trim()}
           />
+
+          {!isLoading &&
+            !error &&
+            paginatedProducts.length < filteredAndSortedProducts.length && (
+              <div className="flex justify-center pt-2">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() =>
+                    setVisibleCount((prev) => prev + productsPerPage)
+                  }
+                  className="min-w-[200px] rounded-full border-2 border-primary-500/60 bg-white px-8 py-3.5 text-slate-700 shadow-sm transition-all duration-200 hover:border-primary-500 hover:bg-primary-50/50 hover:shadow-md hover:text-slate-900 focus:ring-primary-400"
+                >
+                  {t("common.loadMore") ?? "Load more"}
+                </Button>
+              </div>
+            )}
         </section>
       </div>
     </div>

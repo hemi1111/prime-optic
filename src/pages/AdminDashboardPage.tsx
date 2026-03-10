@@ -16,8 +16,19 @@ import { useAuthStore } from "../store/useAuthStore";
 import { useTranslation } from "../hooks/useTranslation";
 import { useToast } from "../hooks/useToast";
 import { getReadableErrorMessage } from "../utils/errorHandler";
-import type { Product, ProductType } from "../types/product";
-import { AdminHeader, AdminMessage, AdminProductTable } from "../components/admin";
+import type { Product, ProductType, StoreStockEntry } from "../types/product";
+import type { StoreLocation } from "../data/storeLocations";
+import {
+  createStore,
+  updateStore,
+  deleteStore,
+  populateSampleStores,
+} from "../services/storeService";
+import { useStoreLocations } from "../hooks/useStoreLocations";
+import { AdminHeader, AdminMessage, AdminNav, AdminProductTable } from "../components/admin";
+
+const defaultStoreStock = (stores: StoreLocation[]): StoreStockEntry[] =>
+  stores.map((s) => ({ storeId: s.id, quantity: 0 }));
 
 interface ProductFormData {
   name: string;
@@ -37,12 +48,14 @@ interface ProductFormData {
   isNew: boolean;
   isBestSeller: boolean;
   blueLightFilter: boolean;
+  storeStock: StoreStockEntry[];
 }
 
 const AdminDashboardPage = () => {
   const { user } = useAuthStore();
   const { t } = useTranslation();
   const toast = useToast();
+  const { stores, isLoading: storesLoading, refetch: refetchStores } = useStoreLocations();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -56,6 +69,16 @@ const AdminDashboardPage = () => {
   >({ EUR: 1, USD: 1.08, ALL: 104 });
   const [currencyRatesLoading, setCurrencyRatesLoading] = useState(false);
   const [currencyRatesSaving, setCurrencyRatesSaving] = useState(false);
+
+  const [editingStore, setEditingStore] = useState<StoreLocation | null>(null);
+  const [storeFormData, setStoreFormData] = useState({
+    name: "",
+    address: "",
+    phone: "",
+    hours: "",
+    isAvailable: true,
+  });
+  const [storesSaving, setStoresSaving] = useState(false);
 
   const [formData, setFormData] = useState<ProductFormData>({
     name: "",
@@ -75,6 +98,7 @@ const AdminDashboardPage = () => {
     isNew: false,
     isBestSeller: false,
     blueLightFilter: false,
+    storeStock: [],
   });
 
   useEffect(() => {
@@ -164,6 +188,7 @@ const AdminDashboardPage = () => {
           formData.frameShape && validFrameShapes.includes(formData.frameShape)
             ? (formData.frameShape as any)
             : undefined,
+        storeStock: formData.storeStock,
       };
 
       if (editingProduct) {
@@ -191,6 +216,12 @@ const AdminDashboardPage = () => {
 
   const handleEdit = (product: Product) => {
     setEditingProduct(product);
+    const storeStock = product.storeStock?.length && stores.length
+      ? stores.map((store) => {
+          const entry = product.storeStock!.find((e) => e.storeId === store.id);
+          return { storeId: store.id, quantity: entry?.quantity ?? 0 };
+        })
+      : defaultStoreStock(stores);
     setFormData({
       name: product.name,
       brand: product.brand,
@@ -209,6 +240,7 @@ const AdminDashboardPage = () => {
       isNew: product.isNew || false,
       isBestSeller: product.isBestSeller || false,
       blueLightFilter: product.blueLightFilter || false,
+      storeStock,
     });
     setShowAddForm(true);
   };
@@ -302,6 +334,7 @@ const AdminDashboardPage = () => {
       isNew: false,
       isBestSeller: false,
       blueLightFilter: false,
+      storeStock: defaultStoreStock(stores),
     });
   };
 
@@ -309,6 +342,99 @@ const AdminDashboardPage = () => {
     setShowAddForm(false);
     setEditingProduct(null);
     resetForm();
+  };
+
+  const handleToggleAddForm = () => {
+    if (!showAddForm) resetForm();
+    setShowAddForm((prev) => !prev);
+  };
+
+  const openAddStoreForm = () => {
+    setStoreFormData({
+      name: "",
+      address: "",
+      phone: "",
+      hours: "",
+      isAvailable: true,
+    });
+    setEditingStore({
+      id: "",
+      name: "",
+      address: "",
+      phone: "",
+      hours: "",
+      isAvailable: true,
+    });
+  };
+
+  const handleEditStore = (store: StoreLocation) => {
+    setStoreFormData({
+      name: store.name,
+      address: store.address,
+      phone: store.phone,
+      hours: store.hours,
+      isAvailable: store.isAvailable,
+    });
+    setEditingStore(store);
+  };
+
+  const handleSaveStore = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStoresSaving(true);
+    try {
+      if (editingStore?.id) {
+        await updateStore(editingStore.id, storeFormData);
+        toast.success("Store updated.");
+        setMessage("Store updated successfully.");
+      } else {
+        await createStore(storeFormData);
+        toast.success("Store added.");
+        setMessage("Store added successfully.");
+      }
+      setEditingStore(null);
+      refetchStores();
+    } catch (error) {
+      const errorMessage = getReadableErrorMessage(error, t);
+      toast.error(errorMessage);
+      setMessage(`Error: ${errorMessage}`);
+    } finally {
+      setStoresSaving(false);
+    }
+  };
+
+  const handleDeleteStore = async (id: string) => {
+    if (!window.confirm("Delete this store? Product stock entries for this store will no longer match a location.")) return;
+    setStoresSaving(true);
+    try {
+      await deleteStore(id);
+      toast.success("Store deleted.");
+      setMessage("Store deleted.");
+      setEditingStore(null);
+      refetchStores();
+    } catch (error) {
+      const errorMessage = getReadableErrorMessage(error, t);
+      toast.error(errorMessage);
+      setMessage(`Error: ${errorMessage}`);
+    } finally {
+      setStoresSaving(false);
+    }
+  };
+
+  const handlePopulateStores = async () => {
+    if (!window.confirm("Add 5 sample store locations (ids 1–5)? Existing stores with these ids will be overwritten.")) return;
+    setStoresSaving(true);
+    try {
+      await populateSampleStores();
+      toast.success("Sample stores added.");
+      setMessage("Sample stores added. Refreshing list.");
+      refetchStores();
+    } catch (error) {
+      const errorMessage = getReadableErrorMessage(error, t);
+      toast.error(errorMessage);
+      setMessage(`Error: ${errorMessage}`);
+    } finally {
+      setStoresSaving(false);
+    }
   };
 
   const handleSaveCurrencyRates = async (e: React.FormEvent) => {
@@ -339,8 +465,9 @@ const AdminDashboardPage = () => {
 
   return (
     <div className="space-y-6">
+      <AdminNav />
       <AdminHeader
-        onToggleAddForm={() => setShowAddForm(!showAddForm)}
+        onToggleAddForm={handleToggleAddForm}
         showAddForm={showAddForm}
         onPopulateSample={handlePopulateSampleProducts}
         onMakeAdmin={user && user.role !== "admin" ? handleMakeAdmin : undefined}
@@ -406,6 +533,187 @@ const AdminDashboardPage = () => {
               {currencyRatesSaving ? "Saving..." : "Save rates"}
             </button>
           </form>
+        )}
+      </div>
+
+      {/* Store locations */}
+      <div className="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100">
+        <h2 className="mb-4 text-lg font-semibold text-slate-900">
+          Store locations
+        </h2>
+        {storesLoading ? (
+          <p className="text-sm text-slate-500">Loading stores...</p>
+        ) : (
+          <>
+            <div className="mb-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={openAddStoreForm}
+                className="rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700"
+              >
+                Add store
+              </button>
+              <button
+                type="button"
+                onClick={handlePopulateStores}
+                disabled={storesSaving}
+                className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+              >
+                {storesSaving ? "..." : "Populate sample stores (5)"}
+              </button>
+            </div>
+
+            {editingStore !== null && (
+              <form
+                onSubmit={handleSaveStore}
+                className="mb-6 rounded-lg border border-slate-200 bg-slate-50/50 p-4"
+              >
+                <h3 className="mb-3 text-sm font-semibold text-slate-800">
+                  {editingStore.id ? "Edit store" : "New store"}
+                </h3>
+                <div className="grid gap-3 md:grid-cols-2">
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-medium text-slate-700">Name *</label>
+                    <input
+                      type="text"
+                      value={storeFormData.name}
+                      onChange={(e) =>
+                        setStoreFormData((prev) => ({ ...prev, name: e.target.value }))
+                      }
+                      className="w-full rounded border border-slate-200 px-3 py-2 text-sm"
+                      required
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-medium text-slate-700">Address</label>
+                    <input
+                      type="text"
+                      value={storeFormData.address}
+                      onChange={(e) =>
+                        setStoreFormData((prev) => ({ ...prev, address: e.target.value }))
+                      }
+                      className="w-full rounded border border-slate-200 px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-slate-700">Phone</label>
+                    <input
+                      type="text"
+                      value={storeFormData.phone}
+                      onChange={(e) =>
+                        setStoreFormData((prev) => ({ ...prev, phone: e.target.value }))
+                      }
+                      className="w-full rounded border border-slate-200 px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-slate-700">Hours</label>
+                    <input
+                      type="text"
+                      value={storeFormData.hours}
+                      onChange={(e) =>
+                        setStoreFormData((prev) => ({ ...prev, hours: e.target.value }))
+                      }
+                      className="w-full rounded border border-slate-200 px-3 py-2 text-sm"
+                      placeholder="Mon-Sat: 9:00 AM - 8:00 PM"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 md:col-span-2">
+                    <input
+                      type="checkbox"
+                      id="store-available"
+                      checked={storeFormData.isAvailable}
+                      onChange={(e) =>
+                        setStoreFormData((prev) => ({ ...prev, isAvailable: e.target.checked }))
+                      }
+                      className="rounded border-slate-300"
+                    />
+                    <label htmlFor="store-available" className="text-sm text-slate-700">
+                      Available (open for business)
+                    </label>
+                  </div>
+                </div>
+                <div className="mt-3 flex gap-2">
+                  <button
+                    type="submit"
+                    disabled={storesSaving}
+                    className="rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700 disabled:opacity-50"
+                  >
+                    {storesSaving ? "Saving..." : editingStore.id ? "Update store" : "Add store"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEditingStore(null)}
+                    className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            )}
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200">
+                    <th className="text-left py-2 font-medium text-slate-700">Name</th>
+                    <th className="text-left py-2 font-medium text-slate-700">Address</th>
+                    <th className="text-left py-2 font-medium text-slate-700">Phone</th>
+                    <th className="text-left py-2 font-medium text-slate-700">Hours</th>
+                    <th className="text-left py-2 font-medium text-slate-700">Status</th>
+                    <th className="text-left py-2 font-medium text-slate-700">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stores.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="py-4 text-center text-slate-500">
+                        No stores. Add one or populate sample stores.
+                      </td>
+                    </tr>
+                  ) : (
+                    stores.map((store) => (
+                      <tr key={store.id} className="border-b border-slate-100">
+                        <td className="py-2 font-medium">{store.name}</td>
+                        <td className="py-2 text-slate-600">{store.address}</td>
+                        <td className="py-2">{store.phone}</td>
+                        <td className="py-2 text-slate-600">{store.hours}</td>
+                        <td className="py-2">
+                          {store.isAvailable ? (
+                            <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-800">
+                              Open
+                            </span>
+                          ) : (
+                            <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs text-red-800">
+                              Closed
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-2">
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() => handleEditStore(store)}
+                              className="text-primary-600 hover:underline text-sm"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteStore(store.id)}
+                              className="text-red-600 hover:underline text-sm"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 
@@ -661,6 +969,52 @@ const AdminDashboardPage = () => {
                 className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
                 rows={3}
               />
+            </div>
+
+            {/* Store stock */}
+            <div className="md:col-span-2 space-y-2">
+              <label className="block text-xs font-medium text-slate-700">
+                Store stock (quantity per location)
+              </label>
+              <div className="flex flex-wrap gap-4">
+                {stores.map((store) => {
+                  const entry = formData.storeStock.find(
+                    (e) => e.storeId === store.id
+                  );
+                  const quantity = entry?.quantity ?? 0;
+                  return (
+                    <div
+                      key={store.id}
+                      className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-2"
+                    >
+                      <span className="text-sm font-medium text-slate-700 min-w-[140px]">
+                        {store.name}
+                      </span>
+                      <input
+                        type="number"
+                        min={0}
+                        step={1}
+                        value={quantity}
+                        onChange={(e) => {
+                          const next = Math.max(
+                            0,
+                            parseInt(e.target.value, 10) || 0
+                          );
+                          setFormData({
+                            ...formData,
+                            storeStock: formData.storeStock.map((s) =>
+                              s.storeId === store.id
+                                ? { ...s, quantity: next }
+                                : s
+                            ),
+                          });
+                        }}
+                        className="w-20 rounded border border-slate-200 px-2 py-1.5 text-sm"
+                      />
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Checkboxes */}

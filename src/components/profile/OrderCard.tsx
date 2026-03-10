@@ -36,11 +36,13 @@ const OrderCard = ({ order }: OrderCardProps) => {
       case "shipped":
         return "bg-blue-100 text-blue-700 border border-blue-200";
       case "confirmed":
-        return "bg-yellow-100 text-yellow-700 border border-yellow-200";
+        return "bg-green-100 text-green-700 border border-green-200";
       case "preparing":
-        return "bg-purple-100 text-purple-700 border border-purple-200";
+        return "bg-yellow-100 text-yellow-700 border border-yellow-200";
       case "cancelled":
         return "bg-red-100 text-red-700 border border-red-200";
+      case "pending":
+        return "bg-yellow-100 text-yellow-700 border border-yellow-200";
       default:
         return "bg-slate-100 text-slate-700 border border-slate-200";
     }
