@@ -26,6 +26,7 @@ import {
   ProductDetailNotFound,
   StoreLocationsModal,
   ProductImageSlider,
+  SizeGuideDiagram,
 } from "../components/product-detail-page";
 import { stateSwapVariants } from "../config/motion";
 
@@ -116,21 +117,24 @@ const ProductDetailPage = () => {
     setRelatedTouchStartX(null);
   };
 
-  const sizeGuideBlock = (
-    <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-soft ring-1 ring-slate-100 lg:p-4">
-      <h3 className="font-semibold text-slate-900 mb-2">
-        {t("productDetail.sizeGuide")}
-      </h3>
-      <p className="text-sm text-slate-600 mb-3">
-        {t("productDetail.sizesInMm")}
-      </p>
-      <img
-        src="https://assets.glassesdirect.co.uk/media/filer_public/07/76/07765c92-6dc2-47cc-b3d4-56093aa93a99/diagram-glasses-frame-size-medium-glassesdirect.png"
-        alt={t("productDetail.sizeGuide")}
-        className="w-full h-auto rounded-lg"
-      />
-    </div>
-  );
+  const hasSizeData =
+    product != null &&
+    product.lensWidth != null &&
+    product.bridgeWidth != null &&
+    product.templeLength != null;
+
+  const sizeGuideBlock =
+    hasSizeData && product ? (
+      <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-soft ring-1 ring-slate-100 lg:p-4">
+        <h3 className="font-semibold text-slate-900 mb-2">
+          {t("productDetail.sizeGuide")}
+        </h3>
+        <p className="text-sm text-slate-600 mb-3">
+          {t("productDetail.sizesInMm")}
+        </p>
+        <SizeGuideDiagram product={product} t={t} />
+      </div>
+    ) : null;
 
   return (
     <AnimatePresence mode="wait" initial={false}>
@@ -199,15 +203,19 @@ const ProductDetailPage = () => {
               </div>
             )}
           </div>
-          <div className="hidden lg:block">
-            {sizeGuideBlock}
-          </div>
+          {hasSizeData && (
+            <div className="hidden lg:block">
+              {sizeGuideBlock}
+            </div>
+          )}
         </div>
 
         {/* Size guide on mobile only: last in order */}
-        <div className="order-6 lg:hidden">
-          {sizeGuideBlock}
-        </div>
+        {hasSizeData && (
+          <div className="order-6 lg:hidden">
+            {sizeGuideBlock}
+          </div>
+        )}
 
         {/* Color options: order 3, right column - mobile only; on desktop it's inside the add-to-cart card */}
         {product.colorOptions && product.colorOptions.length > 0 && (

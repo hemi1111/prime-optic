@@ -366,6 +366,7 @@ export const en: Record<string, string> = {
   "productDetail.sku": "SKU",
   "productDetail.upc": "UPC",
   "productDetail.lenseTechnology": "Lens Technology",
+  "productDetail.frameWidth": "Frame width",
   "productDetail.lensWidth": "Lens Width",
   "productDetail.bridgeWidth": "Bridge Width",
   "productDetail.templeLength": "Temple Length",

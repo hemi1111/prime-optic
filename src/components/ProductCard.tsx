@@ -108,7 +108,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
     <Card
       as="article"
       padding="none"
-      className="group relative w-full md:max-w-sm mx-auto shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
+      className="group relative w-full md:max-w-sm mx-auto shadow-lg transition-shadow duration-300 hover:shadow-xl"
     >
       <Link to={`/products/${product.slug}`}>
         <div className="relative h-64 bg-white">

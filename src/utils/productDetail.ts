@@ -101,3 +101,12 @@ export function formatDimensions(
     ? dimensions.join("-")
     : t("productDetail.notAvailable");
 }
+
+/** Total frame width in mm: 2× lens width + bridge width. */
+export function getFrameWidth(
+  lensWidth?: number,
+  bridgeWidth?: number
+): number | undefined {
+  if (lensWidth == null || bridgeWidth == null) return undefined;
+  return 2 * lensWidth + bridgeWidth;
+}

@@ -366,6 +366,7 @@ export const sq: Record<string, string> = {
   "productDetail.sku": "SKU",
   "productDetail.upc": "UPC",
   "productDetail.lenseTechnology": "Teknologjia e Lenteve",
+  "productDetail.frameWidth": "Gjerësia e Kornizës",
   "productDetail.lensWidth": "Gjerësia e Lenteve",
   "productDetail.bridgeWidth": "Gjerësia e Urës",
   "productDetail.templeLength": "Gjatësia e Bishtave",
