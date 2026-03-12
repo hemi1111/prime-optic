@@ -56,35 +56,38 @@ const CatalogSearchAndToolbar = ({
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-slate-100 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-4">
-          <button
-            type="button"
-            onClick={onToggleFilters}
-            className="lg:hidden inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-medium text-slate-700 hover:border-primary-500 hover:text-primary-600"
-          >
-            <span>☰</span>
-            {t("catalog.filters")}
-            {selectedFiltersCount > 0 && (
-              <span className="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-primary-500 px-1.5 text-[10px] font-semibold text-white">
-                {selectedFiltersCount}
-              </span>
-            )}
-          </button>
-          <span className="text-sm font-medium text-slate-600">
-            {resultCount > 0
-              ? `${resultCount} ${
-                  resultCount === 1
-                    ? t("catalog.product")
-                    : t("catalog.products")
-                } ${t("catalog.productsFound")}`
-              : t("catalog.noMatch")}
-          </span>
-        </div>
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between gap-3 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-slate-100">
+        {/* Filters toggle — mobile only */}
+        <button
+          type="button"
+          onClick={onToggleFilters}
+          className="lg:hidden inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-medium text-slate-700 hover:border-primary-500 hover:text-primary-600"
+        >
+          <span>☰</span>
+          {t("catalog.filters")}
+          {selectedFiltersCount > 0 && (
+            <span className="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-primary-500 px-1.5 text-[10px] font-semibold text-white">
+              {selectedFiltersCount}
+            </span>
+          )}
+        </button>
+
+        {/* Product count — hidden on mobile, visible on lg+ (sidebar already visible there) */}
+        <span className="hidden lg:block text-sm font-medium text-slate-600">
+          {resultCount > 0
+            ? `${resultCount} ${
+                resultCount === 1
+                  ? t("catalog.product")
+                  : t("catalog.products")
+              } ${t("catalog.productsFound")}`
+            : t("catalog.noMatch")}
+        </span>
+
+        {/* Sort */}
+        <div className="flex items-center gap-2">
           <label
             htmlFor="catalog-sort"
-            className="text-xs font-medium text-slate-600"
+            className="text-xs font-medium text-slate-600 hidden sm:block"
           >
             {t("catalog.sortBy")}
           </label>
