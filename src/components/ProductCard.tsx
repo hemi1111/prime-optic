@@ -111,7 +111,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       className="group relative w-full md:max-w-sm mx-auto shadow-lg transition-shadow duration-300 hover:shadow-xl"
     >
       <Link to={`/products/${product.slug}`}>
-        <div className="relative h-64 bg-white">
+        <div className="relative w-full aspect-[4/3] bg-white">
           {/* Badges */}
           <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
             {product.isBestSeller && (
@@ -160,13 +160,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </div>
       </Link>
 
-      <div className="p-4 space-y-3">
+      <div className="p-3 sm:p-4 space-y-2.5">
         {/* Rating and Reviews */}
         {product.rating && (
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
             <div className="flex">{renderStars(product.rating)}</div>
             {product.reviewCount && (
-              <span className="text-sm text-gray-500">
+              <span className="text-xs text-slate-500">
                 ({product.reviewCount} {t("common.reviews")})
               </span>
             )}
@@ -177,18 +177,18 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <div>
           <Link
             to={`/products/${product.slug}`}
-            className="font-bold text-gray-900 hover:text-blue-600 transition-colors"
+            className="font-bold text-slate-900 hover:text-primary-600 transition-colors line-clamp-2 leading-snug"
           >
             {product.name}
           </Link>
-          <p className="text-sm text-gray-500">{t("common.by")} {product.brand}</p>
+          <p className="text-xs text-slate-500 mt-0.5">{t("common.by")} {product.brand}</p>
         </div>
 
         {/* Color Options */}
         {product.colorOptions && product.colorOptions.length > 0 && (
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-gray-700">{t("common.color")}:</p>
-            <div className="flex gap-2">
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-slate-500 shrink-0">{t("common.color")}:</span>
+            <div className="flex flex-wrap gap-1.5">
               {product.colorOptions.map((color, index) => (
                 <button
                   key={index}
@@ -196,10 +196,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     e.preventDefault();
                     setSelectedColorIndex(index);
                   }}
-                  className={`w-6 h-6 rounded-full border-2 transition-all ${
+                  className={`w-5 h-5 rounded-full border-2 transition-all ${
                     selectedColorIndex === index
-                      ? "border-blue-500 shadow-md"
-                      : "border-gray-300 hover:border-gray-400"
+                      ? "border-primary-500 shadow-md"
+                      : "border-slate-300 hover:border-slate-400"
                   }`}
                   style={{ backgroundColor: color.hex }}
                   title={color.name}
@@ -211,23 +211,23 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
         {/* Price */}
         <div className="flex items-baseline gap-2">
-          <span className="text-xl font-bold text-gray-900">
+          <span className="text-lg font-bold text-slate-900">
             {formatPrice(finalPrice)}
           </span>
           {product.oldPrice && product.oldPrice > product.price && (
-            <span className="text-sm text-gray-400 line-through">
+            <span className="text-xs text-slate-400 line-through">
               {formatPrice(product.oldPrice)}
             </span>
           )}
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2 pt-2">
+        <div className="flex gap-2 pt-1">
           <Button
             variant="icon"
             size="icon"
             onClick={toggleWishlist}
-            className={`flex-shrink-0 ${
+            className={`shrink-0 ${
               isWishlisted
                 ? "border-red-500 text-red-500 bg-red-50"
                 : ""
@@ -235,7 +235,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             aria-label={isWishlisted ? "Remove from favorites" : "Add to favorites"}
           >
             <svg
-              className="w-5 h-5"
+              className="w-4 h-4"
               fill={isWishlisted ? "currentColor" : "none"}
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -251,15 +251,17 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
           <Button
             variant="primary"
-            size="md"
+            size="sm"
             onClick={handleAddToCart}
             disabled={isAdding}
             loading={isAdding}
-            className="flex-1"
+            className="flex-1 min-w-0 text-xs sm:text-sm"
           >
-            {showBlueLightOption
-              ? t("common.confirmSelection")
-              : t("common.addToCart")}
+            <span className="truncate">
+              {showBlueLightOption
+                ? t("common.confirmSelection")
+                : t("common.addToCart")}
+            </span>
           </Button>
         </div>
 

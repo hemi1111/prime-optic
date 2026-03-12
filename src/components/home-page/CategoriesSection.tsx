@@ -16,6 +16,9 @@ const CategoriesSection = () => {
           className="group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100 transition-all duration-300 hover:scale-[1.02] hover:shadow-medium hover:ring-primary-300"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-primary-50/0 to-primary-50/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          <div className="absolute right-4 top-4 text-5xl opacity-10 transition-opacity duration-300 group-hover:opacity-20 select-none pointer-events-none" aria-hidden="true">
+            👓
+          </div>
           <div className="relative space-y-3">
             <div className="text-xs font-bold uppercase tracking-wider text-primary-600">
               {t("nav.glasses")}
@@ -40,6 +43,9 @@ const CategoriesSection = () => {
           className="group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-white p-6 shadow-soft ring-1 ring-slate-100 transition-all duration-300 hover:scale-[1.02] hover:shadow-medium hover:ring-primary-300"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-accent-50/0 to-accent-50/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          <div className="absolute right-4 top-4 text-5xl opacity-10 transition-opacity duration-300 group-hover:opacity-20 select-none pointer-events-none" aria-hidden="true">
+            🕶️
+          </div>
           <div className="relative space-y-3">
             <div className="text-xs font-bold uppercase tracking-wider text-primary-600">
               {t("home.categories.sunglasses.title")}
@@ -64,6 +70,9 @@ const CategoriesSection = () => {
           className="group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 text-slate-100 shadow-medium transition-all duration-300 hover:scale-[1.02] hover:shadow-strong"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          <div className="absolute right-4 top-4 text-5xl opacity-10 transition-opacity duration-300 group-hover:opacity-20 select-none pointer-events-none" aria-hidden="true">
+            👁️
+          </div>
           <div className="relative space-y-3">
             <div className="text-xs font-bold uppercase tracking-wider text-primary-200">
               {t("home.categories.eyeCare.title")}

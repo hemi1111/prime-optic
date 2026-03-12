@@ -60,11 +60,11 @@ const CatalogProductGrid = ({
         exit="exit"
       >
         {isLoading ? (
-          <div className="grid gap-3 sm:gap-4 md:gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 sm:gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, idx) => (
               <div
                 key={idx}
-                className="h-64 md:h-80 animate-pulse rounded-2xl bg-slate-100 min-w-0"
+                className="aspect-[4/3] animate-pulse rounded-2xl bg-slate-100 min-w-0"
               />
             ))}
           </div>
@@ -112,7 +112,7 @@ const CatalogProductGrid = ({
           </div>
         ) : (
           <motion.div
-            className="grid gap-3 sm:gap-4 md:gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-3"
+            className="grid gap-3 sm:gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
             variants={listContainerVariants}
             initial="initial"
             animate="animate"
