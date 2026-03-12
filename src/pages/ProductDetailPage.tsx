@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useParams } from "react-router-dom";
 
-import { useProductBySlug } from "../hooks/useProducts";
+import { useProductBySlug, useProducts } from "../hooks/useProducts";
+import { useStoreLocations } from "../hooks/useStoreLocations";
 import { useTranslation } from "../hooks/useTranslation";
 import { useCurrency } from "../hooks/useCurrency";
 import { useToast } from "../hooks/useToast";
@@ -17,13 +19,16 @@ import {
 import { useCartStore } from "../store/useCartStore";
 import type { CartItem } from "../types/product";
 
+import ProductCard from "../components/ProductCard";
 import {
   ProductDetailSkeleton,
   ProductDetailError,
   ProductDetailNotFound,
   StoreLocationsModal,
   ProductImageSlider,
+  SizeGuideDiagram,
 } from "../components/product-detail-page";
+import { stateSwapVariants } from "../config/motion";
 
 const ProductDetailPage = () => {
   const { t } = useTranslation();
@@ -31,16 +36,36 @@ const ProductDetailPage = () => {
   const toast = useToast();
   const { slug } = useParams<{ slug: string }>();
   const { product, isLoading, error } = useProductBySlug(slug);
+  const { stores } = useStoreLocations();
+  const { products: sameTypeProducts } = useProducts(
+    product?.type ?? "glasses"
+  );
   const addItem = useCartStore((state) => state.addItem);
   const [isStoreModalOpen, setIsStoreModalOpen] = useState(false);
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
   const [addBlueLightFilter, setAddBlueLightFilter] = useState(false);
+  const [relatedIndex, setRelatedIndex] = useState(0);
+  const [relatedDirection, setRelatedDirection] = useState(0);
+  const [relatedTouchStartX, setRelatedTouchStartX] = useState<number | null>(null);
 
   const blueLightFilterPrice = product?.blueLightFilterPrice ?? 25;
   const cartPrice =
     product && addBlueLightFilter && product.blueLightFilter
       ? product.price + blueLightFilterPrice
       : product?.price ?? 0;
+
+  const relatedProducts = useMemo(() => {
+    if (!product) return [];
+    return sameTypeProducts
+      .filter(
+        (p) => p.id !== product.id && p.brand === product.brand
+      )
+      .slice(0, 4);
+  }, [product, sameTypeProducts]);
+
+  useEffect(() => {
+    setRelatedIndex(0);
+  }, [relatedProducts.length, product?.id]);
 
   const handleAddToCart = () => {
     if (!product) return;
@@ -60,50 +85,82 @@ const ProductDetailPage = () => {
     toast.success(t("toast.addToCart.success"));
   };
 
-  if (isLoading) return <ProductDetailSkeleton />;
   if (error) return <ProductDetailError error={error} />;
-  if (!product) return <ProductDetailNotFound />;
+  if (!product && !isLoading) return <ProductDetailNotFound />;
+
+  const goPrevRelated = () => {
+    setRelatedDirection(-1);
+    setRelatedIndex((prev) =>
+      prev === 0 ? relatedProducts.length - 1 : prev - 1
+    );
+  };
+
+  const goNextRelated = () => {
+    setRelatedDirection(1);
+    setRelatedIndex((prev) =>
+      prev === relatedProducts.length - 1 ? 0 : prev + 1
+    );
+  };
+
+  const handleRelatedTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    setRelatedTouchStartX(e.changedTouches[0]?.clientX ?? null);
+  };
+
+  const handleRelatedTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (relatedTouchStartX == null || relatedProducts.length <= 1) return;
+    const endX = e.changedTouches[0]?.clientX ?? relatedTouchStartX;
+    const deltaX = relatedTouchStartX - endX;
+    if (Math.abs(deltaX) > 40) {
+      if (deltaX > 0) goNextRelated();
+      else goPrevRelated();
+    }
+    setRelatedTouchStartX(null);
+  };
+
+  const hasSizeData =
+    product != null &&
+    product.lensWidth != null &&
+    product.bridgeWidth != null &&
+    product.templeLength != null;
+
+  const sizeGuideBlock =
+    hasSizeData && product ? (
+      <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-soft ring-1 ring-slate-100 lg:p-4">
+        <h3 className="font-semibold text-slate-900 mb-2">
+          {t("productDetail.sizeGuide")}
+        </h3>
+        <p className="text-sm text-slate-600 mb-3">
+          {t("productDetail.sizesInMm")}
+        </p>
+        <SizeGuideDiagram product={product} t={t} />
+      </div>
+    ) : null;
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* Product Image */}
-        <div className="space-y-4">
-          {getProductImages(product).length > 0 ? (
-            <ProductImageSlider
-              images={getProductImages(product)}
-              alt={product.name}
-              zoomLevel={1.35}
-              magnifierSize={160}
-            />
-          ) : (
-            <div className="w-full aspect-square max-h-[500px] bg-slate-100 rounded-xl flex items-center justify-center">
-              <span className="text-slate-500 text-lg">
-                {t("common.noImage")}
-              </span>
-            </div>
-          )}
-
-          {/* Size Guide */}
-          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-soft ring-1 ring-slate-100">
-            <h3 className="font-semibold text-slate-900 mb-2">
-              {t("productDetail.sizeGuide")}
-            </h3>
-            <p className="text-sm text-slate-600 mb-3">
-              {t("productDetail.sizesInMm")}
-            </p>
-            <img
-              src="https://assets.glassesdirect.co.uk/media/filer_public/07/76/07765c92-6dc2-47cc-b3d4-56093aa93a99/diagram-glasses-frame-size-medium-glassesdirect.png"
-              alt={t("productDetail.sizeGuide")}
-              className="w-full h-auto rounded-lg"
-            />
-          </div>
-        </div>
-
-        {/* Product Info */}
-        <div className="space-y-6">
-          {/* Header */}
-          <div className="space-y-3">
+    <AnimatePresence mode="wait" initial={false}>
+      {isLoading || !product ? (
+        <motion.div
+          key="loading"
+          variants={stateSwapVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+        >
+          <ProductDetailSkeleton />
+        </motion.div>
+      ) : (
+        <motion.div
+          key="content"
+          variants={stateSwapVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+        >
+          <div className="mx-auto flex max-w-6xl flex-col gap-10 px-3 pb-8 pt-3 lg:px-4 lg:pb-12 lg:pt-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-6 lg:gap-x-8 lg:gap-y-8 lg:grid-rows-[auto_auto_auto]">
+        {/* Left row 1: title only */}
+        <div className="order-1 lg:col-start-1 lg:row-start-1">
+          <div className="space-y-1.5 lg:space-y-2">
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium text-slate-500 uppercase tracking-wider">
                 {product.brand}
@@ -117,7 +174,7 @@ const ProductDetailPage = () => {
                 </>
               )}
             </div>
-            <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
               {product.name}
             </h1>
             {product.sku && (
@@ -126,10 +183,43 @@ const ProductDetailPage = () => {
               </p>
             )}
           </div>
+        </div>
 
-          {/* Color options */}
-          {product.colorOptions && product.colorOptions.length > 0 && (
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft ring-1 ring-slate-100">
+        {/* Left row 2: image + size guide (no gap between them) */}
+        <div className="order-2 flex flex-col gap-4 lg:col-start-1 lg:row-start-2 min-h-0">
+          <div className="min-h-0">
+            {getProductImages(product).length > 0 ? (
+              <ProductImageSlider
+                images={getProductImages(product)}
+                alt={product.name}
+                zoomLevel={1.35}
+                magnifierSize={160}
+              />
+            ) : (
+              <div className="w-full aspect-square max-h-[500px] bg-slate-100 rounded-xl flex items-center justify-center">
+                <span className="text-slate-500 text-lg">
+                  {t("common.noImage")}
+                </span>
+              </div>
+            )}
+          </div>
+          {hasSizeData && (
+            <div className="hidden lg:block">
+              {sizeGuideBlock}
+            </div>
+          )}
+        </div>
+
+        {/* Size guide on mobile only: last in order */}
+        {hasSizeData && (
+          <div className="order-6 lg:hidden">
+            {sizeGuideBlock}
+          </div>
+        )}
+
+        {/* Color options: order 3, right column - mobile only; on desktop it's inside the add-to-cart card */}
+        {product.colorOptions && product.colorOptions.length > 0 && (
+          <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-soft ring-1 ring-slate-100 order-3 lg:hidden">
               <p className="text-sm font-medium text-slate-700 mb-3">
                 {t("common.color")}:{" "}
                 <span className="font-semibold text-slate-900">
@@ -156,8 +246,38 @@ const ProductDetailPage = () => {
             </div>
           )}
 
-          {/* Price & CTA block */}
-          <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-6 ring-1 ring-slate-100 space-y-4">
+        {/* Right column: add-to-cart + product details stacked, aligned with image (row 2); sticky on desktop */}
+        <div className="order-4 flex flex-col gap-4 lg:col-start-2 lg:row-start-2 lg:sticky lg:top-20 lg:self-start">
+        {/* Price & CTA block - includes color picker on desktop, fit-content height */}
+        <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-4 ring-1 ring-slate-100 space-y-4 h-fit lg:p-6">
+            {/* Color picker - desktop only (inside add-to-cart card) */}
+            {product.colorOptions && product.colorOptions.length > 0 && (
+              <div className="hidden lg:block">
+                <p className="text-sm font-medium text-slate-700 mb-3">
+                  {t("common.color")}:{" "}
+                  <span className="font-semibold text-slate-900">
+                    {product.colorOptions[selectedColorIndex]?.name}
+                  </span>
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {product.colorOptions.map((color, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => setSelectedColorIndex(index)}
+                      className={`w-8 h-8 rounded-full border-2 transition-all shrink-0 ${
+                        selectedColorIndex === index
+                          ? "border-primary-500 ring-2 ring-primary-200 shadow-md"
+                          : "border-slate-300 hover:border-slate-400"
+                      }`}
+                      style={{ backgroundColor: color.hex }}
+                      title={color.name}
+                      aria-label={color.name}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="flex items-baseline gap-4">
               <span className="text-3xl font-bold text-slate-900">
                 {formatPrice(product.price)}
@@ -185,7 +305,7 @@ const ProductDetailPage = () => {
             </div>
 
             {product.blueLightFilter && product.blueLightFilterPrice != null && (
-              <div className="rounded-lg border border-primary-200 bg-primary-50/80 p-4 space-y-3">
+              <div className="rounded-lg border border-primary-200 bg-primary-50/80 p-3 space-y-3 lg:p-4">
                 <div className="flex items-start gap-3">
                   <input
                     type="checkbox"
@@ -229,15 +349,15 @@ const ProductDetailPage = () => {
               </svg>
               {t("common.addToCart")} — {formatPrice(cartPrice)}
             </button>
-          </div>
+        </div>
 
-          {/* Product Details card */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft ring-1 ring-slate-100">
-            <h2 className="text-lg font-bold text-slate-900 mb-4">
+        {/* Product Details card - directly below add-to-cart, no gap */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft ring-1 ring-slate-100 lg:p-6">
+            <h2 className="text-lg font-bold text-slate-900 mb-3 lg:mb-4">
               {t("productDetail.productDetails")}
             </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
               <div className="space-y-3">
                 <h3 className="text-sm font-semibold text-slate-700 border-b border-slate-200 pb-2">
                   {t("productDetail.specifications")}
@@ -316,7 +436,7 @@ const ProductDetailPage = () => {
             </div>
 
             {(product.lenseTechnology || (product.features && product.features.length > 0) || product.description) && (
-              <div className="mt-6 pt-6 border-t border-slate-100 space-y-4">
+              <div className="mt-4 pt-4 border-t border-slate-100 space-y-4 lg:mt-6 lg:pt-6">
                 {product.lenseTechnology && (
                   <div>
                     <h4 className="text-sm font-semibold text-slate-800 mb-1">{t("productDetail.lenseTechnology")}</h4>
@@ -342,20 +462,115 @@ const ProductDetailPage = () => {
               </div>
             )}
 
-            <div className="mt-4 pt-4 border-t border-slate-100 flex flex-wrap gap-4 text-xs text-slate-500">
+            <div className="mt-3 pt-3 border-t border-slate-100 flex flex-wrap gap-3 text-xs text-slate-500 lg:mt-4 lg:pt-4 lg:gap-4">
               {product.origin && <span>{t("productDetail.origin")}: {product.origin}</span>}
               {product.warranty && <span>{t("productDetail.warranty")}: {product.warranty}</span>}
               {product.upc && <span>{t("productDetail.upc")}: {product.upc}</span>}
             </div>
-          </div>
+        </div>
         </div>
       </div>
 
-      <StoreLocationsModal
-        isOpen={isStoreModalOpen}
-        onClose={() => setIsStoreModalOpen(false)}
-      />
-    </div>
+            {relatedProducts.length > 0 && (
+              <section className="border-t border-slate-200 pt-6 lg:pt-8">
+                <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+                  <div>
+                    <h2 className="text-xl font-bold tracking-tight text-slate-900 md:text-2xl">
+                      {t("productDetail.youMayAlsoLike")}
+                    </h2>
+                    <p className="mt-1 text-sm text-slate-600">
+                      {t("productDetail.relatedSubtitle")}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  className="relative lg:hidden"
+                  onTouchStart={handleRelatedTouchStart}
+                  onTouchEnd={handleRelatedTouchEnd}
+                >
+                  <AnimatePresence mode="wait" initial={false} custom={relatedDirection}>
+                    <motion.div
+                      key={relatedProducts[relatedIndex]?.id}
+                      custom={relatedDirection}
+                      variants={{
+                        enter: (dir: number) => ({
+                          x: dir > 0 ? 80 : dir < 0 ? -80 : 0,
+                          opacity: 0,
+                          scale: 0.98,
+                        }),
+                        center: {
+                          x: 0,
+                          opacity: 1,
+                          scale: 1,
+                          transition: {
+                            duration: 0.35,
+                            ease: [0.22, 1, 0.36, 1],
+                          },
+                        },
+                        exit: (dir: number) => ({
+                          x: dir > 0 ? -80 : dir < 0 ? 80 : 0,
+                          opacity: 0,
+                          scale: 0.98,
+                          transition: {
+                            duration: 0.25,
+                            ease: [0.4, 0, 1, 1],
+                          },
+                        }),
+                      }}
+                      initial="enter"
+                      animate="center"
+                      exit="exit"
+                    >
+                      <ProductCard product={relatedProducts[relatedIndex]} />
+                    </motion.div>
+                  </AnimatePresence>
+                  {relatedProducts.length > 1 && (
+                    <div className="mt-3 flex items-center justify-center gap-2">
+                      {relatedProducts.map((related, index) => (
+                        <button
+                          key={related.id}
+                          type="button"
+                          onClick={() => {
+                            if (index === relatedIndex) return;
+                            setRelatedDirection(
+                              index > relatedIndex ? 1 : -1
+                            );
+                            setRelatedIndex(index);
+                          }}
+                          className={`h-2.5 w-2.5 rounded-full transition-colors ${
+                            index === relatedIndex
+                              ? "bg-slate-900"
+                              : "bg-slate-300"
+                          }`}
+                          aria-label={`Go to related product ${index + 1}`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div className="hidden gap-4 overflow-x-auto pb-2 lg:flex">
+                  {relatedProducts.map((related) => (
+                    <div
+                      key={related.id}
+                      className="min-w-[270px] max-w-[320px] flex-1"
+                    >
+                      <ProductCard product={related} />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            <StoreLocationsModal
+              isOpen={isStoreModalOpen}
+              onClose={() => setIsStoreModalOpen(false)}
+              product={product}
+              stores={stores}
+            />
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 

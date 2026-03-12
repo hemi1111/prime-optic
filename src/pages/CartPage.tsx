@@ -58,7 +58,7 @@ const CartPage = () => {
 
   if (!items.length) {
     return (
-      <div className="mx-auto max-w-lg space-y-6 text-center">
+      <div className="mx-auto max-w-lg mt-16 space-y-6 text-center">
         <div className="flex justify-center">
           <span className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 text-slate-400">
             <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">

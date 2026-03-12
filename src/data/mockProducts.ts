@@ -1,8 +1,25 @@
-import type { Product } from "../types/product";
+import type { Product, StoreStockEntry } from "../types/product";
+
+function createStoreStock(
+  q1: number,
+  q2: number,
+  q3: number,
+  q4: number,
+  q5: number
+): StoreStockEntry[] {
+  return [
+    { storeId: "1", quantity: q1 },
+    { storeId: "2", quantity: q2 },
+    { storeId: "3", quantity: q3 },
+    { storeId: "4", quantity: q4 },
+    { storeId: "5", quantity: q5 },
+  ];
+}
 
 export const mockProducts: Product[] = [
   {
     id: "RB-001",
+    storeStock: createStoreStock(3, 1, 0, 2, 1),
     slug: "rayban-aviator-classic",
     name: "Aviator Classic",
     brand: "Ray-Ban",
@@ -49,6 +66,7 @@ export const mockProducts: Product[] = [
 
   {
     id: "RB-002",
+    storeStock: createStoreStock(2, 0, 1, 3, 0),
     slug: "rayban-wayfarer-original",
     name: "Wayfarer Original",
     brand: "Ray-Ban",
@@ -94,6 +112,7 @@ export const mockProducts: Product[] = [
 
   {
     id: "RB-003",
+    storeStock: createStoreStock(1, 2, 2, 0, 1),
     slug: "rayban-clubmaster-classic",
     name: "Clubmaster Classic",
     brand: "Ray-Ban",
@@ -139,6 +158,7 @@ export const mockProducts: Product[] = [
 
   {
     id: "RB-004",
+    storeStock: createStoreStock(0, 3, 1, 2, 0),
     slug: "rayban-round-metal",
     name: "Round Metal",
     brand: "Ray-Ban",
@@ -184,6 +204,7 @@ export const mockProducts: Product[] = [
 
   {
     id: "RB-005",
+    storeStock: createStoreStock(2, 1, 0, 1, 2),
     slug: "rayban-justin-classic",
     name: "Justin Classic",
     brand: "Ray-Ban",
@@ -231,6 +252,7 @@ export const mockProducts: Product[] = [
   // 5 more simplified for balance
   {
     id: "RB-006",
+    storeStock: createStoreStock(1, 0, 3, 1, 0),
     slug: "rayban-erika-classic",
     name: "Erika Classic",
     brand: "Ray-Ban",
@@ -262,6 +284,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "RB-008",
+    storeStock: createStoreStock(4, 2, 1, 2, 0),
     slug: "rayban-polarized-aviator",
     name: "Aviator Polarized",
     brand: "Ray-Ban",
@@ -281,7 +304,13 @@ export const mockProducts: Product[] = [
       { name: "Black", hex: "#000000" },
     ],
     frameMaterial: "metal",
+    frameColor: "Gold",
     frameShape: "aviator",
+    lensColor: "Green",
+    lensWidth: 58,
+    bridgeWidth: 14,
+    templeLength: 135,
+    lensHeight: 50,
     sku: "RB-AVI-008",
     origin: "Italy",
     warranty: "2 years",
@@ -289,6 +318,7 @@ export const mockProducts: Product[] = [
 
   {
     id: "RB-009",
+    storeStock: createStoreStock(0, 2, 2, 1, 1),
     slug: "rayban-chromance",
     name: "Chromance",
     brand: "Ray-Ban",
@@ -307,7 +337,13 @@ export const mockProducts: Product[] = [
       { name: "Black", hex: "#000000" },
     ],
     frameMaterial: "nylon",
+    frameColor: "Gray",
     frameShape: "rectangular",
+    lensColor: "Grey",
+    lensWidth: 54,
+    bridgeWidth: 18,
+    templeLength: 140,
+    lensHeight: 42,
     sku: "RB-CHR-009",
     origin: "Italy",
     warranty: "2 years",
@@ -315,6 +351,7 @@ export const mockProducts: Product[] = [
 
   {
     id: "RB-010",
+    storeStock: createStoreStock(2, 1, 1, 0, 3),
     slug: "rayban-ferrari-edition",
     name: "Ferrari Edition",
     brand: "Ray-Ban",
@@ -334,13 +371,20 @@ export const mockProducts: Product[] = [
       { name: "Black", hex: "#000000" },
     ],
     frameMaterial: "acetate",
+    frameColor: "Ferrari Red",
     frameShape: "square",
+    lensColor: "Grey",
+    lensWidth: 53,
+    bridgeWidth: 19,
+    templeLength: 142,
+    lensHeight: 41,
     sku: "RB-FER-010",
     origin: "Italy",
     warranty: "2 years",
   },
   {
     id: "GUCCI-001",
+    storeStock: createStoreStock(1, 2, 0, 1, 0),
     slug: "gucci-gg1421s-cat-eye",
     name: "GG1421S Cat-Eye",
     brand: "Gucci",
@@ -391,6 +435,7 @@ export const mockProducts: Product[] = [
 
   {
     id: "GUCCI-002",
+    storeStock: createStoreStock(0, 1, 2, 2, 0),
     slug: "gucci-gg0061s-square",
     name: "GG0061S Square Acetate",
     brand: "Gucci",
@@ -436,6 +481,7 @@ export const mockProducts: Product[] = [
 
   {
     id: "GUCCI-003",
+    storeStock: createStoreStock(2, 0, 1, 0, 2),
     slug: "gucci-gg1561s-metal",
     name: "GG1561S Metal Frame",
     brand: "Gucci",
@@ -472,6 +518,7 @@ export const mockProducts: Product[] = [
 
   {
     id: "GUCCI-004",
+    storeStock: createStoreStock(1, 1, 0, 3, 0),
     slug: "gucci-gg1951s-womens",
     name: "GG1951S Women’s",
     brand: "Gucci",
@@ -509,6 +556,7 @@ export const mockProducts: Product[] = [
 
   {
     id: "GUCCI-005",
+    storeStock: createStoreStock(0, 2, 1, 1, 1),
     slug: "gucci-gg2045s-rectangular",
     name: "GG2045S Rectangular",
     brand: "Gucci",
@@ -551,6 +599,7 @@ export const mockProducts: Product[] = [
 
   {
     id: "GUCCI-006",
+    storeStock: createStoreStock(3, 1, 2, 0, 0),
     slug: "gucci-gg1889s-oversized",
     name: "GG1889S Oversized",
     brand: "Gucci",
@@ -587,6 +636,7 @@ export const mockProducts: Product[] = [
 
   {
     id: "GUCCI-007",
+    storeStock: createStoreStock(1, 0, 2, 1, 2),
     slug: "gucci-gg1301s-havana",
     name: "GG1301S Havana",
     brand: "Gucci",
@@ -623,6 +673,7 @@ export const mockProducts: Product[] = [
 
   {
     id: "GUCCI-008",
+    storeStock: createStoreStock(0, 1, 0, 2, 1),
     slug: "gucci-gg0811s-light",
     name: "GG0811S Lightweight",
     brand: "Gucci",
@@ -661,6 +712,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "GUCCI-009",
+    storeStock: createStoreStock(2, 2, 1, 0, 0),
     slug: "gucci-gg0855sk-sport",
     name: "GG0855SK Sport",
     brand: "Gucci",
@@ -696,6 +748,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "GUCCI-010",
+    storeStock: createStoreStock(1, 0, 1, 2, 2),
     slug: "gucci-gg0022s-heritage",
     name: "GG0022S Heritage",
     brand: "Gucci",
@@ -731,6 +784,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "TH-001",
+    storeStock: createStoreStock(4, 2, 3, 1, 0),
     slug: "tommy-hilfiger-th-tf3951s",
     name: "TH TF3951S",
     brand: "Tommy Hilfiger",
@@ -772,6 +826,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "TH-002",
+    storeStock: createStoreStock(0, 2, 1, 2, 1),
     slug: "tommy-hilfiger-th-1377s",
     name: "TH 1377S",
     brand: "Tommy Hilfiger",
@@ -807,6 +862,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "TH-003",
+    storeStock: createStoreStock(2, 1, 0, 2, 1),
     slug: "tommy-hilfiger-th-2198s",
     name: "TH 2198S",
     brand: "Tommy Hilfiger",
@@ -845,6 +901,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "TH-004",
+    storeStock: createStoreStock(3, 0, 2, 1, 0),
     slug: "tommy-hilfiger-th-3412s",
     name: "TH 3412S Aviator",
     brand: "Tommy Hilfiger",
@@ -883,6 +940,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "TH-005",
+    storeStock: createStoreStock(1, 2, 1, 0, 2),
     slug: "tommy-hilfiger-th-4127s-square",
     name: "TH 4127S",
     brand: "Tommy Hilfiger",
@@ -921,6 +979,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "TH-006",
+    storeStock: createStoreStock(0, 1, 2, 1, 1),
     slug: "tommy-hilfiger-th-5458s",
     name: "TH 5458S Wrapped",
     brand: "Tommy Hilfiger",
@@ -955,6 +1014,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "PRADA-001",
+    storeStock: createStoreStock(1, 2, 0, 1, 0),
     slug: "prada-pr-17ws-cat-eye",
     name: "PR 17WS Cat-Eye",
     brand: "Prada",
@@ -999,6 +1059,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "PRADA-002",
+    storeStock: createStoreStock(0, 1, 2, 0, 2),
     slug: "prada-pr-10ys-oval",
     name: "PR 10YS Oval",
     brand: "Prada",
@@ -1037,6 +1098,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "PRADA-003",
+    storeStock: createStoreStock(2, 0, 1, 2, 0),
     slug: "prada-pr-17ws-square",
     name: "PR 17WS Square",
     brand: "Prada",
@@ -1075,6 +1137,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "PRADA-004",
+    storeStock: createStoreStock(1, 1, 1, 0, 1),
     slug: "prada-pr-28ms-aviator",
     name: "PR 28MS Aviator",
     brand: "Prada",
@@ -1119,6 +1182,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "PRADA-005",
+    storeStock: createStoreStock(0, 2, 0, 2, 1),
     slug: "prada-pr-03vs-oversized",
     name: "PR 03VS Oversized",
     brand: "Prada",
@@ -1154,6 +1218,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "PRADA-006",
+    storeStock: createStoreStock(1, 0, 2, 1, 0),
     slug: "prada-pr-53vs-cat-eye",
     name: "PR 53VS Cat-Eye",
     brand: "Prada",
@@ -1190,6 +1255,7 @@ export const mockProducts: Product[] = [
   // --- 50 Optical glasses (type: glasses) — full filter coverage ---
   {
     id: "OPT-001",
+    storeStock: createStoreStock(5, 2, 3, 1, 0),
     slug: "rayban-optical-round-metal",
     name: "Round Metal Optical",
     brand: "Ray-Ban",
@@ -1236,6 +1302,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-002",
+    storeStock: createStoreStock(3, 4, 2, 2, 1),
     slug: "warby-parker-square-acetate",
     name: "Percey Square",
     brand: "Warby Parker",
@@ -1282,6 +1349,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-003",
+    storeStock: createStoreStock(0, 1, 2, 0, 1),
     slug: "oliver-peoples-cat-eye-acetate",
     name: "Vivian Cat-Eye",
     brand: "Oliver Peoples",
@@ -1324,6 +1392,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-004",
+    storeStock: createStoreStock(2, 0, 1, 2, 0),
     slug: "zeiss-oval-titanium",
     name: "Zeiss Oval Titanium",
     brand: "Zeiss",
@@ -1364,6 +1433,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-005",
+    storeStock: createStoreStock(4, 2, 1, 3, 0),
     slug: "rayban-optical-aviator-metal",
     name: "Aviator Optical Metal",
     brand: "Ray-Ban",
@@ -1406,6 +1476,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-006",
+    storeStock: createStoreStock(1, 2, 0, 1, 2),
     slug: "oakley-rectangular-plastic",
     name: "Flak 2.0 XL Optical",
     brand: "Oakley",
@@ -1446,6 +1517,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-007",
+    storeStock: createStoreStock(0, 2, 1, 2, 0),
     slug: "persol-oversized-acetate",
     name: "PO3165V Oversized",
     brand: "Persol",
@@ -1487,6 +1559,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-008",
+    storeStock: createStoreStock(2, 1, 2, 0, 1),
     slug: "rayban-pilot-metal",
     name: "Pilot Optical",
     brand: "Ray-Ban",
@@ -1527,6 +1600,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-009",
+    storeStock: createStoreStock(3, 3, 1, 2, 1),
     slug: "warby-parker-rounded-square-acetate",
     name: "Durand Rounded Square",
     brand: "Warby Parker",
@@ -1567,6 +1641,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-010",
+    storeStock: createStoreStock(1, 0, 2, 1, 0),
     slug: "oakley-wrapped-sport",
     name: "Radar EV Path Optical",
     brand: "Oakley",
@@ -1607,6 +1682,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-011",
+    storeStock: createStoreStock(0, 1, 1, 2, 1),
     slug: "zeiss-sport-nylon",
     name: "Sport Flex Nylon",
     brand: "Zeiss",
@@ -1648,6 +1724,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-012",
+    storeStock: createStoreStock(2, 2, 0, 3, 1),
     slug: "rayban-clubmaster-browline",
     name: "Clubmaster Optical",
     brand: "Ray-Ban",
@@ -1689,6 +1766,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-013",
+    storeStock: createStoreStock(4, 2, 3, 1, 2),
     slug: "kids-round-plastic",
     name: "Junior Round",
     brand: "Warby Parker",
@@ -1727,6 +1805,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-014",
+    storeStock: createStoreStock(0, 1, 0, 1, 0),
     slug: "zeiss-carbon-fiber-rectangular",
     name: "Carbon Rectangular",
     brand: "Zeiss",
@@ -1764,6 +1843,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-015",
+    storeStock: createStoreStock(3, 1, 2, 2, 0),
     slug: "tr90-sport-unisex",
     name: "Flex TR90 Sport",
     brand: "Oakley",
@@ -1806,6 +1886,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-016",
+    storeStock: createStoreStock(1, 2, 1, 0, 2),
     slug: "recycled-acetate-cat-eye-women",
     name: "Eco Cat-Eye",
     brand: "Warby Parker",
@@ -1846,6 +1927,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-017",
+    storeStock: createStoreStock(0, 2, 0, 1, 1),
     slug: "titanium-oval-women",
     name: "Ultra Thin Oval",
     brand: "Zeiss",
@@ -1886,6 +1968,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-018",
+    storeStock: createStoreStock(1, 0, 2, 1, 0),
     slug: "mixed-browline-unisex",
     name: "Vintage Browline",
     brand: "Oliver Peoples",
@@ -1926,6 +2009,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-019",
+    storeStock: createStoreStock(2, 3, 1, 2, 0),
     slug: "kids-square-plastic",
     name: "Kids Square Fun",
     brand: "Warby Parker",
@@ -1963,6 +2047,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-020",
+    storeStock: createStoreStock(5, 2, 3, 2, 1),
     slug: "men-aviator-metal-silver",
     name: "Classic Aviator Silver",
     brand: "Ray-Ban",
@@ -2003,6 +2088,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-021",
+    storeStock: createStoreStock(0, 1, 2, 0, 1),
     slug: "women-oversized-acetate",
     name: "Luna Oversized",
     brand: "Persol",
@@ -2043,6 +2129,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-022",
+    storeStock: createStoreStock(2, 0, 1, 1, 0),
     slug: "pilot-titanium-unisex",
     name: "Pilot Titanium",
     brand: "Zeiss",
@@ -2082,6 +2169,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-023",
+    storeStock: createStoreStock(1, 2, 0, 2, 1),
     slug: "rounded-square-metal",
     name: "Mod Round Square",
     brand: "Oliver Peoples",
@@ -2122,6 +2210,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-024",
+    storeStock: createStoreStock(0, 2, 1, 0, 2),
     slug: "wrapped-nylon-sport",
     name: "Wrap Sport Nylon",
     brand: "Oakley",
@@ -2161,6 +2250,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-025",
+    storeStock: createStoreStock(1, 0, 0, 1, 0),
     slug: "sport-carbon-fiber",
     name: "Carbon Sport",
     brand: "Zeiss",
@@ -2199,6 +2289,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-026",
+    storeStock: createStoreStock(3, 2, 1, 2, 1),
     slug: "browline-acetate-metal",
     name: "Browline Ace Metal",
     brand: "Ray-Ban",
@@ -2239,6 +2330,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-027",
+    storeStock: createStoreStock(2, 1, 2, 0, 1),
     slug: "kids-oval-plastic",
     name: "Kids Oval",
     brand: "Warby Parker",
@@ -2276,6 +2368,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-028",
+    storeStock: createStoreStock(0, 1, 1, 2, 0),
     slug: "rectangular-titanium-men",
     name: "Rectangular Titanium",
     brand: "Zeiss",
@@ -2315,6 +2408,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-029",
+    storeStock: createStoreStock(1, 2, 0, 1, 2),
     slug: "round-recycled-acetate",
     name: "Eco Round",
     brand: "Warby Parker",
@@ -2355,6 +2449,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-030",
+    storeStock: createStoreStock(2, 0, 2, 1, 1),
     slug: "square-metal-men",
     name: "Square Metal",
     brand: "Ray-Ban",
@@ -2395,6 +2490,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-031",
+    storeStock: createStoreStock(0, 1, 0, 2, 1),
     slug: "cat-eye-metal-women",
     name: "Cat-Eye Metal",
     brand: "Oliver Peoples",
@@ -2435,6 +2531,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-032",
+    storeStock: createStoreStock(4, 3, 2, 2, 1),
     slug: "oval-plastic-unisex",
     name: "Oval Plastic",
     brand: "Warby Parker",
@@ -2476,6 +2573,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-033",
+    storeStock: createStoreStock(1, 0, 1, 0, 2),
     slug: "aviator-acetate-unisex",
     name: "Aviator Acetate",
     brand: "Persol",
@@ -2515,6 +2613,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-034",
+    storeStock: createStoreStock(2, 2, 1, 1, 0),
     slug: "rectangular-plastic-women",
     name: "Rectangular Plastic",
     brand: "Warby Parker",
@@ -2556,6 +2655,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-035",
+    storeStock: createStoreStock(0, 1, 2, 0, 1),
     slug: "oversized-metal-women",
     name: "Oversized Metal",
     brand: "Oliver Peoples",
@@ -2596,6 +2696,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-036",
+    storeStock: createStoreStock(3, 1, 0, 2, 0),
     slug: "pilot-plastic-men",
     name: "Pilot Plastic",
     brand: "Ray-Ban",
@@ -2635,6 +2736,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-037",
+    storeStock: createStoreStock(1, 2, 0, 1, 1),
     slug: "rounded-square-titanium",
     name: "Round Square Titanium",
     brand: "Zeiss",
@@ -2674,6 +2776,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-038",
+    storeStock: createStoreStock(2, 0, 2, 1, 0),
     slug: "wrapped-metal-men",
     name: "Wrap Metal",
     brand: "Ray-Ban",
@@ -2714,6 +2817,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-039",
+    storeStock: createStoreStock(0, 1, 1, 0, 2),
     slug: "sport-titanium-men",
     name: "Sport Titanium",
     brand: "Zeiss",
@@ -2754,6 +2858,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-040",
+    storeStock: createStoreStock(1, 0, 2, 1, 0),
     slug: "browline-metal-women",
     name: "Browline Metal",
     brand: "Oliver Peoples",
@@ -2794,6 +2899,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-041",
+    storeStock: createStoreStock(3, 2, 1, 2, 0),
     slug: "kids-rectangular-plastic",
     name: "Kids Rectangular",
     brand: "Warby Parker",
@@ -2831,6 +2937,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-042",
+    storeStock: createStoreStock(0, 2, 0, 1, 1),
     slug: "round-acetate-women",
     name: "Round Acetate",
     brand: "Persol",
@@ -2871,6 +2978,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-043",
+    storeStock: createStoreStock(2, 1, 2, 0, 0),
     slug: "square-titanium-unisex",
     name: "Square Titanium",
     brand: "Zeiss",
@@ -2910,6 +3018,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-044",
+    storeStock: createStoreStock(1, 3, 1, 2, 1),
     slug: "cat-eye-tr90-women",
     name: "Cat-Eye TR90",
     brand: "Warby Parker",
@@ -2951,6 +3060,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-045",
+    storeStock: createStoreStock(0, 1, 0, 2, 0),
     slug: "oval-mixed-unisex",
     name: "Oval Mixed",
     brand: "Oliver Peoples",
@@ -2991,6 +3101,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-046",
+    storeStock: createStoreStock(2, 0, 1, 1, 2),
     slug: "aviator-tr90-men",
     name: "Aviator TR90",
     brand: "Oakley",
@@ -3031,6 +3142,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-047",
+    storeStock: createStoreStock(1, 1, 0, 2, 1),
     slug: "rectangular-nylon-unisex",
     name: "Rectangular Nylon",
     brand: "Zeiss",
@@ -3071,6 +3183,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-048",
+    storeStock: createStoreStock(0, 2, 1, 0, 1),
     slug: "oversized-recycled-acetate",
     name: "Eco Oversized",
     brand: "Warby Parker",
@@ -3111,6 +3224,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-049",
+    storeStock: createStoreStock(3, 2, 2, 1, 0),
     slug: "pilot-acetate-metal",
     name: "Pilot Ace Metal",
     brand: "Ray-Ban",
@@ -3151,6 +3265,7 @@ export const mockProducts: Product[] = [
   },
   {
     id: "OPT-050",
+    storeStock: createStoreStock(2, 1, 3, 1, 2),
     slug: "kids-aviator-plastic",
     name: "Kids Aviator",
     brand: "Warby Parker",

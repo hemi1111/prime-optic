@@ -21,8 +21,9 @@ const ShopByBrandSection = () => {
           <Link
             key={brand.slug}
             to={`/brand/${brand.slug}`}
-            className="group flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 py-6 text-center font-semibold text-slate-800 shadow-soft ring-1 ring-slate-100 transition-all duration-300 hover:scale-[1.02] hover:border-primary-300 hover:shadow-medium hover:ring-primary-200"
+            className="group flex items-center justify-center gap-2.5 rounded-2xl border border-slate-200 bg-white px-4 py-6 text-center font-semibold text-slate-800 shadow-soft ring-1 ring-slate-100 transition-all duration-300 hover:scale-[1.02] hover:border-primary-300 hover:shadow-medium hover:ring-primary-200"
           >
+            <span className="h-2 w-2 shrink-0 rounded-full bg-primary-200 transition-colors duration-300 group-hover:bg-primary-400" aria-hidden="true" />
             {brand.name}
           </Link>
         ))}

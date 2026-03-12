@@ -13,6 +13,11 @@ export type LensOption = {
   priceAdjustment?: number; // Additional cost lens type
 };
 
+export type StoreStockEntry = {
+  storeId: string;
+  quantity: number;
+};
+
 export type Product = {
   id: string;
   slug: string;
@@ -72,6 +77,7 @@ export type Product = {
   weight?: number; // in grams
   origin?: string;
   warranty?: string;
+  storeStock?: StoreStockEntry[];
 };
 
 export type CartItem = Product & {

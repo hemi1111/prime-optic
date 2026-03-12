@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 import { getCurrentUser } from "../services/authService";
@@ -17,6 +18,7 @@ import {
   AppointmentsSection,
   OrdersSection,
 } from "../components/profile";
+import { stateSwapVariants } from "../config/motion";
 
 const ProfilePage = () => {
   const { t } = useTranslation();
@@ -77,45 +79,51 @@ const ProfilePage = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-primary-500 mb-4"></div>
-          <p className="text-slate-600">{t("profile.loading")}</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center">
-          <p className="text-lg font-semibold text-slate-900 mb-4">
-            {t("profile.loginRequired")}
-          </p>
-          <a
-            href="/auth"
-            className="inline-flex rounded-lg bg-primary-500 px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary-600 transition-colors"
-          >
-            {t("profile.goToLogin")}
-          </a>
-        </div>
-      </div>
-    );
-  }
+  const stateKey = loading ? "loading" : !user ? "auth" : "content";
 
   return (
-    <div className="space-y-6">
-      <ProfileHeader
-        user={user}
-        isSigningOut={isSigningOut}
-        onSignOut={handleSignOut}
-      />
-      <AppointmentsSection appointments={appointments} />
-      <OrdersSection orders={orders} />
-    </div>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={stateKey}
+        variants={stateSwapVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+      >
+        {loading ? (
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="text-center">
+              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-primary-500 mb-4"></div>
+              <p className="text-slate-600">{t("profile.loading")}</p>
+            </div>
+          </div>
+        ) : !user ? (
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="text-center">
+              <p className="text-lg font-semibold text-slate-900 mb-4">
+                {t("profile.loginRequired")}
+              </p>
+              <a
+                href="/auth"
+                className="inline-flex rounded-lg bg-primary-500 px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary-600 transition-colors"
+              >
+                {t("profile.goToLogin")}
+              </a>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            <ProfileHeader
+              user={user}
+              isSigningOut={isSigningOut}
+              onSignOut={handleSignOut}
+            />
+            <AppointmentsSection appointments={appointments} />
+            <OrdersSection orders={orders} />
+          </div>
+        )}
+      </motion.div>
+    </AnimatePresence>
   );
 };
 

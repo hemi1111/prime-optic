@@ -27,7 +27,8 @@ const LanguageSwitcher = () => {
       <select
         value={language}
         onChange={handleLanguageChange}
-        className="appearance-none rounded-full border border-slate-200 bg-white pl-8 pr-8 py-1 text-xs font-medium text-slate-600 shadow-sm transition-colors hover:border-primary-500 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+        className="min-w-[7rem] appearance-none rounded-lg border border-slate-200 bg-slate-50/80 pl-8 pr-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:border-primary-300 hover:bg-white focus:border-primary-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+        style={{ backgroundImage: "none" }}
         aria-label="Select language"
       >
         {languages.map((lang) => (
@@ -36,23 +37,8 @@ const LanguageSwitcher = () => {
           </option>
         ))}
       </select>
-      <div className="pointer-events-none absolute inset-y-0 left-2 flex items-center">
-        {CurrentFlag && <CurrentFlag className="h-3 w-4 rounded-sm" />}
-      </div>
-      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-        <svg
-          className="h-3 w-3 text-slate-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
+      <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center">
+        {CurrentFlag && <CurrentFlag className="h-4 w-5 rounded-sm shadow-sm" />}
       </div>
     </div>
   );

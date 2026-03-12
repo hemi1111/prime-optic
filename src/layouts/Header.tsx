@@ -7,8 +7,7 @@ import { useTranslation } from "../hooks/useTranslation";
 import { useUIStore } from "../store/useUIStore";
 import { getInitials } from "../utils/format";
 
-import LanguageSwitcher from "../components/LanguageSwitcher";
-import CurrencySwitcher from "../components/CurrencySwitcher";
+import SettingsDropdown from "../components/SettingsDropdown";
 
 const Logo = () => (
   <svg
@@ -120,8 +119,7 @@ const Header = () => {
           </nav>
 
           <div className="hidden md:flex items-center gap-4">
-            <CurrencySwitcher />
-            <LanguageSwitcher />
+            <SettingsDropdown />
             {user ? (
               <Link
                 to="/profile"

@@ -5,7 +5,7 @@ import { useTranslation } from "../hooks/useTranslation";
 import { useToast } from "../hooks/useToast";
 import { getReadableErrorMessage } from "../utils/errorHandler";
 import { useAuthStore } from "../store/useAuthStore";
-import { storeLocations } from "../data/storeLocations";
+import { useStoreLocations } from "../hooks/useStoreLocations";
 
 const ExamBookingPage = () => {
   const { t } = useTranslation();
@@ -19,6 +19,7 @@ const ExamBookingPage = () => {
   const [preferredTimeSlot, setPreferredTimeSlot] = useState("");
   const [notes, setNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { stores } = useStoreLocations();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -54,10 +55,18 @@ const ExamBookingPage = () => {
     }
   };
 
-  const availableStores = storeLocations.filter((s) => s.isAvailable);
+  const availableStores = stores.filter((s) => s.isAvailable);
+  const bookingSteps = [
+    t("common.contactInformation"),
+    t("exam.form.store"),
+    t("exam.form.date"),
+  ];
 
   return (
-    <div className="mx-auto max-w-6xl space-y-8 lg:space-y-10">
+    <div className="relative mx-auto max-w-6xl space-y-8 overflow-hidden lg:space-y-10">
+      <div className="pointer-events-none absolute -top-24 right-0 h-52 w-52 rounded-full bg-primary-200/30 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-24 left-0 h-52 w-52 rounded-full bg-sky-200/30 blur-3xl" />
+
       <header className="space-y-4 text-center">
         <div className="inline-block rounded-full bg-gradient-to-r from-primary-500 to-primary-600 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-sm">
           {t("common.eyeExamination")}
@@ -68,104 +77,128 @@ const ExamBookingPage = () => {
         <p className="text-lg text-slate-600 leading-relaxed max-w-xl mx-auto">
           {t("common.chooseDateTimeStore")}
         </p>
+        <div className="mx-auto flex max-w-2xl flex-wrap justify-center gap-2 pt-1">
+          {bookingSteps.map((step, index) => (
+            <span
+              key={step}
+              className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-soft"
+            >
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary-100 text-primary-700">
+                {index + 1}
+              </span>
+              {step}
+            </span>
+          ))}
+        </div>
       </header>
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr),minmax(0,400px)] lg:gap-10">
         <form
           onSubmit={handleSubmit}
-          className="space-y-6 rounded-3xl bg-white p-8 shadow-xl ring-1 ring-slate-200/50"
+          className="space-y-6 rounded-3xl bg-white/95 p-6 shadow-xl ring-1 ring-slate-200/50 md:p-8"
         >
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 md:p-5">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-700">
+              {t("common.contactInformation")}
+            </h2>
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field
+                id="fullName"
+                label={t("common.fullName")}
+                value={fullName}
+                onChange={(event) => setFullName(event.target.value)}
+                required
+              />
+              <Field
+                id="phone"
+                label={t("common.phoneNumber")}
+                type="tel"
+                value={phone}
+                onChange={(event) => setPhone(event.target.value)}
+                required
+              />
+            </div>
             <Field
-              id="fullName"
-              label={t("common.fullName")}
-              value={fullName}
-              onChange={(event) => setFullName(event.target.value)}
+              id="email"
+              label={t("exam.form.email")}
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
               required
             />
-            <Field
-              id="phone"
-              label={t("common.phoneNumber")}
-              type="tel"
-              value={phone}
-              onChange={(event) => setPhone(event.target.value)}
-              required
-            />
-          </div>
-          <Field
-            id="email"
-            label={t("exam.form.email")}
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            required
-          />
-          <div className="space-y-1 text-sm">
-            <label htmlFor="store" className="block text-xs font-medium text-slate-700">
-              {t("exam.form.store")}
-            </label>
-            <select
-              id="store"
-              value={preferredStore}
-              onChange={(event) => setPreferredStore(event.target.value)}
-              required
-              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none ring-primary-200 focus:ring-2"
-            >
-              <option value="">{t("exam.form.storePlaceholder")}</option>
-              {availableStores.map((store) => (
-                <option key={store.id} value={store.name}>
-                  {store.name}
-                </option>
-              ))}
-            </select>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <Field
-              id="date"
-              label={t("exam.form.date")}
-              type="date"
-              value={preferredDate}
-              onChange={(event) => setPreferredDate(event.target.value)}
-              required
-            />
+          <div className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 md:p-5">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-700">
+              {t("common.deliveryOptions")}
+            </h2>
             <div className="space-y-1 text-sm">
-              <label
-                htmlFor="timeSlot"
-                className="block text-xs font-medium text-slate-700"
-              >
-                {t("exam.form.time")}
+              <label htmlFor="store" className="block text-xs font-medium text-slate-700">
+                {t("exam.form.store")}
               </label>
               <select
-                id="timeSlot"
-                value={preferredTimeSlot}
-                onChange={(event) => setPreferredTimeSlot(event.target.value)}
+                id="store"
+                value={preferredStore}
+                onChange={(event) => setPreferredStore(event.target.value)}
                 required
                 className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none ring-primary-200 focus:ring-2"
               >
-                <option value=""></option>
-                <option value="09-11">09:00 – 11:00</option>
-                <option value="11-13">11:00 – 13:00</option>
-                <option value="14-16">14:00 – 16:00</option>
-                <option value="16-18">16:00 – 18:00</option>
+                <option value="">{t("exam.form.storePlaceholder")}</option>
+                {availableStores.map((store) => (
+                  <option key={store.id} value={store.name}>
+                    {store.name}
+                  </option>
+                ))}
               </select>
             </div>
-          </div>
 
-          <div className="space-y-1 text-sm">
-            <label
-              htmlFor="notes"
-              className="block text-xs font-medium text-slate-700"
-            >
-              {t("exam.form.notes")}
-            </label>
-            <textarea
-              id="notes"
-              rows={3}
-              value={notes}
-              onChange={(event) => setNotes(event.target.value)}
-              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none ring-primary-200 placeholder:text-slate-400 focus:ring-2"
-            />
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field
+                id="date"
+                label={t("exam.form.date")}
+                type="date"
+                value={preferredDate}
+                onChange={(event) => setPreferredDate(event.target.value)}
+                required
+              />
+              <div className="space-y-1 text-sm">
+                <label
+                  htmlFor="timeSlot"
+                  className="block text-xs font-medium text-slate-700"
+                >
+                  {t("exam.form.time")}
+                </label>
+                <select
+                  id="timeSlot"
+                  value={preferredTimeSlot}
+                  onChange={(event) => setPreferredTimeSlot(event.target.value)}
+                  required
+                  className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none ring-primary-200 focus:ring-2"
+                >
+                  <option value=""></option>
+                  <option value="09-11">09:00 – 11:00</option>
+                  <option value="11-13">11:00 – 13:00</option>
+                  <option value="14-16">14:00 – 16:00</option>
+                  <option value="16-18">16:00 – 18:00</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="space-y-1 text-sm">
+              <label
+                htmlFor="notes"
+                className="block text-xs font-medium text-slate-700"
+              >
+                {t("exam.form.notes")}
+              </label>
+              <textarea
+                id="notes"
+                rows={3}
+                value={notes}
+                onChange={(event) => setNotes(event.target.value)}
+                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none ring-primary-200 placeholder:text-slate-400 focus:ring-2"
+              />
+            </div>
           </div>
 
           <button

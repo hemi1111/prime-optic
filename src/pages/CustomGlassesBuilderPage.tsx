@@ -127,10 +127,18 @@ const CustomGlassesBuilderPage = () => {
   };
 
   const totalPrice = calculateTotalPrice();
+  const builderSteps = [
+    t("customGlasses.frameSelection"),
+    t("customGlasses.lensType"),
+    t("customGlasses.prescription"),
+  ];
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8 px-4 py-8">
-      <header className="space-y-4 text-center">
+    <div className="relative mx-auto max-w-5xl space-y-8 overflow-hidden px-4 py-8">
+      <div className="pointer-events-none absolute -top-24 -right-16 h-56 w-56 rounded-full bg-primary-200/30 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-28 -left-16 h-64 w-64 rounded-full bg-sky-200/30 blur-3xl" />
+
+      <header className="space-y-5 text-center">
         <div className="inline-block rounded-full bg-gradient-to-r from-primary-500 to-primary-600 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-sm">
           {t("customGlasses.badge")}
         </div>
@@ -140,14 +148,27 @@ const CustomGlassesBuilderPage = () => {
         <p className="text-lg text-slate-600 leading-relaxed max-w-xl mx-auto">
           {t("customGlasses.description")}
         </p>
+        <div className="mx-auto flex max-w-2xl flex-wrap justify-center gap-2 pt-1">
+          {builderSteps.map((step, index) => (
+            <span
+              key={step}
+              className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-soft"
+            >
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary-100 text-primary-700">
+                {index + 1}
+              </span>
+              {step}
+            </span>
+          ))}
+        </div>
       </header>
 
       <form
         onSubmit={handleAddToCart}
-        className="space-y-8 rounded-3xl bg-white p-8 shadow-xl ring-1 ring-slate-200/50"
+        className="space-y-8 rounded-3xl bg-white/95 p-6 shadow-xl ring-1 ring-slate-200/60 md:p-8"
       >
         {/* Frame Selection */}
-        <div className="space-y-4">
+        <div className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 md:p-5">
           <label
             htmlFor="frame"
             className="block text-sm font-semibold text-slate-900"
@@ -180,7 +201,7 @@ const CustomGlassesBuilderPage = () => {
             </select>
           )}
           {selectedFrame && (
-            <div className="mt-4 flex gap-4 rounded-lg border border-slate-200 p-4">
+            <div className="mt-4 flex gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-soft">
               {selectedFrame.imageUrl && (
                 <img
                   src={selectedFrame.imageUrl}
@@ -201,7 +222,7 @@ const CustomGlassesBuilderPage = () => {
         </div>
 
         {/* Lens Type Selection */}
-        <div className="space-y-4">
+        <div className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 md:p-5">
           <label
             htmlFor="lensType"
             className="block text-sm font-semibold text-slate-900"
@@ -233,7 +254,7 @@ const CustomGlassesBuilderPage = () => {
         </div>
 
         {/* Prescription */}
-        <div className="space-y-6">
+        <div className="space-y-6 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 md:p-5">
           <h3 className="text-lg font-semibold text-slate-900">
             {t("customGlasses.prescription")}
           </h3>
@@ -350,7 +371,7 @@ const CustomGlassesBuilderPage = () => {
         </div>
 
         {/* Blue Light Filter */}
-        <div className="space-y-2">
+        <div className="space-y-2 rounded-2xl border border-primary-200 bg-primary-50/60 p-4 md:p-5">
           <label className="flex items-center gap-3 cursor-pointer">
             <input
               type="checkbox"
@@ -374,12 +395,12 @@ const CustomGlassesBuilderPage = () => {
 
         {/* Price Summary */}
         {selectedFrame && (
-          <div className="rounded-lg bg-slate-50 p-6 space-y-2">
-            <div className="flex justify-between text-sm text-slate-600">
+          <div className="rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 p-6 space-y-2 text-white shadow-xl">
+            <div className="flex justify-between text-sm text-slate-300">
               <span>{t("customGlasses.framePrice")}:</span>
-              <span>{formatPrice(selectedFrame.price)}</span>
+              <span className="text-slate-200">{formatPrice(selectedFrame.price)}</span>
             </div>
-            <div className="flex justify-between text-sm text-slate-600">
+            <div className="flex justify-between text-sm text-slate-300">
               <span>{selectedLensType.name}:</span>
               <span>
                 {selectedLensType.priceAdjustment > 0
@@ -388,13 +409,13 @@ const CustomGlassesBuilderPage = () => {
               </span>
             </div>
             {addBlueLightFilter && (
-              <div className="flex justify-between text-sm text-slate-600">
+              <div className="flex justify-between text-sm text-slate-300">
                 <span>{t("common.blueLightFilter")}:</span>
                 <span>+{formatPrice(blueLightFilterPrice)}</span>
               </div>
             )}
-            <div className="border-t border-slate-200 pt-2 mt-2">
-              <div className="flex justify-between text-lg font-bold text-slate-900">
+            <div className="border-t border-white/20 pt-2 mt-2">
+              <div className="flex justify-between text-lg font-bold text-white">
                 <span>{t("customGlasses.totalPrice")}:</span>
                 <span>{formatPrice(totalPrice)}</span>
               </div>

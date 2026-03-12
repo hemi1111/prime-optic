@@ -1,7 +1,9 @@
-import { Route, Routes } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { Route, Routes, useLocation } from "react-router-dom";
 
 import { useScrollToTop } from "./hooks/useScrollToTop";
 import RootLayout from "./layouts/RootLayout";
+import { routeExitDelayMs, routePageVariants } from "./config/motion";
 
 import HomePage from "./pages/HomePage";
 import CatalogPage from "./pages/CatalogPage";
@@ -12,6 +14,8 @@ import CheckoutPage from "./pages/CheckoutPage";
 import OrderReviewPage from "./pages/OrderReviewPage";
 import AuthPage from "./pages/AuthPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
+import AdminAppointmentsPage from "./pages/AdminAppointmentsPage";
+import AdminOrdersPage from "./pages/AdminOrdersPage";
 import ExamBookingPage from "./pages/ExamBookingPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -22,34 +26,61 @@ import AdminProtectedRoute from "./components/AdminProtectedRoute";
 import "./App.css";
 
 const App = () => {
-  useScrollToTop();
+  const location = useLocation();
+  useScrollToTop(routeExitDelayMs);
 
   return (
     <RootLayout>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/glasses" element={<CatalogPage type="glasses" />} />
-        <Route path="/sunglasses" element={<CatalogPage type="sunglasses" />} />
-        <Route path="/brand/:brandSlug" element={<BrandCatalogPage />} />
-        <Route path="/products/:slug" element={<ProductDetailPage />} />
-        <Route path="/cart" element={<CartPage />} />
-        <Route path="/favorites" element={<FavoritesPage />} />
-        <Route path="/checkout" element={<CheckoutPage />} />
-        <Route path="/orders/:orderId/review" element={<OrderReviewPage />} />
-        <Route path="/auth" element={<AuthPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/exam" element={<ExamBookingPage />} />
-        <Route path="/custom-glasses" element={<CustomGlassesBuilderPage />} />
-        <Route
-          path="/admin"
-          element={
-            <AdminProtectedRoute>
-              <AdminDashboardPage />
-            </AdminProtectedRoute>
-          }
-        />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={location.pathname}
+          variants={routePageVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+        >
+          <Routes location={location}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/glasses" element={<CatalogPage type="glasses" />} />
+            <Route path="/sunglasses" element={<CatalogPage type="sunglasses" />} />
+            <Route path="/brand/:brandSlug" element={<BrandCatalogPage />} />
+            <Route path="/products/:slug" element={<ProductDetailPage />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/favorites" element={<FavoritesPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/orders/:orderId/review" element={<OrderReviewPage />} />
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/exam" element={<ExamBookingPage />} />
+            <Route path="/custom-glasses" element={<CustomGlassesBuilderPage />} />
+            <Route
+              path="/admin"
+              element={
+                <AdminProtectedRoute>
+                  <AdminDashboardPage />
+                </AdminProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/appointments"
+              element={
+                <AdminProtectedRoute>
+                  <AdminAppointmentsPage />
+                </AdminProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/orders"
+              element={
+                <AdminProtectedRoute>
+                  <AdminOrdersPage />
+                </AdminProtectedRoute>
+              }
+            />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </motion.div>
+      </AnimatePresence>
     </RootLayout>
   );
 };
