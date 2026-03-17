@@ -5,11 +5,6 @@ import {
   updateProduct,
   deleteProduct,
 } from "../services/productService";
-import {
-  getCurrencyRates,
-  setCurrencyRates,
-  type CurrencyCode,
-} from "../services/currencyService";
 import { populateSampleProducts } from "../utils/populateProducts";
 import { makeUserAdmin } from "../utils/userUtils";
 import { useAuthStore } from "../store/useAuthStore";
@@ -64,12 +59,6 @@ const AdminDashboardPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<ProductType | "all">("all");
 
-  const [currencyRates, setCurrencyRatesState] = useState<
-    Record<CurrencyCode, number>
-  >({ EUR: 1, USD: 1.08, ALL: 104 });
-  const [currencyRatesLoading, setCurrencyRatesLoading] = useState(false);
-  const [currencyRatesSaving, setCurrencyRatesSaving] = useState(false);
-
   const [editingStore, setEditingStore] = useState<StoreLocation | null>(null);
   const [storeFormData, setStoreFormData] = useState({
     name: "",
@@ -103,21 +92,6 @@ const AdminDashboardPage = () => {
 
   useEffect(() => {
     loadProducts();
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    setCurrencyRatesLoading(true);
-    getCurrencyRates()
-      .then((data) => {
-        if (!cancelled) setCurrencyRatesState(data.rates);
-      })
-      .finally(() => {
-        if (!cancelled) setCurrencyRatesLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
   const loadProducts = async () => {
@@ -437,22 +411,6 @@ const AdminDashboardPage = () => {
     }
   };
 
-  const handleSaveCurrencyRates = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setCurrencyRatesSaving(true);
-    try {
-      await setCurrencyRates(currencyRates);
-      toast.success("Currency rates updated.");
-      setMessage("Currency rates saved.");
-    } catch (error) {
-      const errorMessage = getReadableErrorMessage(error, t);
-      toast.error(errorMessage);
-      setMessage(`Error saving rates: ${errorMessage}`);
-    } finally {
-      setCurrencyRatesSaving(false);
-    }
-  };
-
   const filteredProducts = products.filter((product) => {
     const searchLower = searchTerm.toLowerCase();
     const matchesSearch =
@@ -478,74 +436,6 @@ const AdminDashboardPage = () => {
       />
 
       <AdminMessage message={message} />
-
-      {/* Currency rates */}
-      <div className="rounded-2xl bg-white shadow-soft ring-1 ring-slate-100">
-        <div className="flex items-center gap-3 border-b border-slate-100 px-6 py-4">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-50">
-            <svg className="h-4 w-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <h2 className="text-base font-semibold text-slate-900">Currency rates <span className="text-sm font-normal text-slate-500">(base: EUR)</span></h2>
-        </div>
-        <div className="p-6">
-          {currencyRatesLoading ? (
-            <p className="text-sm text-slate-500">Loading rates...</p>
-          ) : (
-            <form onSubmit={handleSaveCurrencyRates} className="flex flex-wrap items-end gap-4">
-              <div className="space-y-1.5">
-                <label className="block text-xs font-medium text-slate-700">1 EUR = USD</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={currencyRates.USD}
-                  onChange={(e) =>
-                    setCurrencyRatesState((prev) => ({ ...prev, USD: parseFloat(e.target.value) || 0 }))
-                  }
-                  className="w-28 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-500"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label className="block text-xs font-medium text-slate-700">1 EUR = ALL</label>
-                <input
-                  type="number"
-                  step="1"
-                  min="0"
-                  value={currencyRates.ALL}
-                  onChange={(e) =>
-                    setCurrencyRatesState((prev) => ({ ...prev, ALL: parseFloat(e.target.value) || 0 }))
-                  }
-                  className="w-28 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-500"
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={currencyRatesSaving}
-                className="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700 disabled:opacity-60"
-              >
-                {currencyRatesSaving ? (
-                  <>
-                    <svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                    Saving...
-                  </>
-                ) : (
-                  <>
-                    <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    Save rates
-                  </>
-                )}
-              </button>
-            </form>
-          )}
-        </div>
-      </div>
 
       {/* Store locations */}
       <div className="rounded-2xl bg-white shadow-soft ring-1 ring-slate-100">

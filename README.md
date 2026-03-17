@@ -1,6 +1,6 @@
 # Prime Optic
 
-An optical shop e-commerce web app. Customers can browse prescription glasses and sunglasses, build custom pairs with their prescription, book eye exam appointments at physical locations, and place orders online. An admin panel handles products, orders, appointments, store locations, and currency rates.
+An optical shop e-commerce web app. Customers can browse prescription glasses and sunglasses, build custom pairs with their prescription, book eye exam appointments at physical locations, and place orders online. An admin panel handles products, orders, appointments, and store locations.
 
 ---
 
@@ -27,12 +27,11 @@ An optical shop e-commerce web app. Customers can browse prescription glasses an
 - **Appointment management** — View all eye exam bookings; accept or decline
 - **Sales dashboard** — Revenue and order charts (Recharts) with a time-range selector
 - **Store locations** — CRUD for physical store entries
-- **Currency rates** — Set live EUR → USD and EUR → ALL exchange rates stored in Firestore
 
 ### Internationalisation & Currency
 
 - **Languages:** English, Albanian (Shqip), Italian — persisted to `localStorage`
-- **Currencies:** EUR (default), USD, Albanian Lek (ALL) — live rates pulled from Firestore, preference persisted to `localStorage`
+- **Currencies:** EUR (default), USD, Albanian Lek (ALL) — live rates pulled from ExchangeRate-API (base: EUR) and cached client-side, preference persisted to `localStorage`
 
 ---
 
@@ -82,6 +81,9 @@ VITE_FIREBASE_STORAGE_BUCKET=...
 VITE_FIREBASE_MESSAGING_SENDER_ID=...
 VITE_FIREBASE_APP_ID=...
 
+# Exchange rates (ExchangeRate-API)
+VITE_EXCHANGE_RATES_API_KEY=...
+
 # Optional — social links (fall back to "primeoptic" handles if omitted)
 VITE_INSTAGRAM_URL=https://instagram.com/primeoptic
 VITE_TIKTOK_URL=https://tiktok.com/@primeoptic
@@ -120,7 +122,6 @@ npm run preview    # serve the production build locally
 | `appointments` | Anyone can create (guest booking); owner + admin read; admin update/delete |
 | `orders` | Anyone can create (guest checkout); owner + admin read; admin update/delete |
 | `users` | Users manage their own document; only admins can update roles |
-| `settings/currencyRates` | Public read; admin write |
 | `stores` | Public read; admin write |
 
 ---
