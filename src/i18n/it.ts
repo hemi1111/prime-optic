@@ -7,6 +7,7 @@ export const it: Record<string, string> = {
   "nav.cart": "Carrello",
   "nav.profile": "Profilo",
   "nav.settings": "Impostazioni",
+  "nav.favorites": "Preferiti",
   "settings.currency": "Valuta",
   "settings.language": "Lingua",
   "currency.eur": "Euro",
@@ -98,6 +99,8 @@ export const it: Record<string, string> = {
   "product.loading": "Caricamento prodotto...",
   "product.error": "Caricamento prodotto fallito",
   "cart.title": "Carrello della spesa",
+  "cart.itemsCount_singular": "{{count}} articolo",
+  "cart.itemsCount_plural": "{{count}} articoli",
   "cart.empty": "Il tuo carrello è vuoto",
   "cart.emptyDescription":
     "Aggiungi alcuni prodotti al tuo carrello per continuare a fare acquisti.",
@@ -315,6 +318,7 @@ export const it: Record<string, string> = {
   "profile.orders.status.shipped": "Spedito",
   "profile.orders.status.confirmed": "Confermato",
   "profile.orders.status.pending": "In attesa",
+  "profile.orders.status.cancelled": "Annullato",
   "catalog.title.glasses": "Occhiali da vista",
   "catalog.title.sunglasses": "Collezione occhiali da sole",
   "catalog.description.glasses":

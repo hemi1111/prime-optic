@@ -7,6 +7,7 @@ export const en: Record<string, string> = {
   "nav.cart": "Cart",
   "nav.profile": "Profile",
   "nav.settings": "Settings",
+  "nav.favorites": "Favorites",
   "settings.currency": "Currency",
   "settings.language": "Language",
   "currency.eur": "Euro",
@@ -97,6 +98,8 @@ export const en: Record<string, string> = {
   "product.loading": "Loading product...",
   "product.error": "Failed to load product",
   "cart.title": "Shopping cart",
+  "cart.itemsCount_singular": "{{count}} item",
+  "cart.itemsCount_plural": "{{count}} items",
   "cart.empty": "Your cart is empty",
   "cart.emptyDescription":
     "Add some products to your cart to continue shopping.",
@@ -313,6 +316,7 @@ export const en: Record<string, string> = {
   "profile.orders.status.shipped": "Shipped",
   "profile.orders.status.confirmed": "Confirmed",
   "profile.orders.status.pending": "Pending",
+  "profile.orders.status.cancelled": "Cancelled",
   "catalog.title.glasses": "Prescription glasses",
   "catalog.title.sunglasses": "Sunglasses collection",
   "catalog.description.glasses":

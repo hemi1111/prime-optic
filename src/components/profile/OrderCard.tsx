@@ -23,7 +23,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
       case "preparing":
         return "Preparing";
       case "cancelled":
-        return "Cancelled";
+        return t("profile.orders.status.cancelled");
       default:
         return t("profile.orders.status.pending");
     }

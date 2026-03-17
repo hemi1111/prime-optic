@@ -160,7 +160,7 @@ const MobileNav = () => {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
-                  <span>Favorites</span>
+                  <span>{t("nav.favorites")}</span>
                 </div>
                 {favoritesCount > 0 && (
                   <span className="inline-flex items-center justify-center h-6 min-w-[1.5rem] px-2 rounded-full bg-red-500 text-xs font-semibold text-white">
@@ -171,13 +171,23 @@ const MobileNav = () => {
               <Link
                 to="/cart"
                 onClick={closeMobileNav}
+                aria-label={`${t("cart.title")}${
+                  itemCount > 0
+                    ? ` (${t(
+                        itemCount === 1
+                          ? "cart.itemsCount_singular"
+                          : "cart.itemsCount_plural",
+                        { count: String(itemCount) },
+                      )})`
+                    : ""
+                }`}
                 className="flex items-center justify-between px-4 py-3 rounded-xl text-base font-medium text-slate-700 hover:bg-slate-100 transition-all"
               >
                 <div className="flex items-center gap-3">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
-                  <span>Cart</span>
+                  <span>{t("nav.cart")}</span>
                 </div>
                 {itemCount > 0 && (
                   <span className="inline-flex items-center justify-center h-6 min-w-[1.5rem] px-2 rounded-full bg-primary-500 text-xs font-semibold text-white">

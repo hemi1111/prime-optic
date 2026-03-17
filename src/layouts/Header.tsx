@@ -165,10 +165,25 @@ const Header = () => {
             </Link>
             <Link
               to="/cart"
+              aria-label={`${t("cart.title")}${
+                itemCount > 0
+                  ? ` (${t(
+                      itemCount === 1
+                        ? "cart.itemsCount_singular"
+                        : "cart.itemsCount_plural",
+                      { count: String(itemCount) },
+                    )})`
+                  : ""
+              }`}
               className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm hover:border-primary-500"
             >
               <span className="text-lg" aria-hidden>
                 🛒
+              </span>
+              <span className="sr-only">
+                {itemCount === 1
+                  ? t("cart.itemsCount_singular", { count: String(itemCount) })
+                  : t("cart.itemsCount_plural", { count: String(itemCount) })}
               </span>
               {itemCount > 0 ? (
                 <span className="absolute -right-1 -top-1 inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-primary-500 px-1 text-[10px] font-semibold text-white">

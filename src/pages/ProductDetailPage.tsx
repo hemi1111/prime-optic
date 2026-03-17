@@ -60,7 +60,7 @@ const ProductDetailPage = () => {
       .filter(
         (p) => p.id !== product.id && p.brand === product.brand
       )
-      .slice(0, 4);
+      .slice(0, 5);
   }, [product, sameTypeProducts]);
 
   useEffect(() => {

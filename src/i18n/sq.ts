@@ -7,6 +7,7 @@ export const sq: Record<string, string> = {
   "nav.cart": "Shporta",
   "nav.profile": "Profili",
   "nav.settings": "Cilësimet",
+  "nav.favorites": "Të Preferuarat",
   "settings.currency": "Valuta",
   "settings.language": "Gjuha",
   "currency.eur": "Euro",
@@ -97,6 +98,8 @@ export const sq: Record<string, string> = {
   "product.loading": "Duke ngarkuar produktin...",
   "product.error": "Dështoi ngarkimi i produktit",
   "cart.title": "Shporta e blerjeve",
+  "cart.itemsCount_singular": "{{count}} artikull",
+  "cart.itemsCount_plural": "{{count}} artikuj",
   "cart.empty": "Shporta juaj është e zbrazët",
   "cart.emptyDescription":
     "Shtoni disa produkte në shportën tuaj për të vazhduar blerjet.",
@@ -314,6 +317,7 @@ export const sq: Record<string, string> = {
   "profile.orders.status.shipped": "Dërguar",
   "profile.orders.status.confirmed": "Konfirmuar",
   "profile.orders.status.pending": "Në pritje",
+  "profile.orders.status.cancelled": "Anulluar",
   "catalog.title.glasses": "Syze optike",
   "catalog.title.sunglasses": "Koleksioni i syzeve të diellit",
   "catalog.description.glasses":

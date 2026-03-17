@@ -37,11 +37,11 @@ const SizeGuideDiagram = ({ product, t }: SizeGuideDiagramProps) => {
   return (
     <svg
       viewBox="0 0 320 280"
-      className="w-full h-auto rounded-lg"
+      className="w-full h-auto rounded-lg justify-self-center align-middle"
       aria-hidden
     >
-      {/* Front view: eyeglasses with rectangular lenses */}
-      <g transform="translate(35, 25)">
+      {/* Front view: eyeglasses */}
+      <g transform="translate(55, 25)">
         {/* Frame width dimension line (top) */}
         <line
           x1={0}
@@ -63,81 +63,74 @@ const SizeGuideDiagram = ({ product, t }: SizeGuideDiagramProps) => {
           {t("productDetail.frameWidth")}: {frameWidth} mm
         </text>
 
-        {/* Left lens (rounded rectangle) */}
-        <rect
-          x={18}
-          y={28}
-          width={68}
-          height={40}
-          rx={12}
-          fill="none"
-          stroke={frameStroke}
-          strokeWidth={2}
-        />
-        {/* Left endpiece + short temple hint */}
-        <path
-          d="M 86 38 L 94 38 L 100 42"
-          fill="none"
-          stroke={frameStroke}
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        {/* Frame + lenses (more realistic silhouette) */}
+        <g>
+          {/* Outer rims */}
+          <path
+            d="M 22 46
+               C 22 32, 34 22, 54 22
+               L 66 22
+               C 86 22, 98 32, 98 46
+               L 98 54
+               C 98 69, 85 80, 64 80
+               L 56 80
+               C 35 80, 22 69, 22 54
+               Z"
+            fill="none"
+            stroke={frameStroke}
+            strokeWidth={2.2}
+            strokeLinejoin="round"
+          />
+          <g transform="translate(1.5, 0)">
+            <path
+              d="M 125 46
+                 C 125 32, 137 22, 157 22
+                 L 169 22
+                 C 189 22, 201 32, 201 46
+                 L 201 54
+                 C 201 69, 188 80, 167 80
+                 L 159 80
+                 C 138 80, 125 69, 125 54
+                 Z"
+              fill="none"
+              stroke={frameStroke}
+              strokeWidth={2.2}
+              strokeLinejoin="round"
+            />
+          </g>
 
-        {/* Bridge with subtle nose curve */}
-        <path
-          d="M 86 40 C 96 34, 104 34, 114 40 C 104 46, 96 46, 86 40 Z"
-          fill="none"
-          stroke={frameStroke}
-          strokeWidth={1.6}
-        />
+          {/* Bridge (centered between lenses) */}
+          <path
+            d="M 98 52
+               C 103 44, 108 40, 112 40
+               C 116 40, 121 44, 126 52"
+            fill="none"
+            stroke={frameStroke}
+            strokeWidth={2.2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
 
-        {/* Nose pads */}
-        <path
-          d="M 94 44 C 92 48, 92 52, 94 56"
-          fill="none"
-          stroke={frameStroke}
-          strokeWidth={1}
-          strokeLinecap="round"
-        />
-        <path
-          d="M 106 44 C 108 48, 108 52, 106 56"
-          fill="none"
-          stroke={frameStroke}
-          strokeWidth={1}
-          strokeLinecap="round"
-        />
-
-        {/* Right endpiece + short temple hint */}
-        <path
-          d="M 122 42 L 128 38 L 136 38"
-          fill="none"
-          stroke={frameStroke}
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-
-        {/* Right lens (rounded rectangle) */}
-        <rect
-          x={128}
-          y={28}
-          width={68}
-          height={40}
-          rx={12}
-          fill="none"
-          stroke={frameStroke}
-          strokeWidth={2}
-        />
-
-        {/* Lens highlight for more "glassy" feel */}
-        <path
-          d="M 132 32 C 148 26, 164 26, 190 32"
-          fill="none"
-          stroke="#cbd5f5"
-          strokeWidth={1}
-          strokeLinecap="round"
-        />
+          {/* Endpieces + tiny temple hints */}
+          <path
+            d="M 22 50 L 14 50 L 8 54"
+            fill="none"
+            stroke={frameStroke}
+            strokeWidth={2.2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <g transform="translate(1.5, 0)">
+            <path
+              d="M 201 50 L 209 50 L 215 54"
+              fill="none"
+              stroke={frameStroke}
+              strokeWidth={2.2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </g>
+        </g>
 
         {/* Bridge width dimension */}
         <line
@@ -162,16 +155,16 @@ const SizeGuideDiagram = ({ product, t }: SizeGuideDiagramProps) => {
 
         {/* Lens width dimension (inside right lens) */}
         <line
-          x1={128}
+          x1={132}
           y1={52}
-          x2={196}
+          x2={200}
           y2={52}
           stroke={stroke}
           strokeDasharray={dashArray}
           strokeWidth={1}
         />
         <text
-          x={162}
+          x={166}
           y={66}
           textAnchor="middle"
           fill={textFill}
@@ -182,11 +175,20 @@ const SizeGuideDiagram = ({ product, t }: SizeGuideDiagramProps) => {
         </text>
       </g>
 
-      {/* Side view: temple (arm) with smoother curve */}
-      <g transform="translate(35, 155)">
-        {/* Temple: hinge, then gently curved arm */}
+      {/* Side view: temple (arm) */}
+      <g transform="translate(55, 155)">
+        {/* Temple: hinge, then cleaner arm shape (no oval) */}
         <path
-          d="M 0 18 L 0 34 L 6 34 L 10 40 Q 80 26, 150 40 Q 170 46, 172 54 Q 174 62, 164 66 L 20 66 Q 4 64, 0 58"
+          d="M 0 16
+             L 0 40
+             L 12 40
+             L 20 34
+             L 150 34
+             L 170 40
+             L 178 50
+             L 170 60
+             L 40 60
+             L 18 56"
           fill="none"
           stroke={frameStroke}
           strokeWidth={2}

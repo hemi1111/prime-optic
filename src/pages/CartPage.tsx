@@ -95,8 +95,17 @@ const CartPage = () => {
     <div className="grid gap-6 md:grid-cols-[minmax(0,3fr),minmax(0,2fr)]">
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft ring-1 ring-slate-100">
         <h1 className="text-xl font-bold tracking-tight text-slate-900 mb-4">
-          {t("cart.title")} ({items.length}{" "}
-          {items.length === 1 ? "item" : "items"})
+          {t("cart.title")}{" "}
+          <span className="font-semibold text-slate-600">
+            (
+            {t(
+              items.length === 1
+                ? "cart.itemsCount_singular"
+                : "cart.itemsCount_plural",
+              { count: String(items.length) },
+            )}
+            )
+          </span>
         </h1>
         <ul className="divide-y divide-slate-100">
           {items.map((item, index) => (
