@@ -1,8 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { CurrencyCode } from "../services/currencyService";
 
-export type Currency = CurrencyCode;
+export type Currency = "EUR" | "USD" | "ALL";
 
 type CurrencyState = {
   currency: Currency;
