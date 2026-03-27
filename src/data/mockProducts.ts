@@ -278,6 +278,7 @@ export const mockProducts: Product[] = [
     lensWidth: 54,
     bridgeWidth: 18,
     templeLength: 145,
+    lensHeight: 46,
     sku: "RB-ERK-006",
     origin: "Italy",
     warranty: "2 years",
@@ -3303,15 +3304,3 @@ export const mockProducts: Product[] = [
     warranty: "1 year",
   },
 ];
-
-// Function to get products by type
-export const getProductsByType = (
-  type: "glasses" | "sunglasses",
-): Product[] => {
-  return mockProducts.filter((product) => product.type === type);
-};
-
-// Function to get a product by slug
-export const getProductBySlug = (slug: string): Product | undefined => {
-  return mockProducts.find((product) => product.slug === slug);
-};

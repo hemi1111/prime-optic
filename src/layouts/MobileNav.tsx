@@ -12,19 +12,13 @@ import CurrencySwitcher from "../components/CurrencySwitcher";
 import SocialLinks from "../components/SocialLinks";
 
 const LogoIcon = () => (
-  <svg
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    className="text-white"
-  >
-    <path
-      d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"
-      fill="currentColor"
-    />
-  </svg>
+  <img
+    src="/prime-optic-logo.png"
+    alt=""
+    width={48}
+    height={48}
+    className="w-10 h-10 object-contain rounded-md"
+  />
 );
 
 const MobileNav = () => {
@@ -53,7 +47,7 @@ const MobileNav = () => {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent_50%)]" />
             <div className="relative flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm">
+                <div className="flex items-center justify-center w-10 h-10 rounded-md">
                   <LogoIcon />
                 </div>
                 <div>

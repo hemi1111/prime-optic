@@ -23,7 +23,7 @@ export async function fetchProductsByType(
   }
 
   const productsCol = collection(db, "products");
-  const q = query(productsCol, where("type", "==", type), limit(24));
+  const q = query(productsCol, where("type", "==", type));
   const snapshot = await getDocs(q);
 
   return snapshot.docs.map(

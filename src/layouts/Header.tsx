@@ -62,7 +62,7 @@ const Header = () => {
 
           <Link to="/" className="flex items-center gap-2 group">
             <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg group-hover:shadow-xl transition-all duration-200 group-hover:scale-105">
-              <Logo />
+              <img src="/prime-optic-logo.png" alt="" width={48} height={48} className="w-10 h-10 object-contain rounded-md" />
             </div>
             <span className="text-lg font-bold tracking-tight text-slate-900 group-hover:text-primary-600 transition-colors">
               Prime Optic
@@ -75,7 +75,7 @@ const Header = () => {
         <div className="hidden md:flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 group">
             <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg group-hover:shadow-xl transition-all duration-200 group-hover:scale-105">
-              <Logo />
+              <img src="/prime-optic-logo.png" alt="" width={48} height={48} className="w-10 h-10 object-contain rounded-md" />
             </div>
             <div className="flex flex-col">
               <span className="text-lg font-bold tracking-tight text-slate-900 group-hover:text-primary-600 transition-colors">

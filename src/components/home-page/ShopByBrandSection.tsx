@@ -16,18 +16,18 @@ const ShopByBrandSection = () => {
           {t("home.brands.description")}
         </p>
       </div>
-      <div className="grid grid-cols-1 gap-x-24 gap-y-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
+      <div className="flex flex-wrap justify-center gap-x-6 gap-y-10 sm:gap-x-8 sm:gap-y-12">
         {FEATURED_BRANDS.map((brand) => (
           <Link
             key={brand.slug}
             to={`/brand/${brand.slug}`}
-            className="group flex items-center justify-center px-4 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2"
+            className="group flex max-h-32 min-h-0 min-w-0 shrink-0 grow-0 basis-[calc((100%-3rem)/3)] items-center justify-center p-3 sm:max-h-36 sm:basis-[calc((100%-4rem)/3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2"
           >
             <img
               src={brand.image}
               alt={brand.name}
               loading="lazy"
-              className="h-10 w-auto max-w-[220px] opacity-70 transition duration-300 ease-out group-hover:opacity-100 md:h-12 md:max-w-[260px] lg:h-14 lg:max-w-[280px]"
+              className="h-auto max-h-24 w-auto max-w-full object-contain opacity-60 transition duration-300 ease-out group-hover:opacity-100 sm:max-h-28"
             />
           </Link>
         ))}

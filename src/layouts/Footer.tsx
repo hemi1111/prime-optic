@@ -1,11 +1,14 @@
 import { Link } from "react-router-dom";
 
 import { useTranslation } from "../hooks/useTranslation";
+import { useStoreLocations } from "../hooks/useStoreLocations";
 import SocialLinks from "../components/SocialLinks";
 import { FEATURED_BRANDS } from "../config/brands";
+import { getLocalizedStoreField } from "../utils/storeLocale";
 
 const Footer = () => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
+  const { stores, isLoading } = useStoreLocations();
   const topBrands = FEATURED_BRANDS.slice(0, 6);
 
   const footerLinkClass =
@@ -92,10 +95,20 @@ const Footer = () => {
             <h4 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-800">
               {t("footer.storeLocations")}
             </h4>
-            <div className="space-y-2 text-sm text-slate-600">
-              <p>{t("footer.store1")}</p>
-              <p>{t("footer.store2")}</p>
-              <p>{t("footer.store3")}</p>
+            <div className="space-y-3 text-sm text-slate-600">
+              {isLoading && stores.length === 0 ? (
+                <p className="text-slate-500">{t("footer.storesLoading")}</p>
+              ) : stores.length === 0 ? (
+                <p className="text-slate-500">{t("footer.noStores")}</p>
+              ) : (
+                stores.map((store) => (
+                  <div key={store.id}>
+                    <p className="font-medium text-slate-800">
+                      {getLocalizedStoreField(store, language, "name")}
+                    </p>
+                  </div>
+                ))
+              )}
               <p className="pt-1 text-slate-700">{t("footer.address")}</p>
             </div>
             <div className="mt-4 space-y-2 text-sm text-slate-600">
